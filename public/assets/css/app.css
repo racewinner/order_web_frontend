@@ -276,9 +276,23 @@ footer {
             }
         }
     }
+    @media (max-width: 520px) {
+        .my-cart-footer {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }        
+    }
+    @media (min-width: 520px) {
+        .my-cart-footer {
+            flex-direction: row;
+            justify-content: space-between;
+        }        
+    }
     .my-cart-footer {
         background-color: rgb(255,247,243);
         border-top: 1px solid #eeeeee;
+        display: flex;
         .total-amount {
             font-size: 120%;
             color: var(--bs-success);

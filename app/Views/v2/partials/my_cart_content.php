@@ -35,7 +35,7 @@
     </div>
 </div>
 
-<div class="my-cart-footer d-flex p-4">
+<div class="my-cart-footer p-4">
     <div class="flex-fill cart-total cart-total-desc">
         <label>This trolley sub total is</label>
         <div class="total-amount" id="cart_subtotal">£<?= $total_amount/* + $delivery_charge + $total_vats*/ ?></div>
