@@ -1,0 +1,65 @@
+body {
+    color: #000;
+}
+
+.topbar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 72px;
+    background-color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: #000;
+
+    img.logo {
+        width: 110px;
+        height: auto;
+    }
+
+    ul.mainnav {
+        a {
+            color: #333 !important;
+            text-align: center;
+            font-size: 0.75em !important;
+            font-weight: normal !important;
+            padding: 0 10px !important;
+            height: 72px;
+            color: #000;
+
+            i {
+                margin-bottom: -40px;
+            }
+        }
+    }
+}
+
+main.cpanel2 {
+    margin-top: 72px;
+    min-height: calc(100vh - 72px - 50px);
+    .sidepanel {
+        padding-top: 5px;
+        position: relative;
+        .sidenav {
+            position: relative;
+            transform: translateX(0%);
+            height: 100% !important;
+        }
+        .sidenav-trigger {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: -25px;
+        }
+    }
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    background-color: #444;
+    color: white;
+}
