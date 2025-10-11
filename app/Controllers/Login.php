@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Models\Employee;
 use App\Models\Manager;
+
 class Login extends BaseController 
 {
 	// function __construct()
@@ -12,9 +13,10 @@ class Login extends BaseController
 	function index()
 	{
 		$Employee = new Employee();
-		if($Employee->is_logged_in())
+    // $branch = session()->get('branch');
+		if ($Employee->is_logged_in()/* && !empty($branch)*/)
 		{			
-			return redirect()->to(base_url('home'));
+      return redirect()->to(base_url('home'));
 		}
 		// echo view('login');
 		echo view("v2/pages/login");
@@ -44,18 +46,41 @@ class Login extends BaseController
 		$is_mobile = request()->getPost("is_mobile");
 
 		$Employee = new Employee();
-		
+
 		
 		if($Employee->login($username,$password))
 		{
 			session()->set('is_mobile', $is_mobile);
 
-      $macc = new MyAccount();
-      $nearest_branch_id = $macc->getBranch();
-      if ($nearest_branch_id > 0) {
-        session()->set('branch', $nearest_branch_id);
+      $person_id = session()->get('person_id');
+      $branch_list = $Employee->get_info($person_id)->branches;
+
+      if (count($branch_list) == 0) {
+          $macc = new MyAccount();
+          $nearest_branch_id = $macc->getBranch();
+          if ($nearest_branch_id > 0) {
+            session()->set('branch', $nearest_branch_id);
+            return redirect()->to(base_url('home'));
+          }
+
+      } else if (count($branch_list) == 1) {
+          $my_branch = $branch_list[0];
+          if ($my_branch > 0) {
+            session()->set('branch', $my_branch);
+            return redirect()->to(base_url('home'));
+          }
+
+      } else {
+        $macc = new MyAccount();
+        $nearest_branch_id = $macc->getAllocatedBranch();
+        if ($nearest_branch_id > 0) {
+          session()->set('branch', $nearest_branch_id);
+          return redirect()->to(base_url('home'));
+          // return redirect()->to(base_url('myaccount/sel_allocated_branch'));
+        }
       }
-			return redirect()->to(base_url('home'));
+
+      return redirect()->to(base_url('login'));
 		}	
 		else
 		{
@@ -65,6 +90,7 @@ class Login extends BaseController
 			return redirect()->to(base_url('login'));
 		}	
 		
+    // ?
 		$Manager = new Manager();
 		if($Manager->login($username,$password)){
 			return redirect()->to(base_url('cpanel'));
@@ -73,11 +99,26 @@ class Login extends BaseController
 	
 	function guest_login()
 	{	
-		$Employee = new Employee();
-		if($Employee->login("guest","guest"))
-		{						
-			return redirect()->to(base_url('home'));
-		}
+		// $Employee = new Employee();
+		// if($Employee->login("guest","guest"))
+		// {						
+		// 	return redirect()->to(base_url('home'));
+		// }
+    $branch = session()->get('branch');
+    if (!empty($branch)) {
+      return redirect()->to(base_url('home'));
+    }
+
+    $macc = new MyAccount();
+    $nearest_branch_id = $macc->getBranch();
+
+    if ($nearest_branch_id > 0) {
+      session()->set('branch', $nearest_branch_id);
+
+      return redirect()->to(base_url('home'));
+    }
+
+    return redirect()->to(base_url('login'));
 	}
 	
 	

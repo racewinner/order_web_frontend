@@ -61,3 +61,13 @@
     </form>
 </div>
 <?= $this->endSection() ?>
+
+<?= $this->section('javascript') ?>
+<script>
+    $(document).ready(function(e) {
+        $(document).on('click', '#btn-guest-login', function(e) {
+            window.location = 'login/guest_login';
+        })
+    })
+</script>
+<?= $this->endSection() ?>

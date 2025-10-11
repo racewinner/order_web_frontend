@@ -9,7 +9,15 @@ class Order extends Model
 	function get_all_cart($person_id, $type='general')
 	{
 		$db = \Config\Database::connect();
-		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY id";
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC";
+
+		return $db->query($query);
+	}
+
+  function get_limited_cart($person_id, $type='general')
+	{
+		$db = \Config\Database::connect();
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC LIMIT 10";
 
 		return $db->query($query);
 	}
@@ -18,31 +26,31 @@ class Order extends Model
 	{
 		$db = \Config\Database::connect();
 
-        $builder = $db->table('epos_cart');
-        $builder->where('person_id', $person_id);
-        $builder->where('presell', $presell);
-        $builder->where('group_type', $type);
-        // $builder->groupBy('prod_code');
-        $result = $builder->get();
-        $numRows = $result->getNumRows();
+    $builder = $db->table('epos_cart');
+    $builder->where('person_id', $person_id);
+    $builder->where('presell', $presell);
+    $builder->where('group_type', $type);
+    // $builder->groupBy('prod_code');
+    $result = $builder->get();
+    $numRows = $result->getNumRows();
 
-        return $numRows;		
+    return $numRows;		
 	}
 
 	function get_items($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
 
-        $builder = $db->table('epos_cart');
-        $builder->selectSum('quantity');
-        $builder->where('person_id', $person_id);
-        $builder->where('presell', $presell);
-        $builder->where('group_type', $type);
-        // $builder->groupBy('prod_code');
-        $result = $builder->get()->getRow();
-        $quantitySum = $result->quantity ?? 0; 
+    $builder = $db->table('epos_cart');
+    $builder->selectSum('quantity');
+    $builder->where('person_id', $person_id);
+    $builder->where('presell', $presell);
+    $builder->where('group_type', $type);
+    // $builder->groupBy('prod_code');
+    $result = $builder->get()->getRow();
+    $quantitySum = $result->quantity ?? 0; 
 
-        return $quantitySum;
+    return $quantitySum;
 	}
 
 
@@ -50,13 +58,13 @@ class Order extends Model
 	{
 		$db = \Config\Database::connect();
 
-        $builder = $db->table('epos_cart');
-        $builder->where('person_id', $person_id);
-        $builder->where('presell', $presell);
-        $builder->groupBy('prod_code');
-        $count = $builder->countAllResults();
+    $builder = $db->table('epos_cart');
+    $builder->where('person_id', $person_id);
+    $builder->where('presell', $presell);
+    $builder->groupBy('prod_code');
+    $count = $builder->countAllResults();
 
-        return $count;
+    return $count;
 	}
 
 	function get_product($prod_id)
@@ -91,7 +99,7 @@ class Order extends Model
 	{
 		$db = \Config\Database::connect();
 
-        $query = "SELECT p.*, op.order_id, op.quantity, op.group_type, op.price FROM epos_orders_products as op";
+    $query = "SELECT p.*, op.order_id, op.quantity, op.group_type, op.price FROM epos_orders_products as op";
 		$query .= " LEFT JOIN epos_product as p on op.prod_code=p.prod_code";
 		$query .= " WHERE order_id=".$order_id." GROUP BY op.prod_code ORDER BY p.prod_desc ASC, p.prod_uos ASC";
 		$results_cart = $db->query($query);
@@ -583,22 +591,22 @@ class Order extends Model
 	{
 		$db = \Config\Database::connect();
 
-        $query="SELECT prod_id, prod_code, prod_uos, prod_desc, prod_pack_desc,
-                       vat_code, prod_price, group_desc, prod_code1, start_date,
-                       price_list, prod_level1, prod_level2, prod_level3,
-                       MIN(prod_sell) as prod_sell, prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life
-                FROM epos_product
-                WHERE is_disabled='N' AND (wholesale like'".$barcode."' OR retail like'".$barcode."') AND (price_list = '000' ";
-        if ($user_info->price_list999) $query .= "OR price_list = '999' ";
-        if ($user_info->price_list012) $query .= "OR price_list = '12' ";
-        if ($user_info->price_list011) $query .= "OR price_list = '11' ";
-        if ($user_info->price_list010) $query .= "OR price_list = '10' ";
-        if ($user_info->price_list009) $query .= "OR price_list = '09' ";
-        if ($user_info->price_list008) $query .= "OR price_list = '08' ";
-        if ($user_info->price_list007) $query .= "OR price_list = '07' ";
-        if ($user_info->price_list005) $query .= "OR price_list = '05' ";
-        if ($user_info->price_list001) $query .= "OR price_list = '01' ";
-        $query .= ") GROUP BY prod_code ORDER BY prod_code DESC LIMIT 6";
+    $query="SELECT prod_id, prod_code, prod_uos, prod_desc, prod_pack_desc,
+                    vat_code, prod_price, group_desc, prod_code1, start_date,
+                    price_list, prod_level1, prod_level2, prod_level3,
+                    MIN(prod_sell) as prod_sell, prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life
+            FROM epos_product
+            WHERE is_disabled='N' AND (wholesale like'".$barcode."' OR retail like'".$barcode."') AND (price_list = '000' ";
+    if ($user_info->price_list999) $query .= "OR price_list = '999' ";
+    if ($user_info->price_list012) $query .= "OR price_list = '12' ";
+    if ($user_info->price_list011) $query .= "OR price_list = '11' ";
+    if ($user_info->price_list010) $query .= "OR price_list = '10' ";
+    if ($user_info->price_list009) $query .= "OR price_list = '09' ";
+    if ($user_info->price_list008) $query .= "OR price_list = '08' ";
+    if ($user_info->price_list007) $query .= "OR price_list = '07' ";
+    if ($user_info->price_list005) $query .= "OR price_list = '05' ";
+    if ($user_info->price_list001) $query .= "OR price_list = '01' ";
+    $query .= ") GROUP BY prod_code ORDER BY prod_code DESC LIMIT 6";
 		$res = $db->query($query);
 
 		if($res->getNumRows() == 0) return false;

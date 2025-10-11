@@ -447,6 +447,7 @@ $(document).ready(function () {
     });
 
     $(document).on('change', '.one-product input.cart-quantity', function(e) {
+      debugger
         const productEl = $(e.target).closest('.one-product');
         const prod_id = $(productEl).data('prod-id');
         const prod_code = $(productEl).data('prod-code');
@@ -583,7 +584,7 @@ $(document).ready(function () {
 
         debugger
         $.ajax({
-            url: `/orders`,
+            url: `/orders/mini_cart`,
             success: function (response, status, request) {
                 $my_cart_sidebar_content.removeClass('loading');
                 $my_cart_sidebar_content.find(".my-cart-content").html(response);

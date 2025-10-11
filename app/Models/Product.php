@@ -284,7 +284,8 @@ class Product extends Model
 			$search_cond .= " AND ( ";
 			$search_cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
 			$search_cond .= " OR (retail LIKE '" . $db->escapeLikeString($a) . "%' OR wholesale LIKE '" . $db->escapeLikeString($a) . "%') ";
-			$search_cond .= " OR prod_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
+			$search_cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . "' OR prod_desc LIKE '" . $db->escapeLikeString($a) . " %' ";
+      $search_cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . " %' OR prod_desc = '" . $db->escapeLikeString($a) . "' ";
 			$search_cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
 			$search_cond .= " ) ";
 		}
@@ -294,7 +295,7 @@ class Product extends Model
 		$query = "SELECT p.prod_code, p.prod_desc, pi.url as image_url, pi.version as image_version 
 					FROM epos_product as p 
 					LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
-					WHERE is_disabled='N' " . $search_cond . " AND";
+					WHERE is_disabled='N' AND branch=" . session()->get('branch') . $search_cond . " AND";
 		// limit results to current selected category only.
 		if ($category_id != 0) {
 			$results_category = $db->query("SELECT * FROM epos_categories WHERE category_id = '" . $category_id . "'");
@@ -315,7 +316,7 @@ class Product extends Model
 				$query = "group_desc = '" . $res_category->filter_desc . "' AND ";
 			}
 		}
-		$query .= "(price_list = '000' ";
+		$query .= " ( price_list = '000' ";
 		if (!empty($user_info)) {
 			if (!empty($user_info->price_list999))
 				$query .= "OR price_list = '999' ";
@@ -411,6 +412,7 @@ class Product extends Model
 		$query = "SELECT " . $addcols . "p.prod_id, p.prod_code, prod_uos, prod_desc, prod_pack_desc, price_start, price_end, brand, epoints,
                        vat_code, prod_price, group_desc, prod_code1,
                        price_list, prod_level1, prod_level2, prod_level3,
+                       non_promo_sell_price,
 					   pi.url as image_url,
 					   pi.version as image_version,
 					   IF(brand='', 'zzzz', brand) as v_brand,
@@ -525,11 +527,14 @@ class Product extends Model
 						$type = !empty($category) ? $category->type : 'general';
 					}
 	
+          $line_position = $this->genCartLinePosition($person_id);
+
 					$cart_data = array(
 						'prod_code' => $prod_code,
 						'quantity' => $quantity,
 						'person_id' => $person_id,
 						'group_type' => $type,
+            'line_position' => $line_position,
 					);
 					$db->table('epos_cart')->insert($cart_data);
 					return $quantity;
@@ -554,7 +559,8 @@ class Product extends Model
 					$db->query("DELETE FROM epos_cart WHERE " . $cond);
 					return 0;
 				} else {
-					$cart_data = ['quantity' => $quantity1];
+          // $line_position = $this->genCartLinePosition($person_id);
+          $cart_data = ['quantity' => $quantity1/*, 'line_position' => $line_position*/];
 					$builder = $db->table('epos_cart');
 					$builder->where($cond);
 					$builder->update($cart_data);
@@ -901,6 +907,13 @@ class Product extends Model
 			$product->price = number_format($product->prod_sell,2,'.','');
 		}
 
+    $product->non_promo_price = number_format($product->non_promo_sell_price,2,'.','');
+    if($product->non_promo_price == 0 || $product->price == $product->non_promo_price) {
+      $product->is_show_non_promo_price = false;
+    } else {
+      $product->is_show_non_promo_price = true;
+    }
+
 		$product->case = self::getCase($product);
 	}
 
@@ -1220,5 +1233,24 @@ class Product extends Model
 
 		return $case;
 	}
+
+  public static function genCartLinePosition($person_id, $tblName = 'epos_cart')
+  {
+    $db = \Config\Database::connect();
+    $line_position = 0;
+
+    $query = "SELECT line_position FROM " . $tblName . " WHERE person_id=" . $person_id . " ORDER BY line_position DESC LIMIT 1";
+    $query = $db->query($query);
+    if ($query->getNumRows() > 0) {
+        $row = $query->getRow();
+        $line_position = intval($row->line_position) + 1;
+    }
+    
+
+
+    return $line_position;
+  }
 }
+
+
 ?>

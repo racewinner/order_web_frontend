@@ -56,7 +56,25 @@ class Module extends Model
 			'module_id' => 'seasonal_presell',
 		]));
 
-		return $modules;
+    $person_id = session()->get('person_id');
+    if (!empty($person_id)) {
+
+      $branch_list = $Employee->get_info($person_id)->branches;
+      if (count($branch_list) > 1) {
+        
+        $branch_module = [
+          "name_lang_key" => "branch",
+          // "desc_lang_key" => "module_home_desc",
+          // "sort" => "1",
+          "module_id" => "branch",
+          // "person_id" => "541"
+        ];
+  
+        $modules[] = $branch_module;
+      }
+    }
+
+    return $modules;
 	}
 }
 ?>

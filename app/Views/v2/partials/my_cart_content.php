@@ -2,11 +2,11 @@
     <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
         <?php foreach($types as $index => $type) { ?>
             <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
-                id="tab-general" 
+                id="mini-tab-general" 
                 data-bs-toggle="pill" 
-                data-bs-target="#pane-<?= $type['id'] ?>" 
+                data-bs-target="#mini-pane-<?= $type['id'] ?>" 
                 role="tab" 
-                aria-controls="pane-<?= $type['id'] ?>" 
+                aria-controls="mini-pane-<?= $type['id'] ?>" 
                 aria-selected="true"
             ><?= $type['label'] ?></li>
         <?php } ?>
@@ -15,7 +15,7 @@
     <div class="tab-content mt-3">
         <?php foreach($types as $index => $type) { ?>
             <div class="tab-pane fade <?= $index == 0 ? 'show active' : '' ?> <?= $type['id'] ?>" 
-                id="pane-<?= $type['id'] ?>" 
+                id="mini-pane-<?= $type['id'] ?>" 
                 role="tabpanel" 
                 aria-labelledby="tab-<?= $type['id'] ?>"
                 data-lines="<?= $type['lines'] ?>"

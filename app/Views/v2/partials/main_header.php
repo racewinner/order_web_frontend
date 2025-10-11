@@ -5,7 +5,7 @@ $uri_segments = $uri->getSegments();
 if(empty($user_info)) {
 	$top_menus = [
 		['id'=>'home', 'icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home', 'active'=>$uri_segments[0] == 'home'],
-    ['id'=>'branch', 'icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_branch', 'active'=>count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'],
+    // ['id'=>'branch', 'icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch', 'active'=>count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'],
 		['id'=>'login', 'icon' => 'bi-person-fill', 'label' => 'Log In', 'url' => '/login', 'active'=>$uri_segments[0] == 'login'],
 	];
 	$logon_user_menues = [];
@@ -18,13 +18,12 @@ if(empty($user_info)) {
 
 	if(in_array('home', $allowed_module_ids)) $top_menus[] = ['id'=>'home', 'icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home', 'active'=>$uri_segments[0] == 'home'];
 	if(in_array('products', $allowed_module_ids)) $top_menus[] = ['id'=>'products', 'icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products', 'active'=>$uri_segments[0] == 'products'];
-	if(in_array('seasonal_presell', $allowed_module_ids)) $top_menus[] = ['id'=>'presell', 'icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1', 'active'=>$uri_segments[0]=='seasonal_presell'];
+	if(in_array('seasonal_presell', haystack: $allowed_module_ids)) $top_menus[] = ['id'=>'presell', 'icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1', 'active'=>$uri_segments[0]=='seasonal_presell'];
 	if(in_array('promos', $allowed_module_ids)) $top_menus[] = ['id'=>'promos', 'icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/du', 'active'=>$uri_segments[0] == 'promos'];
 	if(in_array('favorites', $allowed_module_ids)) $top_menus[] = ['id'=>'my_favorite', 'icon' => 'bi-heart', 'label' => 'Favourite', 'url' => '/favorites', 'active'=>$uri_segments[0] == 'favorites'];
 	if(in_array('orders', $allowed_module_ids)) $top_menus[] = ['id'=>'my_cart', 'icon' => 'bi-cart3', 'label' => 'Empty', 'label_class'=>'cart-amount', 'active'=>$uri_segments[0] == 'orders'];
 	if(in_array('employees', $allowed_module_ids)) $top_menus[] = ['id'=>'employees', 'icon'=>'bi-person-fill', 'label'=>'Users', 'url'=>'/employees', 'active' => $uri_segments[0] == 'employees'];
-	// if(in_array('branches', $allowed_module_ids)) 
-    $top_menus[] = ['id'=>'branch', 'icon'=>'bi-geo-alt-fill', 'label'=>'Select Branch', 'url'=>'/myaccount/sel_branch', 'active' => count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'];
+	if(in_array('branch', $allowed_module_ids)) $top_menus[] = ['id'=>'branch', 'icon'=>'bi-geo-alt-fill', 'label'=>'Select Branch', 'url'=>'/myaccount/sel_allocated_branch', 'active' => count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'];
 
 	$logon_user_menues = LOGON_USER_MENUES;
 	if(empty($credit_account)) {

@@ -88,7 +88,9 @@ if($view_mode == 'grid') {
                         <?php } else { ?>
                             <div class="d-flex align-items-center">
                                 <span class="current-price">£<?= $product->price ?></span>
-                                <span class="deprecated ms-2">£10.0</span>
+                                <?php if($product->is_show_non_promo_price) { ?>
+                                  <span class="deprecated ms-2">£<?= $product->non_promo_price ?></span>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                             
@@ -224,7 +226,9 @@ if($view_mode == 'grid') {
                             <?php } else { ?>
                                 <div class="d-flex align-items-center">
                                     <span class="current-price">£<?= $product->price ?></span>
-                                    <span class="deprecated ms-2">£10.0</span>
+                                    <?php if($product->is_show_non_promo_price) { ?>
+                                      <span class="deprecated ms-2">£<?= $product->non_promo_price ?></span>
+                                    <?php } ?>
                                 </div>
                             <?php } ?>
                                 

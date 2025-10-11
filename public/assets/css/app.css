@@ -254,7 +254,7 @@ footer {
 #my-cart-sidebar {
     .sidebar-content {
         --cart-sidebar-width: 650px;
-        min-height: 500px;
+        min-height: 335px;
         width: var(--cart-sidebar-width);
         transform: translateX(var(--cart-sidebar-width));
         bottom: auto;
@@ -786,7 +786,7 @@ footer {
 }
 
 .deprecated {
-    color: #888;
+    color: #ddd;
     text-decoration: line-through;
 }
 
@@ -1014,4 +1014,22 @@ button.has-loading-spinner {
 
 .text-center {
     text-align: center !important;
+}
+
+/**
+ *
+ */
+.x-container {
+    padding: 0.5rem;
+    padding-right: 1.6rem;
+    padding-left: 1.6rem;
+
+    @media (max-width: 640px) {
+        padding: 0;
+        padding-top: 20px;
+        padding-right: 10px;
+        padding-left: 10px; 
+    }
+
+    
 }

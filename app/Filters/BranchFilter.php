@@ -11,9 +11,15 @@ class BranchFilter implements FilterInterface {
     }
 
     public function before(RequestInterface $request, $arguments = null) {
-        $branch = session()->get('branch');
-        if(empty($branch)) {
-            return redirect()->to(base_url('myaccount/sel_branch'));
+
+        if (!$request->isAJAX()) {
+
+            $branch = session()->get('branch');
+            if (empty($branch)) {
+                // return redirect()->to(base_url('myaccount/sel_branch'));
+                // return redirect()->to(base_url('login'));
+                return redirect()->to(base_url('login/guest_login'));
+            }
         }
     }
 

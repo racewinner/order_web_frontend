@@ -14,6 +14,7 @@ $routes->get('/login', 'Login::index');
 $routes->post('/login', 'Login::login_check');
 $routes->get('/login/guest_login', 'Login::guest_login');
 
+$routes->get('/myaccount/sel_allocated_branch', 'MyAccount::getAllocatedSelectBranch');
 $routes->get('/myaccount/sel_branch', 'MyAccount::getSelectBranch');
 $routes->post('/myaccount/sel_branch', 'MyAccount::postSelectBranch');
 $routes->post('/myaccount/my_branches', 'MyAccount::postMyBranches');
@@ -56,6 +57,7 @@ $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->post('/orders/resend_orders/(:segment)', 'Orders::resend_orders/$1');
     $routes->get('/orders/checkout', 'Orders::checkout');
     $routes->get('/orders/payment', 'Orders::payment');
+    $routes->get('/orders/mini_cart', 'Orders::mini_cart');
     $routes->get('/orders', 'Orders::index');
 
     $routes->post('/home/check_both_promos', 'Home::check_both_promos');

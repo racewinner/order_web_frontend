@@ -72,6 +72,104 @@ class Orders extends Secure_area implements iData_controller
 	  $this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
+    // filter only 10 product--------------
+    // foreach($types as &$type) {
+		// 	$type['lines'] = $Order->get_lines($pid, $type['id']);
+		// 	$type['items'] = $Order->get_items($pid, $type['id']);
+
+		// 	$orders = $Order->get_limited_cart($pid, $type['id'])->getResult();
+    //   $type['orders'] = [];
+		// 	foreach($orders as $order) {
+		// 		Order::populateProduct($order, $this->priceList, $user_info, 0);
+		// 		if(!empty($order->product)) {
+		// 			$type['orders'][] = $order;
+		// 		}
+		// 	}
+		// }
+		// $this->data["types"] = $types;
+    // ------------------------------------
+
+		if($page == 'checkout') {
+			return view('v2/pages/myaccount/checkout', $this->data);
+		} else if($page == 'payment') {
+			return view('v2/pages/myaccount/payment', $this->data);
+		} else {
+			if(request()->isAJAX()) {
+				return view('v2/partials/my_cart_content' , $this->data);
+			} else {
+				return view('v2/pages/orders' , $this->data);
+			}
+		}
+	}
+
+  
+	function mini_cart($page='')
+	{
+		$Employee = new Employee();
+		$Admin = new Admin();
+		$Order = new Order();
+		$UnknownProduct = new UnknownProduct();
+
+		if(!$Employee->is_logged_in()) {			
+			return redirect()->to('/');			
+		}
+
+		$user_info = $Employee->get_logged_in_employee_info();
+		$pid = $user_info->person_id;
+		$this->data['controller_name'] = request()->uri->getSegment(1);
+
+		$img_host = $Admin->get_plink('img_host');
+		$this->data['img_host'] = $img_host;
+		
+		$types = [
+			['id' => 'general', 'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0], 
+			['id' => 'tobacco', 'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0], 
+			['id' => 'chilled', 'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0], 
+			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0], 
+		];
+		foreach($types as &$type) {
+			$type['lines'] = $Order->get_lines($pid, $type['id']);
+			$type['items'] = $Order->get_items($pid, $type['id']);
+
+			$orders = $Order->get_all_cart($pid, $type['id'])->getResult();
+			foreach($orders as $order) {
+				Order::populateProduct($order, $this->priceList, $user_info, 0);
+				if(!empty($order->product)) {
+					$type['orders'][] = $order;
+				}
+			}
+		}
+		$this->data["types"] = $types;
+
+		$cart = Order::get_cart_info($pid);
+    $this->data['total_quantity']   = $cart['total_quantity'];
+		$this->data['total_amount']     = $cart['total_amount'];
+		$this->data['total_epoints']    = $cart['total_epoints'];
+		$this->data['delivery_charge']  = $cart['delivery_charge'];
+		$this->data['total_vats']       = $cart['total_vats'];
+
+		$this->data['form_width'] = $this->get_form_width();
+	    
+	  $this->data["slides"] = $Admin->get_scount('slides');
+		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
+
+    // filter only 10 product--------------
+    foreach($types as &$type) {
+			$type['lines'] = $Order->get_lines($pid, $type['id']);
+			$type['items'] = $Order->get_items($pid, $type['id']);
+
+			$orders = $Order->get_limited_cart($pid, $type['id'])->getResult();
+      $type['orders'] = [];
+			foreach($orders as $order) {
+				Order::populateProduct($order, $this->priceList, $user_info, 0);
+				if(!empty($order->product)) {
+					$type['orders'][] = $order;
+				}
+			}
+		}
+		$this->data["types"] = $types;
+    // ------------------------------------
+
 		if($page == 'checkout') {
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {

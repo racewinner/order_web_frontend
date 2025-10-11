@@ -3,10 +3,14 @@
     if(empty($user_info)) {
         $menus = [
             'home' => ['icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home'],
-            'branch' => ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_branch'],
+            // 'branch' => ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'],
             'login' => ['icon' => 'bi-person-fill', 'label' => 'Log In', 'url' => '/login'],
         ];
     } else{
+        $allowed_module_ids = array_map(function($module) {
+          return $module['module_id'];
+        }, $allowed_modules);
+    
         $menus = [
             'home' => ['icon' => 'bi-house', 'label' => 'Home', 'url' => '/home'],
             'products' => ['icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products'],
@@ -16,12 +20,18 @@
             'contact_us' => ['icon' => 'bi-envelope', 'label' => 'Contact Us', 'url' => '/contactus'],
             'separator1' => ['label' => 'separator'],
             'myaccount' => ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => LOGON_USER_MENUES],
-            'trolley' => ['icon' => 'bi-cart3', 'label' => 'Trolley', 'url' => '/orders'],
-            'branch' => ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_branch'],
-            'separator2' => ['label' => 'separator'],
-            'logout' => ['icon' => 'bi-box-arrow-left', 'label' => 'Log Out', 'url' => '/home/logout'],
+            'trolley' => ['icon' => 'bi-cart3', 'label' => 'Trolley', 'url' => '/orders']
         ];
+
+        if(in_array('branch', $allowed_module_ids)) {
+          $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'];
+        }
+            
+        $menus['separator2'] = ['label' => 'separator'];
+        $menus['logout'] = ['icon' => 'bi-box-arrow-left', 'label' => 'Log Out', 'url' => '/home/logout'];
     }
+
+
 ?>
 <div class="sidebar collapsed" id="main-sidebar-menu">
     <div class="sidebar-content">

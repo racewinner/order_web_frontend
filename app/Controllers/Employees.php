@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\Branch;
 use App\Models\Manager;
 use App\Models\Employee;
 use App\Models\Admin;
@@ -260,6 +261,7 @@ class Employees extends Secure_area
 	function edit($person_id=null)
 	{
 		$Employee = new Employee();
+    $Branch = new Branch();
 		
 		$this->data['employee'] = null;
 		if(!empty($person_id)) $this->data['employee'] = $Employee->get_info($person_id);
@@ -268,6 +270,8 @@ class Employees extends Secure_area
 
 		$this->data['price_options'] = PRICE_OPTIONS;
 		unset($this->data['price_options']['001']);
+
+    $this->data['all_branches'] = $Branch->get_all_branches();
 
 		return view('v2/pages/employee/employee_edit', $this->data);
 	}

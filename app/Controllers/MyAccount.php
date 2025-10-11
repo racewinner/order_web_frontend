@@ -260,6 +260,30 @@ class MyAccount extends Secure_area /* implements iData_controller*/
 		}
     return $nearest_branch_id;
   }
+
+  public function getAllocatedBranch() {
+    $Branch = new Branch();
+    $allocated_branches = $Branch->get_allocated_branches();
+
+    $nearest_branch_id = 0;
+		$client_ip = request()->getIPAddress();
+		$client_ip = "8.8.8.8";
+		$client_location = GeoLocationService::getLocationFromIp($client_ip);
+		if(!empty($client_location)) {
+			$min_distance = 0;
+			foreach($allocated_branches as $branch) {
+				$lat_diff = abs(floatval($branch->geo_latitude) - floatval($client_location['latitude']));
+				$lon_diff = abs(floatval($branch->geo_longitude) - floatval($client_location['longitude']));
+				$l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
+				if($min_distance == 0 || $min_distance > $l) {
+					$min_distance = $l;
+					$nearest_branch_id = $branch->id;
+				}
+			}
+		}
+    return $nearest_branch_id;
+  }
+
 	public function getSelectBranch() {
 		$nearest_branch_id = 0;
 		$client_ip = request()->getIPAddress();
@@ -280,6 +304,33 @@ class MyAccount extends Secure_area /* implements iData_controller*/
 		$this->data['nearest_branch_id'] = $nearest_branch_id;
 
 		echo view('v2/pages/myaccount/sel_branch', $this->data);
+	}
+
+  public function getAllocatedSelectBranch() {
+    
+    $Branch = new Branch();
+    $allocated_branches = $Branch->get_allocated_branches();
+    $this->data['allocated_branches'] = $allocated_branches;// here, allocated_branches has >=2 branches
+
+		$nearest_branch_id = 0;
+		$client_ip = request()->getIPAddress();
+		$client_ip = "8.8.8.8";
+		$client_location = GeoLocationService::getLocationFromIp($client_ip);
+		if(!empty($client_location)) {
+			$min_distance = 0;
+			foreach($allocated_branches as $branch) {
+				$lat_diff = abs(floatval($branch->geo_latitude) - floatval($client_location['latitude']));
+				$lon_diff = abs(floatval($branch->geo_longitude) - floatval($client_location['longitude']));
+				$l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
+				if($min_distance == 0 || $min_distance > $l) {
+					$min_distance = $l;
+					$nearest_branch_id = $branch->id;
+				}
+			}
+		}
+		$this->data['nearest_branch_id'] = $nearest_branch_id;
+
+		echo view('v2/pages/myaccount/sel_allocated_branch', $this->data);
 	}
 
 	public function postSelectBranch() {
