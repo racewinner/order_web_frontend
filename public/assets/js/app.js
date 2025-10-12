@@ -202,7 +202,7 @@ function floatV(v, decimal_pos=2) {
     return fv.toFixed(decimal_pos);
 }
 
-function showToast({ type = 'info', title = '', message = '', delay = 5000, containerId = 'toastContainer' } = {}) {
+function showToast({ type = 'info', title = '', message = '', delay = 3000, containerId = 'toastContainer' } = {}) {
     const container = document.getElementById(containerId);
     const tmpl = document.getElementById('toastTemplate');
     const toastEl = tmpl.content.cloneNode(true).querySelector('.toast');
@@ -490,8 +490,12 @@ $(document).ready(function () {
 
     if($("#search0").length > 0) {
         $("#search0").autocomplete({minLength:2 ,
-            select: function (event, ui) { this.val(); },
+            select: function (event, ui) { 
+              debugger
+              this.val(); 
+            },
             source: function( request, response ) {
+              debugger
                 const category_id = $("input[name='category_id']").val();
     
                 $.ajax({

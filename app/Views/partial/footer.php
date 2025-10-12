@@ -69,10 +69,14 @@
         </script>
           
 		  <script>			     
-             $(document).ready(function(){	
+        $(document).ready(function(){	
 				$("#search0").autocomplete({minLength:2 ,
-                    select: function (event, ui) { this.val(); },
-					source: function( request, response ) {                       
+          select: function (event, ui) { 
+            debugger
+            this.val(); 
+          },
+					source: function( request, response ) {  
+            debugger                     
 						$.ajax({
 							type : "POST" ,
 							url: '<?php echo base_url("products/suggest2")?>' ,

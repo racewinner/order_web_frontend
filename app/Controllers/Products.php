@@ -86,24 +86,24 @@ class Products extends BaseController implements iData_controller
 		$this->data['total_rows'] = $total_rows;
 		$this->data['total_page'] = floor($total_rows / $per_page) + 1;
 
-        $config['full_tag_open'] = '<ul>';
-        $config['full_tag_close'] = '</ul>';
-        $config['first_link'] = '<<';
-        $config['first_tag_open'] = '<li>';
-        $config['first_tag_close'] = '</li>';
-        $config['last_link'] = '>>';
-        $config['last_tag_open'] = '<li>';
-        $config['last_tag_close'] = '</li>';
-        $config['prev_link'] = '<';
-        $config['prev_tag_open'] = '<li>';
-        $config['prev_tag_close'] = '</li>';
-        $config['next_link'] = '>';
-        $config['next_tag_open'] = '<li>';
-        $config['next_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li><b>';
-        $config['cur_tag_close'] = '</b></li>';
-        $config['num_tag_open'] = '<li>';
-        $config['num_tag_close'] = '</li>';
+    $config['full_tag_open'] = '<ul>';
+    $config['full_tag_close'] = '</ul>';
+    $config['first_link'] = '<<';
+    $config['first_tag_open'] = '<li>';
+    $config['first_tag_close'] = '</li>';
+    $config['last_link'] = '>>';
+    $config['last_tag_open'] = '<li>';
+    $config['last_tag_close'] = '</li>';
+    $config['prev_link'] = '<';
+    $config['prev_tag_open'] = '<li>';
+    $config['prev_tag_close'] = '</li>';
+    $config['next_link'] = '>';
+    $config['next_tag_open'] = '<li>';
+    $config['next_tag_close'] = '</li>';
+    $config['cur_tag_open'] = '<li><b>';
+    $config['cur_tag_close'] = '</b></li>';
+    $config['num_tag_open'] = '<li>';
+    $config['num_tag_close'] = '</li>';
 		$config['per_page'] = $per_page;
 		$config['offset'] = 0;
 
@@ -468,7 +468,7 @@ class Products extends BaseController implements iData_controller
 
 		$q = request()->getPost('term');
 		$user_info = $Employee->get_logged_in_employee_info();
-    	$category_id = request()->getPost('category_id');
+    $category_id = request()->getPost('category_id');
 		$suggestions = $Product->get_search_suggestions2( $user_info , $q , 30 , $category_id);
 		echo json_encode($suggestions);
 		//echo $suggestions;

@@ -572,8 +572,13 @@ footer {
         .prod-desc {
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;   /* number of lines to show */
+            -webkit-line-clamp: 3;   /* number of lines to show */
             overflow: hidden;
+            @media (min-width: 640px) {
+              /* padding: 10px; */
+              /* width: 100%; */
+              min-height: 75px;
+            }
         }
         .prod-image {
             cursor: pointer !important;
@@ -1019,17 +1024,31 @@ button.has-loading-spinner {
 /**
  *
  */
+html {
+  width: 100%;
+}
+.full-fill {
+  width: 100%;
+}
 .x-container {
-    padding: 0.5rem;
+    /* padding: 0.5rem;
     padding-right: 1.6rem;
-    padding-left: 1.6rem;
+    padding-left: 1.6rem; */
 
     @media (max-width: 640px) {
-        padding: 0;
-        padding-top: 20px;
-        padding-right: 10px;
-        padding-left: 10px; 
+        /* padding: 0;
+        padding-top: 10px;
+        padding-right: 10px; */
+        /* padding-left: 0;  */
     }
 
-    
+    .credit-account-board {
+        /* padding-right: 1.6rem;
+        padding-left: 1.6rem; */
+
+        @media (max-width: 640px) {
+            /* padding: 10px; */
+            /* width: 100%; */
+        }
+    }
 }

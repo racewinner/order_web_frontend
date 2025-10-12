@@ -298,6 +298,7 @@ function popup_dialog(prod_id , add)
 			recalibrate_unique_id();
 		});
 		function recalibrate_unique_id(){
+      debugger
 			p = $("#presell_form input[name='period_reference']").val();
 			c = $("#presell_form input[name='prod_code']").val();
 			t = $("#price_list").val();

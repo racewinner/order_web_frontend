@@ -82,6 +82,7 @@ $(document).ready(function(){
 
 function popup_dialog(order_id , order_type='General', completed, presell)
 {
+  debugger
 	$('#order_id').val(order_id);
 	$('#order_type').val(order_type);
 	$('#ui-id-1').html(order_type + " Order: wo2-" + order_id);

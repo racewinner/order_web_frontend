@@ -311,6 +311,7 @@
 
     $(document).ready(function() {
         $(document).on('change', '#per_page, #chk_im_new, #chk_plainprofit, #chk_own_label, #chk_favorite, #chk_rrp, #chk_pmp, #chk_non_pmp, input[name="filter_brand"], #sort_key, #search1', function(e) {
+          debugger  
             $("#offset").val(0);
             loadProducts();
         })
