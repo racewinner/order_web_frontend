@@ -1,5 +1,17 @@
-<div class="p-4 my-cart-body my-cart-body-limited">
-    <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
+<?= $this->section('css') ?>
+<style>
+.cart-abb-symbole {
+    font-size: 24px;
+    font-weight: 500;
+    color: gray;
+}
+</style>
+<?= $this->endSection() ?>
+<?php
+  $extra_cls = "p-4 my-cart-body " . $cls;
+?>
+<div class="<?= $extra_cls ?>">
+    <ul class="d-inline-flex cart-type-select must-hide" role="tablist" aria-label="Cart sections">
         <?php foreach($types as $index => $type) { ?>
             <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
                 id="mini-tab-general" 
@@ -24,6 +36,9 @@
                 <div class="d-flex align-items-center cart-lines-items">
                     <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
                 </div>
+                <?php if($type['lines'] > 10) { ?>
+                  <div class="cart-abb-symbole">...</div>
+                <?php } ?>
 
                 <div class="cart-items mt-2">
                     <?php foreach($type['orders'] as $order) { 

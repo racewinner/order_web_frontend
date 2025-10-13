@@ -529,11 +529,12 @@ class Product extends Model
 	{
 		$Employee = new Employee();
 		$person_info = $Employee->get_info($person_id);
+    $branch = session()->get('branch');
 
 		$db = \Config\Database::connect();
 
 		if($mode == 4) {
-			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and prod_code='".$prod_code."' and presell=0 and group_type='$type'";
+			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and branch=".$branch." and prod_code='".$prod_code."' and presell=0 and group_type='$type'";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -543,7 +544,7 @@ class Product extends Model
 			else
 				return 0;
 		} else {
-			$cond = "prod_code='" . $prod_code . "' and person_id='" . $person_id . "' and presell=0";
+			$cond = "prod_code='" . $prod_code . "' and person_id='" . $person_id . "' and branch=" . $branch . " and presell=0";
 			$cond .= ($spresell == 1) ? " AND group_type='spresell'" : " AND group_type!='spresell'";
 			$query = "SELECT * FROM epos_cart WHERE " . $cond;
 			$res = $db->query($query);
@@ -567,6 +568,7 @@ class Product extends Model
 						'person_id' => $person_id,
 						'group_type' => $type,
             'line_position' => $line_position,
+            'branch' => $branch,
 					);
 					$db->table('epos_cart')->insert($cart_data);
 					return $quantity;
@@ -1234,21 +1236,24 @@ class Product extends Model
 
 	public static function getLowestPriceProductByCode($user_info, $prod_code, $excludeDisabled = true, $spresell = 0)
 	{
+    $branch = session()->get('branch');
+
 		$db = \Config\Database::connect();
 
 		$query = "SELECT p.*, 
 					(CASE WHEN (prod_rrp * prod_uos > 0) 
 						THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
 						ELSE 0   
-					END)  AS por, 
-					MIN(prod_sell) as prod_sell, 
-					pi.url as image_url, 
+					END)  AS por, ".
+					// MIN(prod_sell) as prod_sell, 
+					/* MIN(prod_sell) as */"prod_sell, ".
+					"pi.url as image_url, 
 					pi.version as image_version, 
           vat.rate as vat_rate 
 				FROM epos_product as p ";
 		$query .= " LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code ";
     $query .= " LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
-		$query .= " WHERE p.prod_code=" . $prod_code;
+		$query .= " WHERE p.branch=".$branch." AND p.prod_code=" . $prod_code;
 		$query .= $spresell ? " AND price_list='06'" : " AND price_list!='06'";
 
 		if ($excludeDisabled)
@@ -1280,7 +1285,7 @@ class Product extends Model
 		$query .= ")";
 
 		$query .= " AND prod_sell>0 ";
-		$query .= " GROUP BY p.prod_code";
+		// $query .= " GROUP BY p.prod_code";
 
 		$query = $db->query($query);
 		return $query->getNumRows() > 0 ? $query->getRow() : null;

@@ -251,6 +251,7 @@ $(document).ready(function(e) {
     })
 
     $(document).on('submit', '.employee-edit form', function(e) {
+      debugger
         const $form = $(e.target);
         const person_id = $form.find("#person_id").val();
         const password = $form.find("#password").val();

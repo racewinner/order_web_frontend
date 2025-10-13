@@ -254,7 +254,7 @@ footer {
 #my-cart-sidebar {
     .sidebar-content {
         --cart-sidebar-width: 650px;
-        min-height: 335px;
+        min-height: 280;
         width: var(--cart-sidebar-width);
         transform: translateX(var(--cart-sidebar-width));
         bottom: auto;

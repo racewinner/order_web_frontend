@@ -351,6 +351,8 @@ class Employee extends Model
 
 		if ($result) {
 			session()->set('person_id', $result['person_id']);
+			session()->set('organization_id', $result['organization_id']);
+
 			return true;
 		}
 

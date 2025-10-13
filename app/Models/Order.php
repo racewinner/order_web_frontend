@@ -9,7 +9,19 @@ class Order extends Model
 	function get_all_cart($person_id, $type='general')
 	{
 		$db = \Config\Database::connect();
-		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC";
+    $branch = session()->get('branch');
+
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND branch={$branch} AND group_type='{$type}' ORDER BY line_position DESC";
+
+		return $db->query($query);
+	}
+
+  function get_all_cart_ignore_type($person_id, $type='general')
+	{
+		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+		// $query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC";
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND branch={$branch} ORDER BY line_position DESC";
 
 		return $db->query($query);
 	}
@@ -17,7 +29,20 @@ class Order extends Model
   function get_limited_cart($person_id, $type='general')
 	{
 		$db = \Config\Database::connect();
-		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC LIMIT 10";
+    $branch = session()->get('branch');
+
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND branch={$branch} AND group_type='{$type}' ORDER BY line_position DESC LIMIT 10";
+
+		return $db->query($query);
+	}
+
+  function get_limited_cart_ignore_type($person_id, $type='general')
+	{
+		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+
+		// $query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND group_type='{$type}' ORDER BY line_position DESC LIMIT 10";
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND branch={$branch} ORDER BY line_position DESC LIMIT 10";
 
 		return $db->query($query);
 	}
@@ -25,11 +50,32 @@ class Order extends Model
 	function get_lines($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
 
     $builder = $db->table('epos_cart');
     $builder->where('person_id', $person_id);
     $builder->where('presell', $presell);
     $builder->where('group_type', $type);
+    $builder->where('branch', $branch);
+
+    // $builder->groupBy('prod_code');
+    $result = $builder->get();
+    $numRows = $result->getNumRows();
+
+    return $numRows;		
+	}
+
+  function get_lines_ignore_type($person_id, $type='general', $presell=0)
+	{
+		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+
+    $builder = $db->table('epos_cart');
+    $builder->where('person_id', $person_id);
+    $builder->where('presell', $presell);
+    $builder->where('branch', $branch);
+
+    // $builder->where('group_type', $type);
     // $builder->groupBy('prod_code');
     $result = $builder->get();
     $numRows = $result->getNumRows();
@@ -40,12 +86,34 @@ class Order extends Model
 	function get_items($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
 
     $builder = $db->table('epos_cart');
     $builder->selectSum('quantity');
     $builder->where('person_id', $person_id);
     $builder->where('presell', $presell);
     $builder->where('group_type', $type);
+    $builder->where('branch', $branch);
+
+    // $builder->groupBy('prod_code');
+    $result = $builder->get()->getRow();
+    $quantitySum = $result->quantity ?? 0; 
+
+    return $quantitySum;
+	}
+
+  function get_items_ignore_type($person_id, $type='general', $presell=0)
+	{
+		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+
+    $builder = $db->table('epos_cart');
+    $builder->selectSum('quantity');
+    $builder->where('person_id', $person_id);
+    $builder->where('presell', $presell);
+    $builder->where('branch', $branch);
+
+    // $builder->where('group_type', $type);
     // $builder->groupBy('prod_code');
     $result = $builder->get()->getRow();
     $quantitySum = $result->quantity ?? 0; 
@@ -57,10 +125,13 @@ class Order extends Model
 	function get_count_cart_products($person_id, $presell=0)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
 
     $builder = $db->table('epos_cart');
     $builder->where('person_id', $person_id);
     $builder->where('presell', $presell);
+    $builder->where('branch', $branch);
+
     $builder->groupBy('prod_code');
     $count = $builder->countAllResults();
 
@@ -195,9 +266,11 @@ class Order extends Model
 	function to_cart_quantity($prod_code , $mode , $person_id , $quantity = 1, $type='general')
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+
 		if($mode == 3)
 		{
-			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and prod_code='".$prod_code."' and presell=0 and group_type='$type'";
+			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and branch=".$branch." and prod_code='".$prod_code."' and presell=0 and group_type='$type'";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -208,7 +281,7 @@ class Order extends Model
 				return true;
 		}
 
-		$query = "SELECT * FROM epos_cart WHERE prod_code='".$prod_code."' and person_id='".$person_id."' and presell=0 and group_type='$type'";
+		$query = "SELECT * FROM epos_cart WHERE prod_code='".$prod_code."' and person_id='".$person_id."' and branch=".$branch." and presell=0 and group_type='$type'";
 		$res = $db->query($query);
 
 		if($res->getNumRows() == 0)
@@ -219,6 +292,7 @@ class Order extends Model
 					'prod_code'=>$prod_code,
 					'quantity'=>$quantity ,
 					'person_id'=>$person_id,
+          'branch'=>$branch,
 				);
 
 				$db->transStart();
@@ -252,7 +326,7 @@ class Order extends Model
 			if($quantity1 == 0)
 			{
 				$db->transStart();
-				$db->query("DELETE FROM epos_cart WHERE prod_code='".$prod_code."' and person_id='".$person_id."' and presell=0 and group_type='$type'");
+				$db->query("DELETE FROM epos_cart WHERE prod_code='".$prod_code."' and person_id='".$person_id."' and branch=".$branch." and presell=0 and group_type='$type'");
 				$db->transComplete();
 				if ($db->transStatus() === FALSE)
 					return -1;
@@ -268,6 +342,7 @@ class Order extends Model
 				$q->where('person_id' , $person_id);
 				$q->where('presell' , '0');
 				$q->where('group_type', $type);
+				$q->where('branch', $branch);
 				$q->update($cart_data);
 				$db->transComplete();
 				if ($db->transStatus() === FALSE)
@@ -285,8 +360,9 @@ class Order extends Model
 
 		$Employee = new Employee();
 		$person_info = $Employee->get_info($person_id);
+    $branch = session()->get('branch');
 
-		$query = "SELECT * FROM epos_cart WHERE person_id='".$person_id."' and presell=0 order by group_type";
+		$query = "SELECT * FROM epos_cart WHERE person_id='".$person_id."' and branch=".$branch." and presell=0 order by group_type";
 		$results = $db->query($query);
 
 		$cart_types = [];
@@ -302,7 +378,7 @@ class Order extends Model
 				$total_quantity += $res->quantity;
 				$total_amount = $total_amount + $res->quantity * $product->prod_sell;
 				$total_epoints = $total_epoints + $res->quantity * $product->epoints;
-				$total_vats = $total_vats + $res->quantity * $product->vat_rate;
+				$total_vats = $total_vats + (($res->quantity * $product->prod_sell * $product->vat_rate) / 100);
 
 				if( !in_array($res->group_type, array_keys($cart_types)) ) {
 					$cart_types[$res->group_type] = [
