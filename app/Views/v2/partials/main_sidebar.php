@@ -3,7 +3,7 @@
     if(empty($user_info)) {
         $menus = [
             'home' => ['icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home'],
-            // 'branch' => ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'],
+            'branch' => ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_branch'],
             'login' => ['icon' => 'bi-person-fill', 'label' => 'Log In', 'url' => '/login'],
         ];
     } else{

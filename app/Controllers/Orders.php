@@ -103,7 +103,6 @@ class Orders extends Secure_area implements iData_controller
 			}
 		}
 	}
-
   
 	function mini_cart($page='')
 	{

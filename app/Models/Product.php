@@ -272,6 +272,8 @@ class Product extends Model
 	function get_search_suggestions2($user_info, $search, $limit = 30, $category_id = 0)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+    $organization_id = session()->get('organization_id');
 
 		$Admin = new Admin();
 
@@ -310,11 +312,15 @@ class Product extends Model
 
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');
-		$query = "SELECT p.prod_code, p.prod_desc, pi.url as image_url, pi.version as image_version 
-              FROM epos_product as p 
-              LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
-              LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc 
-              WHERE is_disabled='N' AND ct.display=1 AND branch=" . session()->get('branch') . $search_cond . " AND";
+		$query =  " SELECT p.prod_code, p.prod_desc, pi.url as image_url, pi.version as image_version 
+                FROM epos_product as p 
+                LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
+                LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc 
+                WHERE is_disabled='N' AND ct.display=1 AND branch={$branch}";
+    if (!empty($organization_id)) {
+    $query .= " AND organization_id={$organization_id} ";
+    }
+    $query .= $search_cond . " AND ";
 		// limit results to current selected category only.
 		if ($category_id != 0) {
 			$results_category = $db->query("SELECT * FROM epos_categories WHERE category_id = '" . $category_id . "'");
@@ -364,16 +370,24 @@ class Product extends Model
 		$suggestions = array();
 		$result = $db->query($query);
 		foreach ($result->getResult() as $row) {
+      $prod_desc = $row->prod_desc;
+      $prod_desc_alt = str_replace("&", "%26", $prod_desc);
+
 			$url = base_url() . 'products/index?';
 			$url .= '&search_mode=search';
 			// $url .= '&search0=' . $row->prod_code;
-			$url .= '&search0=' . $row->prod_desc;
+			$url .= '&search0=' . $prod_desc_alt;
 			$url .= '&category_id=0';
 
-			$suggestions[] = '<a href="' . $url . '" style="padding:0px;"><div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
-		                                                          <div style="margin:5px; padding:10px;"><img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" /></div>
-															      <div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $row->prod_desc . '</div>
-														     </div></a>';
+			$suggestions[] = 
+          '<a href="' . $url . '" style="padding:0px;">
+              <div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
+                  <div style="margin:5px; padding:10px;">
+                      <img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" />
+                  </div>
+                  <div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
+              </div>
+          </a>';
 		}
 		return $suggestions;
 	}
@@ -394,15 +408,23 @@ class Product extends Model
 	function total_search_num_rows_category($user_info, $filter)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+    $organization_id = session()->get('organization_id');
 
 		$cond = $this->buildCondition($user_info, $filter);
 
 		$query = "SELECT p.prod_code FROM epos_product as p ";
 		if (!empty($user_info) && !empty($filter['favorite'])) {
 			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id=" . $user_info->person_id . ") ";
-		}
+    }
+
     $query .= " LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
-		$query .= " WHERE ct.display=1 AND branch=" . session()->get('branch') . " AND " . $cond ;//. " GROUP BY p.prod_code ";
+
+		$query .= " WHERE ct.display=1 AND branch={$branch} ";
+    if (!empty($organization_id)) {
+    $query .= " AND p.organization_id={$organization_id} ";
+    }
+    $query .= " AND " . $cond ;//. " GROUP BY p.prod_code ";
 
 		$results = $db->query($query);
 		return $results->getNumRows();
@@ -417,6 +439,8 @@ class Product extends Model
 	function search_category($user_info, $filter)
 	{
 		$db = \Config\Database::connect();
+    $branch = session()->get('branch');
+    $organization_id = session()->get('organization_id');
 
 		$cond = $this->buildCondition($user_info, $filter);
 		$porformula = ", (CASE WHEN (prod_rrp * prod_uos > 0) 
@@ -453,7 +477,11 @@ class Product extends Model
 		if (!empty($filter['favorite'])) {
 			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id=" . $user_info->person_id . ") ";
 		}
-		$query .= " WHERE ct.display=1 AND branch=" . session()->get('branch') . " AND " . $cond;
+		$query .= " WHERE ct.display=1 AND branch={$branch} ";
+    if (!empty($organization_id)) {
+    $query .= " AND p.organization_id={$organization_id} ";
+    }
+    $query .= " AND " . $cond;
 
 		$sort_key = isset($filter['sort_key']) ? $filter['sort_key'] : 3;
 		switch ($sort_key) {
@@ -530,11 +558,17 @@ class Product extends Model
 		$Employee = new Employee();
 		$person_info = $Employee->get_info($person_id);
     $branch = session()->get('branch');
+    $organization_id = session()->get('organization_id');
 
 		$db = \Config\Database::connect();
 
 		if($mode == 4) {
-			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and branch=".$branch." and prod_code='".$prod_code."' and presell=0 and group_type='$type'";
+			$query =  " DELETE FROM epos_cart WHERE person_id={$person_id}" .
+                " AND branch={$branch}";
+      if (!empty($organization_id)) {
+      $query .= " AND organization_id={$organization_id} ";
+      }
+      $query .= " AND prod_code='{$prod_code}' AND presell=0 AND group_type='{$type}'";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -544,7 +578,12 @@ class Product extends Model
 			else
 				return 0;
 		} else {
-			$cond = "prod_code='" . $prod_code . "' and person_id='" . $person_id . "' and branch=" . $branch . " and presell=0";
+			$cond = " prod_code='{$prod_code}' and person_id={$person_id}" . 
+              " AND branch={$branch}";
+      if (!empty($organization_id)) {
+      $cond.= " AND organization_id={$organization_id} ";
+      }
+      $cond .= " AND presell=0 ";
 			$cond .= ($spresell == 1) ? " AND group_type='spresell'" : " AND group_type!='spresell'";
 			$query = "SELECT * FROM epos_cart WHERE " . $cond;
 			$res = $db->query($query);
@@ -569,6 +608,7 @@ class Product extends Model
 						'group_type' => $type,
             'line_position' => $line_position,
             'branch' => $branch,
+            'organization_id' => $organization_id,
 					);
 					$db->table('epos_cart')->insert($cart_data);
 					return $quantity;
@@ -954,17 +994,26 @@ class Product extends Model
 	public static function buildCondition($user_info, $filter)
 	{
 		try {
-			$db = \Config\Database::connect();
+			$db = \Config\Database::connect();    
+      $organization_id = session()->get('organization_id');
 
 			$cond = " is_disabled='N' ";
 
 			// category_id
 			if (!empty($filter['category_id'])) {
-				$query = "SELECT * FROM epos_categories WHERE category_id='" . $filter['category_id'] . "'";
+				$query  = " SELECT * FROM epos_categories WHERE category_id='" . $filter['category_id'] . "' ";
+        if (!empty($organization_id)) {
+        $query .= " AND organization_id={$organization_id} ";
+        }
+
 				$results_category = $db->query($query);
 				$res_category = $results_category->getRow();
 				if ($res_category->parent_id == 0) {
-					$query = "SELECT * FROM epos_categories WHERE parent_id='" . $res_category->category_id . "'";
+					$query  = " SELECT * FROM epos_categories WHERE parent_id='" . $res_category->category_id . "' ";
+          if (!empty($organization_id)) {
+          $query .= " AND organization_id={$organization_id} ";
+          }
+
 					$results_subcategory = $db->query($query);
 					$nCount = 0;
 					foreach ($results_subcategory->getResult() as $res_subcategory) {
@@ -1069,7 +1118,13 @@ class Product extends Model
 			// branch
 			$branch = session()->get('branch');
 			if (!empty($branch)) {
-				$cond .= " AND branch=$branch ";
+				$cond .= " AND branch={$branch} ";
+			}
+
+      // organization_id
+			$organization_id = session()->get('organization_id');
+			if (!empty($organization_id)) {
+				$cond .= " AND p.organization_id={$organization_id} ";
 			}
 
 			// search0
@@ -1155,7 +1210,7 @@ class Product extends Model
 				}
 			}
 
-			$cond .= " AND prod_sell>0 ";
+			$cond .= " AND prod_sell > 0 ";
 
 			return $cond;
 		} catch (\Exception $e) {
@@ -1237,6 +1292,7 @@ class Product extends Model
 	public static function getLowestPriceProductByCode($user_info, $prod_code, $excludeDisabled = true, $spresell = 0)
 	{
     $branch = session()->get('branch');
+    $organization_id = session()->get('organization_id');
 
 		$db = \Config\Database::connect();
 
@@ -1246,14 +1302,18 @@ class Product extends Model
 						ELSE 0   
 					END)  AS por, ".
 					// MIN(prod_sell) as prod_sell, 
-					/* MIN(prod_sell) as */"prod_sell, ".
-					"pi.url as image_url, 
-					pi.version as image_version, 
+					/* MIN(prod_sell) as */"prod_sell, 
+					pi.url as image_url, 
+          pi.version as image_version, 
           vat.rate as vat_rate 
-				FROM epos_product as p ";
+          FROM epos_product as p ";
 		$query .= " LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code ";
     $query .= " LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
-		$query .= " WHERE p.branch=".$branch." AND p.prod_code=" . $prod_code;
+		$query .= " WHERE p.branch={$branch} ";
+    if (!empty($organization_id)) {
+    $query .= " AND organization_id={$organization_id} ";
+    }
+    $query .= " AND p.prod_code={$prod_code} ";
 		$query .= $spresell ? " AND price_list='06'" : " AND price_list!='06'";
 
 		if ($excludeDisabled)

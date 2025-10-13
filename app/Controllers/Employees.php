@@ -283,6 +283,11 @@ class Employees extends Secure_area
 		$employee_id = request()->getPost('person_id');
 		if ($employee_id == 0 || $employee_id == '') $employee_id = -1;
 
+    $organization_id = session()->get('organization_id');
+    if (empty($organization_id)) {
+      $organization_id = -1;
+    }
+
 		$employee_data = array(
 			'username' => request()->getPost('username'),
 			'email' => request()->getPost('email'),
@@ -300,6 +305,7 @@ class Employees extends Secure_area
 			'delivery_charge' => request()->getPost('delivery_charge') ?? 0,
 			'collect' => request()->getPost('collect'),
 			'pay' => request()->getPost('pay'),
+      'organization_id' => $organization_id,
 		);
 
 		if (request()->getPost('password') != '') {

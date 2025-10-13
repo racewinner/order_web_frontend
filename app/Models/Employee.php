@@ -356,7 +356,6 @@ class Employee extends Model
 			return true;
 		}
 
-
 		return false;
 	}
 
@@ -407,6 +406,38 @@ class Employee extends Model
 
 		return $query->getNumRows() == 1;
 	}
+
+  function get_last_kiss_branch_id($person_id)
+  {
+		$db = \Config\Database::connect();
+
+    if ($person_id == null) {
+			return null;
+		}
+
+    $query = $db->table('epos_employees')
+    ->where(['person_id' => $person_id])
+    ->get();
+
+    $row = $query->getRow();
+
+    return $row->last_kiss_branch;
+  }
+
+  function save_last_kiss_branch_id($person_id, $last_kiss_branch_id)
+  {
+		$db = \Config\Database::connect();
+
+    if ($person_id == null || $last_kiss_branch_id == null) {
+			return false;
+		}
+
+		$success = $db->table('epos_employees')
+			->where('person_id', $person_id)
+			->update(['last_kiss_branch' => $last_kiss_branch_id]);
+
+		return $success;
+  }
 
 	/*
 	Determins employee presell band.

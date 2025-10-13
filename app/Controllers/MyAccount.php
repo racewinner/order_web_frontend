@@ -286,49 +286,60 @@ class MyAccount extends Secure_area /* implements iData_controller*/
 
 	public function getSelectBranch() {
 		$nearest_branch_id = 0;
-		$client_ip = request()->getIPAddress();
-		$client_ip = "8.8.8.8";
-		$client_location = GeoLocationService::getLocationFromIp($client_ip);
-		if(!empty($client_location)) {
-			$min_distance = 0;
-			foreach($this->data['all_branches'] as $branch) {
-				$lat_diff = abs($branch['geo_latitude'] - $client_location['latitude']);
-				$lon_diff = abs($branch['geo_longitude'] - $client_location['longitude']);
-				$l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
-				if($min_distance == 0 || $min_distance > $l) {
-					$min_distance = $l;
-					$nearest_branch_id = $branch['id'];
-				}
-			}
-		}
-		$this->data['nearest_branch_id'] = $nearest_branch_id;
+
+    $branch = session()->get('branch');
+    if (empty($branch)) {
+        $client_ip = request()->getIPAddress();
+        $client_ip = "8.8.8.8";
+        $client_location = GeoLocationService::getLocationFromIp($client_ip);
+        if(!empty($client_location)) {
+            $min_distance = 0;
+            foreach($this->data['all_branches'] as $branch) {
+                $lat_diff = abs($branch['geo_latitude'] - $client_location['latitude']);
+                $lon_diff = abs($branch['geo_longitude'] - $client_location['longitude']);
+                $l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
+                if($min_distance == 0 || $min_distance > $l) {
+                    $min_distance = $l;
+                    $nearest_branch_id = $branch['id'];
+                }
+            }
+        }
+        $this->data['nearest_branch_id'] = $nearest_branch_id;
+    } else {
+        $this->data['nearest_branch_id'] = $branch;
+    }
 
 		echo view('v2/pages/myaccount/sel_branch', $this->data);
 	}
 
   public function getAllocatedSelectBranch() {
-    
     $Branch = new Branch();
     $allocated_branches = $Branch->get_allocated_branches();
     $this->data['allocated_branches'] = $allocated_branches;// here, allocated_branches has >=2 branches
 
 		$nearest_branch_id = 0;
-		$client_ip = request()->getIPAddress();
-		$client_ip = "8.8.8.8";
-		$client_location = GeoLocationService::getLocationFromIp($client_ip);
-		if(!empty($client_location)) {
-			$min_distance = 0;
-			foreach($allocated_branches as $branch) {
-				$lat_diff = abs(floatval($branch->geo_latitude) - floatval($client_location['latitude']));
-				$lon_diff = abs(floatval($branch->geo_longitude) - floatval($client_location['longitude']));
-				$l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
-				if($min_distance == 0 || $min_distance > $l) {
-					$min_distance = $l;
-					$nearest_branch_id = $branch->id;
-				}
-			}
-		}
-		$this->data['nearest_branch_id'] = $nearest_branch_id;
+
+    $branch = session()->get('branch');
+    if (empty($branch)) {
+        $client_ip = request()->getIPAddress();
+        $client_ip = "8.8.8.8";
+        $client_location = GeoLocationService::getLocationFromIp($client_ip);
+        if(!empty($client_location)) {
+            $min_distance = 0;
+            foreach($allocated_branches as $branch) {
+                $lat_diff = abs(floatval($branch->geo_latitude) - floatval($client_location['latitude']));
+                $lon_diff = abs(floatval($branch->geo_longitude) - floatval($client_location['longitude']));
+                $l = sqrt($lat_diff * $lat_diff + $lon_diff * $lon_diff);
+                if($min_distance == 0 || $min_distance > $l) {
+                    $min_distance = $l;
+                    $nearest_branch_id = $branch->id;
+                }
+            }
+        }
+        $this->data['nearest_branch_id'] = $nearest_branch_id;
+    } else {
+        $this->data['nearest_branch_id'] = $branch;
+    }
 
 		echo view('v2/pages/myaccount/sel_allocated_branch', $this->data);
 	}
@@ -336,6 +347,11 @@ class MyAccount extends Secure_area /* implements iData_controller*/
 	public function postSelectBranch() {
 		$branch = request()->getPost('branch');
 		session()->set('branch', $branch);
+
+    $person_id = session()->get('person_id');
+    if (!empty($person_id)) {
+      $this->updtLastKissBranch($person_id, $branch);
+    }
 		return redirect()->to(base_url('home'));
 	}
 
@@ -358,4 +374,16 @@ class MyAccount extends Secure_area /* implements iData_controller*/
 			])->setStatusCode(400);
 		}
 	}
+
+  public function getLastKissBranch($person_id)
+  {
+    $Employee = new Employee();
+    return $Employee->get_last_kiss_branch_id($person_id);
+  }
+
+  public function updtLastKissBranch($person_id, $last_kiss_branch_id)
+  {
+    $Employee = new Employee();
+    return $Employee->save_last_kiss_branch_id($person_id, $last_kiss_branch_id);
+  }
 }

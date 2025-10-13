@@ -5,7 +5,7 @@ $uri_segments = $uri->getSegments();
 if(empty($user_info)) {
 	$top_menus = [
 		['id'=>'home', 'icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home', 'active'=>$uri_segments[0] == 'home'],
-    // ['id'=>'branch', 'icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch', 'active'=>count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'],
+    ['id'=>'branch', 'icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_branch', 'active'=>count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'],
 		['id'=>'login', 'icon' => 'bi-person-fill', 'label' => 'Log In', 'url' => '/login', 'active'=>$uri_segments[0] == 'login'],
 	];
 	$logon_user_menues = [];

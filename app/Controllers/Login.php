@@ -73,6 +73,12 @@ class Login extends BaseController
       } else {
         $macc = new MyAccount();
         $nearest_branch_id = $macc->getAllocatedBranch();
+
+        $last_kiss_branch_id = $macc->getLastKissBranch($person_id);
+        if (!empty($last_kiss_branch_id)) {
+          $nearest_branch_id = $last_kiss_branch_id;
+        }
+
         if ($nearest_branch_id > 0) {
           session()->set('branch', $nearest_branch_id);
           return redirect()->to(base_url('home'));
