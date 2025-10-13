@@ -64,7 +64,7 @@ class Orders extends Secure_area implements iData_controller
     $this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $cart['total_amount'];
 		$this->data['total_epoints']    = $cart['total_epoints'];
-		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? 0.00 : $cart['delivery_charge'];
+		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
 		$this->data['total_vats']       = $cart['total_vats'];
 
 		$this->data['form_width'] = $this->get_form_width();
@@ -151,7 +151,7 @@ class Orders extends Secure_area implements iData_controller
     $this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $cart['total_amount'];
 		$this->data['total_epoints']    = $cart['total_epoints'];
-		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? 0.00 : $cart['delivery_charge'];
+		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
 		$this->data['total_vats']       = $cart['total_vats'];
 
 		$this->data['form_width'] = $this->get_form_width();
