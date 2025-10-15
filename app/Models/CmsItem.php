@@ -81,6 +81,14 @@ class CmsItem extends Model
         return $query;
     }
 
+    private static function _basicQueryByType($type) {
+        $model = new CmsItem();
+        $query = $model->where('type', $type)
+            ->where('deleted != 1')
+            ->where('active', 1);
+
+        return $query;
+    }
     public static function _getActiveItems($cms_id, $options=null) {
         $query = self::_basicQuery($cms_id);
         $rows = $query->findAll();
@@ -94,6 +102,20 @@ class CmsItem extends Model
                     $result[] = $row;
                 }
             }
+        }
+
+        return $result;
+    }
+
+    public static function getCmsItemsByType($type)
+    {
+        $query = self::_basicQueryByType($type);
+        $rows = $query->findAll();
+
+        $result = [];
+        foreach ($rows as &$row) {
+            self::_treatCmsItemRow($row);
+            $result[] = $row;
         }
 
         return $result;

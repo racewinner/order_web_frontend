@@ -18,6 +18,7 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.cms-content', function (e) {
+      debugger
         const cms = $(e.target).closest('.cms-content');
         const id = cms.data('id');
         const link = cms.data('link');

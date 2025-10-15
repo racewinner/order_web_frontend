@@ -4,6 +4,8 @@ use App\Models\Employee;
 use CodeIgniter\Model;
 use App\Models\Admin;
 use App\Models\Cms;
+use App\Models\CmsItem;
+
 use App\Models\Category;
 
 class Product extends Model
@@ -1001,6 +1003,20 @@ class Product extends Model
 
 			// category_id
 			if (!empty($filter['category_id'])) {
+        $CmsItem = new CmsItem();
+        $cms_items = $CmsItem->getCmsItemsByType('category_carousel');
+
+        $prod_codes = [];
+        foreach($cms_items as $cms_itm) {
+          $str_top_cat_id = $cms_itm['data']['top_cat_id'];
+          $str_sub_cat_id = $cms_itm['data']['sub_cat_id'];
+
+          if ($str_top_cat_id == $filter['category_id'] || $str_sub_cat_id == $filter['category_id']) {
+          // if($cms_itm->data->brand == $filter['brand']) {
+            $prod_codes[] = $cms_itm['prod_codes'];
+          }
+        }
+
 				$query  = " SELECT * FROM epos_categories WHERE category_id='" . $filter['category_id'] . "' ";
         if (!empty($organization_id)) {
         $query .= " AND organization_id={$organization_id} ";
@@ -1024,9 +1040,11 @@ class Product extends Model
 						}
 						$nCount++;
 					}
+          $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
 					$cond .= ") ";
 				} else {
-					$cond .= " AND group_desc = '" . $res_category->filter_desc . "' ";
+					$cond .= " AND (group_desc = '" . $res_category->filter_desc . "' OR ";
+          $cond .= "      p.prod_code in (" . implode(',', $prod_codes) . ") ) ";
 				}
 			}
 
@@ -1060,8 +1078,26 @@ class Product extends Model
 
 			// brand
 			if (!empty($filter['brand'])) {
+        $brand_arr = json_decode($filter['brand'], true);
+
+        $CmsItem = new CmsItem();
+        $cms_items = $CmsItem->getCmsItemsByType('brand');
+
+        $prod_codes = [];
+        foreach($cms_items as $cms_itm) {
+          $str_brand = $cms_itm['data']['brand'];
+          if (in_array($str_brand, $brand_arr, true)) {
+          // if($cms_itm->data->brand == $filter['brand']) {
+            $prod_codes[] = $cms_itm['prod_codes'];
+          }
+        }
+
 				$brand = $filter['brand'];
-				$cond .= " AND brand in (" . substr($brand, 1, strlen($brand) - 2) . ") ";
+				$cond .= " AND (brand in (" . substr($brand, 1, strlen($brand) - 2) . ") ";
+        if (implode(',', $prod_codes)) {
+            $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+        }
+        $cond .= " ) ";
 			}
 
 			// price_end

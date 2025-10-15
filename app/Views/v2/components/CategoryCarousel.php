@@ -21,6 +21,9 @@
                 ?>
                     <div class="swiper-slide p-2 one-category cms-content"
                         data-link="<?= $item['link_url'] ?>"
+                        data-cms-itm-id="<?= $item['id'] ?>"
+                        data-cms-itm-tp="<?= $item['type'] ?>"
+                        data-cms-itm-nm="<?= $item['data']['sub_cat_id'] ? $item['data']['sub_cat_id'] : $item['data']['top_cat_id'] ?>"
                         data-prodcodes="<?= $item['prod_codes'] ?>"
                     >
                         <div class="category-image">

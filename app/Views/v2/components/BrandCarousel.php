@@ -36,6 +36,9 @@
                 ?>
                     <div class="swiper-slide p-2 one-brand cms-content"
                         data-link="<?= $item['link_url'] ?>"
+                        data-cms-itm-id="<?= $item['id'] ?>"
+                        data-cms-itm-tp="<?= $item['type'] ?>"
+                        data-cms-itm-nm="<?= $item['data']['brand'] ?>"
                         data-prodcodes="<?= $item['prod_codes'] ?>"
                     >
                         <img src="<?= $media_url ?>" />
