@@ -320,7 +320,7 @@ class Product extends Model
                 LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc 
                 WHERE is_disabled='N' AND ct.display=1 AND branch={$branch}";
     if (!empty($organization_id)) {
-    $query .= " AND organization_id={$organization_id} ";
+    $query .= " AND p.organization_id={$organization_id} ";
     }
     $query .= $search_cond . " AND ";
 		// limit results to current selected category only.
@@ -374,6 +374,7 @@ class Product extends Model
 		foreach ($result->getResult() as $row) {
       $prod_desc = $row->prod_desc;
       $prod_desc_alt = str_replace("&", "%26", $prod_desc);
+      $prod_desc_alt = str_replace("%", "%25", $prod_desc);
 
 			$url = base_url() . 'products/index?';
 			$url .= '&search_mode=search';
@@ -1040,11 +1041,16 @@ class Product extends Model
 						}
 						$nCount++;
 					}
-          $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+          if (implode(',', $prod_codes)) {
+              $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+          }
 					$cond .= ") ";
 				} else {
-					$cond .= " AND (group_desc = '" . $res_category->filter_desc . "' OR ";
-          $cond .= "      p.prod_code in (" . implode(',', $prod_codes) . ") ) ";
+					$cond .= " AND (group_desc = '" . $res_category->filter_desc . "' ";
+          if (implode(',', $prod_codes)) {
+              $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+          }
+					$cond .= ") ";
 				}
 			}
 
@@ -1169,29 +1175,36 @@ class Product extends Model
 				try {
 					$arr = preg_split("/\ /", $search0);
 					foreach ($arr as $a) {
+            $keyword = $a;
+            if (strpos($keyword, '%') !== false) {
+                $keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+            } else {
+                $keyword = $db->escapeLikeString($a);
+            }
+            
 						$cond .= " AND ( ";
             // original search engine...
-						// $cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
-						// $cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR prod_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
+						// $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
+						// $cond .= " OR retail LIKE '" . $keyword . "%' ";
+						// $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
+						// $cond .= " OR prod_desc LIKE '%" . $keyword . "%' ";
+						// $cond .= " OR brand LIKE '%" . $keyword . "%' ";
 
             // new search engine, holla.ardy
-            $cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
+            $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
 
-            $cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR retail LIKE '" . $keyword . "%' ";
 
-            $cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
 
-            $cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . "' ";
-            $cond .= " OR prod_desc LIKE '" . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR prod_desc = '" . $db->escapeLikeString($a) . "' ";
+            $cond .= " OR prod_desc LIKE '% " . $keyword . "' ";
+            $cond .= " OR prod_desc LIKE '" . $keyword . " %' ";
+            $cond .= " OR prod_desc LIKE '% " . $keyword . " %' ";
+            $cond .= " OR prod_desc = '" . $keyword . "' ";
       
-            $cond .= " OR prod_pack_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR prod_pack_desc LIKE '%" . $keyword . "%' ";
             
-            $cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR brand LIKE '%" . $keyword . "%' ";
 
 						$cond .= " ) ";
 					}
@@ -1207,36 +1220,43 @@ class Product extends Model
 					$cond .= " AND (";
 					$arr = preg_split("/\,/", $search0);
 					foreach ($arr as $index => $a) {
+            $keyword = $a;
+            if (strpos($keyword, '%') !== false) {
+                $keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+            } else {
+                $keyword = $db->escapeLikeString($a);
+            }
+
 						if ($index > 0)
 							$cond .= " OR ";
 						$cond .= " ( ";
             // original search engine...
-						// $cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
-						// $cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR prod_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
-						// $cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
+						// $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
+						// $cond .= " OR retail LIKE '" . $keyword . "%' ";
+						// $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
+						// $cond .= " OR prod_desc LIKE '%" . $keyword . "%' ";
+						// $cond .= " OR brand LIKE '%" . $keyword . "%' ";
 
             // new search engine, holla.ardy
-            $cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
+            $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
 
-            $cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR retail LIKE '" . $keyword . "%' ";
 
-            $cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
 
-            $cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . "' ";
-            $cond .= " OR prod_desc LIKE '" . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR prod_desc = '" . $db->escapeLikeString($a) . "' ";
+            $cond .= " OR prod_desc LIKE '% " . $keyword . "' ";
+            $cond .= " OR prod_desc LIKE '" . $keyword . " %' ";
+            $cond .= " OR prod_desc LIKE '% " . $keyword . " %' ";
+            $cond .= " OR prod_desc = '" . $keyword . "' ";
 
-            $cond .= " OR prod_pack_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR prod_pack_desc LIKE '%" . $keyword . "%' ";
 
-            $cond .= " OR meta LIKE '% " . $db->escapeLikeString($a) . "' ";
-            $cond .= " OR meta LIKE '" . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR meta LIKE '% " . $db->escapeLikeString($a) . " %' ";
-            $cond .= " OR meta = '" . $db->escapeLikeString($a) . "' ";
+            $cond .= " OR meta LIKE '% " . $keyword . "' ";
+            $cond .= " OR meta LIKE '" . $keyword . " %' ";
+            $cond .= " OR meta LIKE '% " . $keyword . " %' ";
+            $cond .= " OR meta = '" . $keyword . "' ";
 
-            $cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
+            $cond .= " OR brand LIKE '%" . $keyword . "%' ";
 
 						$cond .= " ) ";
 					}
