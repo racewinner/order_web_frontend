@@ -169,31 +169,42 @@
             <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
                 <div class="flex-fill">Pay in Depot</div>
                 <div>
-                    <input class="form-check-input" type="radio" name="payment_method" id="pay_in_depot" value="pay_in_depot" checked>
+                    <input class="form-check-input" type="radio" name="payment_method" 
+                        id="pay_in_depot" value="pay_in_depot" 
+                        <?php if ($this->data["credit_account_info"] == null && $this->data["payment_card_info"] == null) { ?>
+                            checked
+                        <?php } ?>
+                    >
                 </div>
             </div>
-
             <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
                 <div class="flex-fill">Pay by EchoPay</div>
                 <div>
-                    <input class="form-check-input" type="radio" name="payment_method" id="pay_by_echopay" value="pay_by_echopay" checked>
+                    <input class="form-check-input" type="radio" name="payment_method" 
+                        id="pay_by_echopay" value="pay_by_echopay" >
                 </div>
             </div>
-
             <div class="one-pay-method pay_by_bank_transfer d-flex align-items-center p-2 px-4 mb-2">
                 <div class="flex-fill">Pay by bank transfer</div>
                 <div>
-                    <input class="form-check-input" type="radio" name="payment_method" id="pay_by_bank_transfer" value="pay_by_bank_transfer" checked>
+                    <input class="form-check-input" type="radio" name="payment_method" 
+                        id="pay_by_bank_transfer" value="pay_by_bank_transfer" >
                 </div>
             </div>
-
+<?php if ($this->data["credit_account_info"] != null) { ?>
             <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
                 <div class="flex-fill">Pay by credit account</div>
                 <div>
-                    <input class="form-check-input" type="radio" name="payment_method" id="pay_by_credit_account" value="pay_by_credit_account" checked>
+                    <input class="form-check-input" type="radio" name="payment_method" 
+                        id="pay_by_credit_account" value="pay_by_credit_account" 
+                        <?php if ($this->data["credit_account_info"] != null) { ?>
+                            checked
+                        <?php } ?>
+                    >
                 </div>
             </div>
-
+<?php } ?>
+<?php if ($this->data["payment_card_info"] != null) { ?>
             <div class="one-pay-method pay-in-card p-2 px-4">
                 <div class="d-flex align-items-center">
                     <div class="flex-fill">
@@ -205,10 +216,14 @@
                         </ul>
                     </div>
                     <div>
-                        <input class="form-check-input" type="radio" name="payment_method" id="pay_in_card" value="pay_in_card">
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_in_card" value="pay_in_card" 
+                            <?php if ($this->data["credit_account_info"] == null && $this->data["payment_card_info"] != null) { ?>
+                                checked
+                            <?php } ?>
+                        >
                     </div>
                 </div>
-
                 <!-- <div class="card-detail-info mt-2">
                     <div class="d-flex align-items-center">
                         <div class="flex-fill">
@@ -224,6 +239,7 @@
                     </div>
                 </div> -->
             </div>
+<?php } ?>
 
             <!-- <div class="one-pay-method pay-in-paypal p-3 px-4 mt-3">
                 <div class="d-flex align-items-center">

@@ -352,6 +352,8 @@ class Employee extends Model
 		if ($result) {
 			session()->set('person_id', $result['person_id']);
 			session()->set('organization_id', $result['organization_id']);
+			session()->set('credit_account_info', $result['credit_account_info']);
+			session()->set('payment_card_info', $result['payment_card_info']);
 
 			return true;
 		}

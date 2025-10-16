@@ -72,6 +72,9 @@ class Orders extends Secure_area implements iData_controller
 	  $this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
+    $this->data['credit_account_info'] = session()->get('credit_account_info');
+    $this->data['payment_card_info'] = session()->get('payment_card_info');
+
     // filter only 10 product--------------
     // foreach($types as &$type) {
 		// 	$type['lines'] = $Order->get_lines($pid, $type['id']);
