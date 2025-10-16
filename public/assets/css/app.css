@@ -1057,3 +1057,15 @@ html {
         }
     }
 }
+
+.cart-abb-symbole {
+  font-size: 24px;
+  font-weight: 500;
+  color: gray;
+}
+.cart-recent-notify {
+  font-size: 24px;
+  font-weight: 500;
+  color: darkgray;
+  padding: 20px 20px 20px 45px;
+}

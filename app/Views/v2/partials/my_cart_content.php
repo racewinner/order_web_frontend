@@ -1,12 +1,3 @@
-<?= $this->section('css') ?>
-<style>
-.cart-abb-symbole {
-    font-size: 24px;
-    font-weight: 500;
-    color: gray;
-}
-</style>
-<?= $this->endSection() ?>
 <?php
   $extra_cls = "p-4 my-cart-body " . $cls;
 ?>
@@ -33,13 +24,6 @@
                 data-lines="<?= $type['lines'] ?>"
                 data-items="<?= $type['items'] ?>"
             >
-                <div class="d-flex align-items-center cart-lines-items">
-                    <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
-                </div>
-                <?php if($type['lines'] > 10) { ?>
-                  <div class="cart-abb-symbole">...</div>
-                <?php } ?>
-
                 <div class="cart-items mt-2">
                     <?php foreach($type['orders'] as $order) { 
                         echo view("v2/components/CartItem", ['order' => $order]);
@@ -52,7 +36,9 @@
 
 <div class="my-cart-footer p-4">
     <div class="flex-fill cart-total cart-total-desc">
-        <label>This trolley sub total is</label>
+        <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
+        <!-- <label>This trolley sub total is</label> -->
+        <label>total is</label>
         <div class="total-amount" id="cart_subtotal">£<?= $total_amount/* + $delivery_charge + $total_vats*/ ?></div>
     </div>
     <div>

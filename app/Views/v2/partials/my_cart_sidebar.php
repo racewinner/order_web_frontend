@@ -11,6 +11,7 @@
                 </button>
             </div>
         </div>
+        <div class="cart-recent-notify">Latest changes to your trolley</div>
 
         <div class="my-cart-content">
         </div>
