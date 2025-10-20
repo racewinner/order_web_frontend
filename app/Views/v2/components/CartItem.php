@@ -32,19 +32,19 @@
                 <?php } ?>
 
                 <div>
-                    <span class="prod-spec">
-                        <label>Code: </label>
-                        <span class="ms-1 ms-sm-2 prop-value"><?= $product->prod_code ?></span>
-                    </span>
-
                     <span class="prod-pack inline">
-                        <label class="mx-1">|</label>
                         <label>Pack: </label>
                         <span class="ms-1 ms-sm-2" style="color:black;">
                             <span class="prop-value"><?= $product->prod_pack_desc ?></span>
                             <label class="mx-1 text-gray">x</label>
                             <span class="prop-value"><?= $product->prod_uos?></span>
                             <span class="ms-1 fw-bold prop-value"><?= $product->case ?></span>
+                        </span>
+
+                        <span class="prod-spec">
+                            <label class="mx-1">|</label>
+                            <label>Code: </label>
+                            <span class="ms-1 ms-sm-2 prop-value"><?= $product->prod_code ?></span>
                         </span>
                     </span>
                 </div>
@@ -57,6 +57,11 @@
                         <span class="prop-value"><?= $product->prod_uos?></span>
                         <span class="ms-1 fw-bold prop-value"><?= $product->case ?></span>
                     </span>
+
+                    <span class="prod-spec">
+                        <label>Code: </label>
+                        <span class="ms-1 ms-sm-2 prop-value"><?= $product->prod_code ?></span>
+                    </span>
                 </div>
 
                 <div>
@@ -64,6 +69,7 @@
                         <label>RRP: </label>
                         <span class="ms-1 ms-sm-2 prop-value">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
                     </span>
+                    
                     <span class="prod-por inline">
                         <label class="mx-1">|</label>
                         <label>POR: </label>

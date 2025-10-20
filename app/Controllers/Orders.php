@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Controllers\interfaces\iData_controller;
 use CodeIgniter\Email\Email;
+use DateTime;
 
 use App\Models\Employee;
 use App\Models\Product;
@@ -61,7 +62,7 @@ class Orders extends Secure_area implements iData_controller
 		$this->data["types"] = $types;
 
 		$cart = Order::get_cart_info($pid);
-    $this->data['total_quantity']   = $cart['total_quantity'];
+    	$this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $cart['total_amount'];
 		$this->data['total_epoints']    = $cart['total_epoints'];
 		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
@@ -69,11 +70,11 @@ class Orders extends Secure_area implements iData_controller
 
 		$this->data['form_width'] = $this->get_form_width();
 	    
-	  $this->data["slides"] = $Admin->get_scount('slides');
+	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
-    $this->data['credit_account_info'] = session()->get('credit_account_info');
-    $this->data['payment_card_info'] = session()->get('payment_card_info');
+		$this->data['credit_account_info'] = session()->get('credit_account_info');
+		$this->data['payment_card_info'] = session()->get('payment_card_info');
 
     // filter only 10 product--------------
     // foreach($types as &$type) {
@@ -91,6 +92,28 @@ class Orders extends Secure_area implements iData_controller
 		// }
 		// $this->data["types"] = $types;
     // ------------------------------------
+
+		$now = new DateTime();
+		// $currentDate = $now->format('Y-m-d');
+		// $currentTime = $now->format('H:i:s');
+		$noon = new DateTime('today 12:00:00'); // today at 12:00:00 (noon)
+
+		$collection_delivery_date = new DateTime();
+
+		$hasPassedNoon = $now > $noon;
+		if ($hasPassedNoon) {
+			$collection_delivery_date->modify('+3 days'); // add 3 days
+		} else {
+			$collection_delivery_date->modify('+2 days'); // add 2 days
+		}
+
+		$collection_delivery_dates[] = $collection_delivery_date;
+		for ($i = 1; $i < 5; $i++) {
+			$next_datetime = clone $collection_delivery_date;
+			$next_datetime->modify('+' . $i . ' days'); // add 1 days
+			$collection_delivery_dates[] = $next_datetime;
+		}
+		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
 
 		if($page == 'checkout') {
 			return view('v2/pages/myaccount/checkout', $this->data);

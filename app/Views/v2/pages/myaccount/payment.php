@@ -100,6 +100,17 @@
             }
         }
     }
+    .payment-board {
+        border-radius: 10px;
+        border: 1px solid #eee;
+        padding: 20px;
+    }
+    .mt-0 {
+        margin-top: 0px !important;
+    }
+    .mb-30 {
+        margin-bottom: 30px !important;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -107,7 +118,7 @@
 <div class="d-flex flex-column flex-lg-row mx-auto w-fit-content p-4">
     <div class="delivery-payment">
         <h5>Delivery & Payment</h5>
-
+        <!-- <div>Tab Selector</div> -->
         <div class="delivery-section mt-4">
             <h6>Delivery Method</h6>
             <ul class="d-inline-flex delivery-methods" role="tablist" aria-label="Delivery Methods">
@@ -147,23 +158,76 @@
                     </div>
                 </div> -->
 
-                <div class="tab-pane fade delivery-method-pane" id="pane-pickup-depot"
+                <div class="tab-pane fade delivery-method-pane mb-30" id="pane-pickup-depot"
                     role="tabpanel" 
                     aria-labelledby="tab-pickup-depot"
                 >
-                    <h6>Picup Date & Time</h6>
-                    <input class="form-control" name="pickup-time" />
-                    <p class="comment mt-2">
-                        *Your order will be ready for pickup on 
-                        <span class="text-black pickup-date">15/08/2025</span>
-                        any time after
-                        <span class="text-black">after 9:00 AM</span>.*
-                    </p>
+                    <h6>Pickup Date & Time</h6>
+                    <div class="comment mt-2 text-black ">
+                        Please select the required (collection/deliervy) date from the dropdown.
+                    </div>
+                    <div class="comment">
+                        <span class="pickup-date">
+                            (We will notify you when your order is ready for collection/delivery.)
+                        </span>
+                    </div>
+
+                    <div class="branch-select mx-auto">
+                        <div class="mt-2">
+                            <select id='branch' name='branch' class="form-select">
+                                <?php 
+                                    foreach($collection_delivery_dates as $index => $c_d_date) {
+                                        $date_dt_value = $c_d_date->format('d/m/Y');
+                                        $date_df_value = $c_d_date->format('l'); //'l': Monday, 'D': Mon
+                                        // $date_tm_value = $c_d_date->format('Y-m-d');
+                                        $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                        echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="payment-section">
+                        <div class="comment mt-2 text-black mb-2">
+                            Please select a collection container
+                        </div>
+
+                        <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="flex-fill">Pallet</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="pallet" value="pallet" >
+                            </div>
+                        </div>
+                        <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="flex-fill">Cage</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="cage" value="cage" >
+                            </div>
+                        </div>
+                        <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="flex-fill">Trolley</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="trolley" value="trolley" >
+                            </div>
+                        </div>
+                        <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="flex-fill">Box</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="box" value="box" >
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="payment-section">
+        <div class="payment-section payment-board mt-0">
             <h6>Payment Method</h6>
 
             <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
@@ -191,7 +255,7 @@
                         id="pay_by_bank_transfer" value="pay_by_bank_transfer" >
                 </div>
             </div>
-<?php if ($this->data["credit_account_info"] != null) { ?>
+            <?php if ($this->data["credit_account_info"] != null) { ?>
             <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
                 <div class="flex-fill">Pay by credit account</div>
                 <div>
@@ -203,8 +267,8 @@
                     >
                 </div>
             </div>
-<?php } ?>
-<?php if ($this->data["payment_card_info"] != null) { ?>
+            <?php } ?>
+            <?php if ($this->data["payment_card_info"] != null) { ?>
             <div class="one-pay-method pay-in-card p-2 px-4">
                 <div class="d-flex align-items-center">
                     <div class="flex-fill">
@@ -239,7 +303,7 @@
                     </div>
                 </div> -->
             </div>
-<?php } ?>
+            <?php } ?>
 
             <!-- <div class="one-pay-method pay-in-paypal p-3 px-4 mt-3">
                 <div class="d-flex align-items-center">
@@ -252,6 +316,7 @@
                 </div>
             </div> -->
         </div>
+        
     </div>
 
     <div class="billing card ms-0 mt-4 ms-lg-4">

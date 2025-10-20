@@ -46,11 +46,7 @@ if($view_mode == 'grid') {
                 <?php } else { ?>
                     <div>&nbsp;</div>
                 <?php } ?>
-
-                <div>
-                    <label>Code: </label>
-                    <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
-                </div>
+                
                 <div>
                     <label>Pack: </label>
                     <span class="ms-2" style="color:black;">
@@ -60,10 +56,17 @@ if($view_mode == 'grid') {
                         <span class="ms-1 fw-bold prop-value"><?= $product->case ?? '' ?></span>
                     </span>
                 </div>
+
+                <div>
+                    <label>Code: </label>
+                    <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                </div>
+
                 <div>
                     <label>RRP: </label>
                     <span class="ms-2 prop-value">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
                     <label class="mx-1">|</label>
+
                     <label>POR: </label>
                     <span class="ms-2 prop-value"><?= $product->por ?>%</span>
                 </div>
@@ -163,11 +166,7 @@ if($view_mode == 'grid') {
                         <?php } else { ?>
                             <div class="prod-brand">&nbsp;</div>
                         <?php } ?>
-
-                        <div class="prod-spec">
-                            <label>Code: </label>
-                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
-                        </div>
+                        
                         <div class="prod-spec">
                             <label>Pack: </label>
                             <span class="ms-2" style="color:black;">
@@ -177,6 +176,12 @@ if($view_mode == 'grid') {
                                 <span class="ms-1 fw-bold prop-value"><?= $product->case ?? '' ?></span>
                             </span>
                         </div>
+
+                        <div class="prod-spec">
+                            <label>Code: </label>
+                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                        </div>
+
                         <div>
                             <span class="prod-rrp">
                                 <label>RRP: </label>
@@ -270,10 +275,6 @@ if($view_mode == 'grid') {
 
                 <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">
                     <div class="prod-spec">
-                        <span>
-                            <label>Code: </label>
-                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
-                        </span>
                         <?php if(!empty($product->brand)) { ?>
                         <span>
                             <label>Brand: </label>
@@ -281,6 +282,7 @@ if($view_mode == 'grid') {
                         </span>
                         <?php } ?>
                     </div>
+
                     <div class="prod-spec">
                         <label>Pack: </label>
                         <span class="ms-2" style="color:black;">
@@ -290,10 +292,19 @@ if($view_mode == 'grid') {
                             <span class="ms-1 fw-bold prop-value"><?= $product->case ?? '' ?></span>
                         </span>
                     </div>
+
+                    <div class="prod-spec">
+                        <span>
+                            <label>Code: </label>
+                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                        </span>
+                    </div>
+
                     <div>
                         <label>RRP: </label>
                         <span class="ms-2 prop-value">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
                         <label class="mx-1">|</label>
+                        
                         <label>POR: </label>
                         <span class="ms-2 prop-value"><?= $product->por ?>%</span>
                     </div>
