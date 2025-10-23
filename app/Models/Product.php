@@ -411,15 +411,15 @@ class Product extends Model
 	function total_search_num_rows_category($user_info, $filter)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$cond = $this->buildCondition($user_info, $filter);
 
 		$query = "SELECT p.prod_code FROM epos_product as p ";
 		if (!empty($user_info) && !empty($filter['favorite'])) {
 			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id=" . $user_info->person_id . ") ";
-    }
+   		}
 
     $query .= " LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
 
@@ -427,7 +427,7 @@ class Product extends Model
     if (!empty($organization_id)) {
     $query .= " AND p.organization_id={$organization_id} ";
     }
-    $query .= " AND " . $cond ;//. " GROUP BY p.prod_code ";
+    $query .= " AND " . $cond . " GROUP BY p.prod_code ";
 
 		$results = $db->query($query);
 		return $results->getNumRows();
@@ -442,16 +442,14 @@ class Product extends Model
 	function search_category($user_info, $filter)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$cond = $this->buildCondition($user_info, $filter);
 		$porformula = ", (CASE WHEN (prod_rrp * prod_uos > 0) 
 							   THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
-							   ELSE 0 
-						 END)
+							   ELSE 0 END)
 						 AS por ";
-
 		if (request()->uri->getSegment(1) == 'presells') {
 			$tablename = "presell";
 			$addcols = "period_ref, g_qty, g_min, g_max, s_qty, s_min, s_max, m_qty, m_min, m_max, l_qty, l_min, l_max, e_qty, e_min, e_max, ordered, ";
@@ -459,32 +457,30 @@ class Product extends Model
 			$tablename = "product";
 			$addcols = "";
 		}
-		$query = "SELECT " . $addcols . " p.prod_id, p.prod_code, prod_uos, prod_desc, prod_pack_desc, price_start, price_end, brand, epoints,
-                                      vat_code, prod_price, group_desc, prod_code1,
-                                      price_list, prod_level1, prod_level2, prod_level3,
-                                      non_promo_sell_price,
-                                      pi.url as image_url,
-                                      pi.version as image_version,
-
-					                            IF(brand='', 'zzzz', brand) as v_brand," .
-
-                                      // MIN(prod_sell) as prod_sell, 
-                                      /* MIN(prod_sell) as */" prod_sell," . 
-                                      
-                                      "prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life, 
-                                      availability, pfp" . $porformula . "
-        FROM epos_" . $tablename . " as p
+		$query = "SELECT 
+						{$addcols} 
+						p.prod_id, p.prod_code, prod_uos, prod_desc, prod_pack_desc, price_start, price_end, brand, epoints,
+						vat_code, prod_price, group_desc, prod_code1,
+						price_list, prod_level1, prod_level2, prod_level3,
+						non_promo_sell_price,
+						pi.url as image_url,
+						pi.version as image_version,
+						IF(brand='', 'zzzz', brand) as v_brand,
+						MIN(prod_sell) as prod_sell, 
+						prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life, 
+						availability, pfp 
+						{$porformula} 
+        		FROM epos_{$tablename} as p 
 				LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
-        LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
-
+        		LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
 		if (!empty($filter['favorite'])) {
-			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id=" . $user_info->person_id . ") ";
+			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id={$user_info->person_id}) ";
 		}
 		$query .= " WHERE ct.display=1 AND branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND p.organization_id={$organization_id} ";
-    }
-    $query .= " AND " . $cond;
+		if (!empty($organization_id)) {
+			$query .= "AND p.organization_id={$organization_id} ";
+		}
+    	$query .= "AND " . $cond;
 
 		$sort_key = isset($filter['sort_key']) ? $filter['sort_key'] : 3;
 		switch ($sort_key) {
@@ -535,8 +531,8 @@ class Product extends Model
 				break;
 		}
 		$order_by .= "p.brand ASC, p.prod_desc ASC, p.prod_pack_desc ASC, p.meta ASC ";
-		// $query .= " GROUP BY " . $group . " ";
-    $query .= " ORDER BY " . $order_by . " ";
+		$query .= " GROUP BY " . $group . " ";
+    	$query .= " ORDER BY " . $order_by . " ";
 
 		$offset = isset($filter['offset']) ? $filter['offset'] : 0;
 		$query .= ' LIMIT ' . $offset . ', ' . $filter['limit'];
@@ -560,12 +556,11 @@ class Product extends Model
 	{
 		$Employee = new Employee();
 		$person_info = $Employee->get_info($person_id);
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
-
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 		$db = \Config\Database::connect();
 
-		if($mode == 4) {
+		if ($mode == 4) {
 			$query =  " DELETE FROM epos_cart WHERE person_id={$person_id}" .
                 " AND branch={$branch}";
       if (!empty($organization_id)) {
@@ -998,124 +993,113 @@ class Product extends Model
 	{
 		try {
 			$db = \Config\Database::connect();    
-      $organization_id = session()->get('organization_id');
+      		$organization_id = session()->get('organization_id');
 
 			$cond = " is_disabled='N' ";
-
 			// category_id
 			if (!empty($filter['category_id'])) {
-        $CmsItem = new CmsItem();
-        $cms_items = $CmsItem->getCmsItemsByType('category_carousel');
+				$CmsItem = new CmsItem();
+				$cms_items = $CmsItem->getCmsItemsByType('category_carousel');
 
-        $prod_codes = [];
-        foreach($cms_items as $cms_itm) {
-          $str_top_cat_id = $cms_itm['data']['top_cat_id'];
-          $str_sub_cat_id = $cms_itm['data']['sub_cat_id'];
+				$prod_codes = [];
+				foreach($cms_items as $cms_itm) {
+					$str_top_cat_id = $cms_itm['data']['top_cat_id'];
+					$str_sub_cat_id = $cms_itm['data']['sub_cat_id'];
 
-          if ($str_top_cat_id == $filter['category_id'] || $str_sub_cat_id == $filter['category_id']) {
-          // if($cms_itm->data->brand == $filter['brand']) {
-            $prod_codes[] = $cms_itm['prod_codes'];
-          }
-        }
+					if ($str_top_cat_id == $filter['category_id'] || $str_sub_cat_id == $filter['category_id']) {
+						// if($cms_itm->data->brand == $filter['brand']) {
+						$prod_codes[] = $cms_itm['prod_codes'];
+					}
+				}
 
-				$query  = " SELECT * FROM epos_categories WHERE category_id='" . $filter['category_id'] . "' ";
-        if (!empty($organization_id)) {
-        $query .= " AND organization_id={$organization_id} ";
-        }
-
+				$query = "SELECT * FROM epos_categories WHERE category_id='" . $filter['category_id'] . "' ";
+				if (!empty($organization_id)) {
+					$query .= "AND organization_id={$organization_id} ";
+				}
 				$results_category = $db->query($query);
 				$res_category = $results_category->getRow();
 				if ($res_category->parent_id == 0) {
-					$query  = " SELECT * FROM epos_categories WHERE parent_id='" . $res_category->category_id . "' ";
-          if (!empty($organization_id)) {
-          $query .= " AND organization_id={$organization_id} ";
-          }
-
+					$query = "SELECT * FROM epos_categories WHERE parent_id='" . $res_category->category_id . "' ";
+					if (!empty($organization_id)) {
+						$query .= "AND organization_id={$organization_id} ";
+					}
 					$results_subcategory = $db->query($query);
 					$nCount = 0;
 					foreach ($results_subcategory->getResult() as $res_subcategory) {
 						if ($nCount == 0) {
-							$cond .= " AND (group_desc = '" . $res_subcategory->filter_desc . "' ";
+							$cond .= "AND (group_desc = '" . $res_subcategory->filter_desc . "' ";
 						} else {
-							$cond .= " OR group_desc = '" . $res_subcategory->filter_desc . "' ";
+							$cond .= "OR group_desc = '" . $res_subcategory->filter_desc . "' ";
 						}
 						$nCount++;
 					}
-          if (implode(',', $prod_codes)) {
-              $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
-          }
+					if (implode(',', $prod_codes)) {
+						$cond .= "OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+					}
 					$cond .= ") ";
 				} else {
-					$cond .= " AND (group_desc = '" . $res_category->filter_desc . "' ";
-          if (implode(',', $prod_codes)) {
-              $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
-          }
+					$cond .= "AND (group_desc = '" . $res_category->filter_desc . "' ";
+					if (implode(',', $prod_codes)) {
+						$cond .= "OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+					}
 					$cond .= ") ";
 				}
 			}
-
 			// im_new 
 			if (!empty($filter['im_new'])) {
-				$cond .= " AND availability = 'N' ";
+				$cond .= "AND availability = 'N' ";
 			}
-
 			// plan_profit
 			if (!empty($filter['plan_profit'])) {
-				$cond .= " AND pfp = '1' ";
+				$cond .= "AND pfp = '1' ";
 			}
-
 			// rrp
 			if (!empty($filter['rrp'])) {
-				$cond .= " AND prod_rrp = 1.00 ";
+				$cond .= "AND prod_rrp = 1.00 ";
 			}
-
+			// pmp
 			if (!empty($filter['pmp'])) {
-				$cond .= " AND meta Like '%PMP%' ";
+				$cond .= "AND meta Like '%PMP%' ";
 			}
-
+			// non_pmp
 			if (!empty($filter['non_pmp'])) {
-				$cond .= " AND meta NOT Like '%PMP%' ";
+				$cond .= "AND meta NOT Like '%PMP%' ";
 			}
-
 			// own_label
 			if (!empty($filter['own_label'])) {
-				$cond .= " AND own_label='Y' ";
+				$cond .= "AND own_label='Y' ";
 			}
-
 			// brand
 			if (!empty($filter['brand'])) {
-        $brand_arr = json_decode($filter['brand'], true);
+				$brand_arr = json_decode($filter['brand'], true);
 
-        $CmsItem = new CmsItem();
-        $cms_items = $CmsItem->getCmsItemsByType('brand');
+				$CmsItem = new CmsItem();
+				$cms_items = $CmsItem->getCmsItemsByType('brand');
 
-        $prod_codes = [];
-        foreach($cms_items as $cms_itm) {
-          $str_brand = $cms_itm['data']['brand'];
-          if (in_array($str_brand, $brand_arr, true)) {
-          // if($cms_itm->data->brand == $filter['brand']) {
-            $prod_codes[] = $cms_itm['prod_codes'];
-          }
-        }
-
+				$prod_codes = [];
+				foreach($cms_items as $cms_itm) {
+					$str_brand = $cms_itm['data']['brand'];
+					if (in_array($str_brand, $brand_arr, true)) {
+						// if($cms_itm->data->brand == $filter['brand']) {
+						$prod_codes[] = $cms_itm['prod_codes'];
+					}
+				}
 				$brand = $filter['brand'];
-				$cond .= " AND (brand in (" . substr($brand, 1, strlen($brand) - 2) . ") ";
-        if (implode(',', $prod_codes)) {
-            $cond .= " OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
-        }
-        $cond .= " ) ";
+				$cond .= "AND (brand in (" . substr($brand, 1, strlen($brand) - 2) . ") ";
+				if (implode(',', $prod_codes)) {
+					$cond .= "OR p.prod_code in (" . implode(',', $prod_codes) . ") ";
+				}
+				$cond .= ") ";
 			}
-
 			// price_end
 			if (!empty($filter['priceEnd'])) {
-				$cond .= " AND price_end in (" . substr($filter['priceEnd'], 1, strlen($filter['priceEnd']) - 2) . ") ";
+				$cond .= "AND price_end in (" . substr($filter['priceEnd'], 1, strlen($filter['priceEnd']) - 2) . ") ";
 			}
-
 			// price mode
 			if (isset($user_info->price_list010) && !empty($filter['spresell'])) {
-				$cond .= " AND price_list = '06' ";
+				$cond .= "AND price_list = '06' ";
 			} else {
-				$cond .= " AND (price_list = '99999' ";
+				$cond .= "AND (price_list = '99999' ";
 				if (!empty($user_info)) {
 					if (empty($filter['price_mode']) || $filter['price_mode'] == 'cc') {
 						if ($user_info->price_list001)
@@ -1142,131 +1126,120 @@ class Product extends Model
 							$cond .= "OR price_list = '12' ";
 					}
 				} else {
-					$cond .= " OR price_list = '999' ";
+					$cond .= "OR price_list = '999' ";
 				}
 				$cond .= ") ";
 			}
-
 			// presell
 			if (!empty($filter['presell'])) {
-				$cond .= " AND ordered=0 ";
+				$cond .= "AND ordered=0 ";
 			}
-
 			// promo
 			if (!empty($filter['promo'])) {
-				$cond .= " AND promo='Y' ";
+				$cond .= "AND promo='Y' ";
 			}
-
 			// branch
 			$branch = session()->get('branch');
 			if (!empty($branch)) {
-				$cond .= " AND branch={$branch} ";
+				$cond .= "AND branch={$branch} ";
 			}
-
-      // organization_id
+      		// organization_id
 			$organization_id = session()->get('organization_id');
 			if (!empty($organization_id)) {
-				$cond .= " AND p.organization_id={$organization_id} ";
+				$cond .= "AND p.organization_id={$organization_id} ";
 			}
-
 			// search0
 			if (!empty($filter['search0'])) {
 				$search0 = urldecode($filter['search0']);
 				try {
 					$arr = preg_split("/\ /", $search0);
 					foreach ($arr as $a) {
-            $keyword = $a;
-            if (strpos($keyword, '%') !== false) {
-                $keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
-            } else {
-                $keyword = $db->escapeLikeString($a);
-            }
-            
-						$cond .= " AND ( ";
-            // original search engine...
-						// $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
-						// $cond .= " OR retail LIKE '" . $keyword . "%' ";
-						// $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
-						// $cond .= " OR prod_desc LIKE '%" . $keyword . "%' ";
-						// $cond .= " OR brand LIKE '%" . $keyword . "%' ";
+						$keyword = $a;
+						if (strpos($keyword, '%') !== false) {
+							$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+						} else {
+							$keyword = $db->escapeLikeString($a);
+						}
 
-            // new search engine, holla.ardy
-            $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
-
-            $cond .= " OR retail LIKE '" . $keyword . "%' ";
-
-            $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
-
-            $cond .= " OR prod_desc LIKE '% " . $keyword . "' ";
-            $cond .= " OR prod_desc LIKE '" . $keyword . " %' ";
-            $cond .= " OR prod_desc LIKE '% " . $keyword . " %' ";
-            $cond .= " OR prod_desc = '" . $keyword . "' ";
-      
-            $cond .= " OR prod_pack_desc LIKE '%" . $keyword . "%' ";
-            
-            $cond .= " OR brand LIKE '%" . $keyword . "%' ";
-
-						$cond .= " ) ";
+						$cond .= "AND ( ";
+						// original search engine...
+							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+							// $cond .= "OR retail LIKE '" . $keyword . "%' ";
+							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+							// $cond .= "OR prod_desc LIKE '%" . $keyword . "%' ";
+							// $cond .= "OR brand LIKE '%" . $keyword . "%' ";
+						// new search engine, holla.ardy
+						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
+						//----------
+						$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
+						//----------
+						$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
+						//----------
+						$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
+						$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+						$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+						$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+						//----------
+						$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+						//----------
+						$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+						$cond .= ") ";
 					}
 				} catch (\Exception $e) {
 
 				}
 			}
-
 			// search1
 			if (!empty($filter['search1'])) {
 				$search0 = urldecode($filter['search1']);
 				try {
-					$cond .= " AND (";
+					$cond .= "AND (";
 					$arr = preg_split("/\,/", $search0);
 					foreach ($arr as $index => $a) {
-            $keyword = $a;
-            if (strpos($keyword, '%') !== false) {
-                $keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
-            } else {
-                $keyword = $db->escapeLikeString($a);
-            }
+						$keyword = $a;
+						if (strpos($keyword, '%') !== false) {
+							$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+						} else {
+							$keyword = $db->escapeLikeString($a);
+						}
 
 						if ($index > 0)
 							$cond .= " OR ";
 						$cond .= " ( ";
-            // original search engine...
-						// $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
-						// $cond .= " OR retail LIKE '" . $keyword . "%' ";
-						// $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
-						// $cond .= " OR prod_desc LIKE '%" . $keyword . "%' ";
-						// $cond .= " OR brand LIKE '%" . $keyword . "%' ";
-
-            // new search engine, holla.ardy
-            $cond .= " p.prod_code LIKE '%" . $keyword . "' ";
-
-            $cond .= " OR retail LIKE '" . $keyword . "%' ";
-
-            $cond .= " OR wholesale LIKE '" . $keyword . "%' ";
-
-            $cond .= " OR prod_desc LIKE '% " . $keyword . "' ";
-            $cond .= " OR prod_desc LIKE '" . $keyword . " %' ";
-            $cond .= " OR prod_desc LIKE '% " . $keyword . " %' ";
-            $cond .= " OR prod_desc = '" . $keyword . "' ";
-
-            $cond .= " OR prod_pack_desc LIKE '%" . $keyword . "%' ";
-
-            $cond .= " OR meta LIKE '% " . $keyword . "' ";
-            $cond .= " OR meta LIKE '" . $keyword . " %' ";
-            $cond .= " OR meta LIKE '% " . $keyword . " %' ";
-            $cond .= " OR meta = '" . $keyword . "' ";
-
-            $cond .= " OR brand LIKE '%" . $keyword . "%' ";
-
-						$cond .= " ) ";
+						// original search engine...
+							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+							// $cond .= "OR retail LIKE '" . $keyword . "%' ";
+							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+							// $cond .= "OR prod_desc LIKE '%" . $keyword . "%' ";
+							// $cond .= "OR brand LIKE '%" . $keyword . "%' ";
+						// new search engine, holla.ardy
+						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";
+						//----------
+						$cond .= "OR retail LIKE '" . 			$keyword . "%' ";
+						//----------
+						$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";
+						//----------
+						$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";
+						$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+						$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+						$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+						//----------
+						$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+						//----------
+						$cond .= "OR meta LIKE '% " . 			$keyword . "' ";
+						$cond .= "OR meta LIKE '" . 			$keyword . " %' ";
+						$cond .= "OR meta LIKE '% " . 			$keyword . " %' ";
+						$cond .= "OR meta = '" . 				$keyword . "' ";
+						//----------
+						$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+						$cond .= ") ";
 					}
 					$cond .= ") ";
 				} catch (\Exception $e) {
 
 				}
 			}
-
-			$cond .= " AND prod_sell > 0 ";
+			$cond .= "AND prod_sell > 0 ";
 
 			return $cond;
 		} catch (\Exception $e) {
@@ -1347,35 +1320,34 @@ class Product extends Model
 
 	public static function getLowestPriceProductByCode($user_info, $prod_code, $excludeDisabled = true, $spresell = 0)
 	{
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
-
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 		$db = \Config\Database::connect();
 
-		$query = "SELECT p.*, 
-					(CASE WHEN (prod_rrp * prod_uos > 0) 
-						THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
-						ELSE 0   
-					END)  AS por, ".
-					// MIN(prod_sell) as prod_sell, 
-					/* MIN(prod_sell) as */"prod_sell, 
-					pi.url as image_url, 
-          pi.version as image_version, 
-          vat.rate as vat_rate 
-          FROM epos_product as p ";
-		$query .= " LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code ";
-    $query .= " LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
-		$query .= " WHERE p.branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND organization_id={$organization_id} ";
-    }
-    $query .= " AND p.prod_code={$prod_code} ";
-		$query .= $spresell ? " AND price_list='06'" : " AND price_list!='06'";
-
-		if ($excludeDisabled)
-			$query .= " AND is_disabled='N' ";
-
-		$query .= " AND (price_list = '99999' ";
+		$query = "SELECT 
+						p.*, 
+						(CASE WHEN (prod_rrp * prod_uos > 0) 
+							THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
+							ELSE 0   
+						END)  AS por, 
+						 MIN(prod_sell) as prod_sell, 
+						pi.url as image_url, 
+						pi.version as image_version, 
+						vat.rate as vat_rate 
+          		  FROM epos_product as p ";
+		$query.= "LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code ";
+    	$query.= "LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
+		$query.= "WHERE p.branch={$branch} ";
+    	if (!empty($organization_id)) {
+    	$query.= "AND organization_id={$organization_id} ";
+		}
+		$query.= "AND p.prod_code={$prod_code} ";
+		$query.= $spresell ? 
+				 "AND price_list='06' " : " AND price_list!='06' ";
+		if ($excludeDisabled) {
+		$query.= "AND is_disabled='N' ";
+		}
+		$query.= "AND (price_list = '99999' ";
 		if (!empty($user_info)) {
 			if (!empty($user_info->price_list001))
 				$query .= "OR price_list = '01' ";
@@ -1398,10 +1370,9 @@ class Product extends Model
 		} else {
 			$query .= " OR price_list='999'";
 		}
-		$query .= ")";
-
-		$query .= " AND prod_sell>0 ";
-		// $query .= " GROUP BY p.prod_code";
+		$query.= ") ";
+		$query.= "AND prod_sell > 0 ";
+		$query.= "GROUP BY p.prod_code ";
 
 		$query = $db->query($query);
 		return $query->getNumRows() > 0 ? $query->getRow() : null;

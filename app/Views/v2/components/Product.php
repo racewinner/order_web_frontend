@@ -9,8 +9,11 @@ if($view_mode == 'grid') {
         data-prod-desc="<?= $product->prod_desc ?>"
     >
         <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
-            <div class="profit">
+            <div class="profit d-none">
                 <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
+            </div>
+            <div class="profit">
+                <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
             </div>
         <?php } ?>
 
@@ -19,17 +22,31 @@ if($view_mode == 'grid') {
         } ?>
 
         <?php if($product->available['icon_name']) { ?>
-            <div class="stock-avail">
-                <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-            </div>
+            <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                      $product->available['icon_name'] == 'new-item' || 
+                      $product->available['icon_name'] == 'low-stock' || 
+                      $product->available['icon_name'] == 'coming-soon') { ?>
+                <div class="stock-avail">
+                    <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                </div>
+            <?php } else { ?>
+                <div class="stock-avail">
+                    <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                </div>
+            <?php } ?>
         <?php } ?>
+       
 
         <?php if(!empty($user_info)) { ?>
             <i class="favorite bi bi-heart <?= $product->favorite ?>"></i>
         <?php } ?>
 
         <div class="card-header bg-light rounded m-2 d-flex justify-content-center p-2">
-            <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+            <?php if(!empty($product->image_url)) { ?>
+                <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+            <?php } else { ?>
+                <img class="prod-image" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">
+            <?php } ?>
         </div>
 
         <!-- Card body -->
@@ -150,7 +167,11 @@ if($view_mode == 'grid') {
 
         <div class="card-body p-0 d-flex">
             <div class="d-flex justify-content-center align-items-center">
-                <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+                <?php if(!empty($product->image_url)) { ?>
+                    <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+                <?php } else { ?>
+                    <img class="prod-image" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">
+                <?php } ?>
             </div>
 
             <div class="ms-2 ms-md-4 flex-fill d-flex">
@@ -209,14 +230,26 @@ if($view_mode == 'grid') {
 
                     <div class="profit-avail d-flex flex-column justify-content-end">
                         <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
-                            <div class="profit mt-1">
+                            <div class="profit mt-1 d-none">
                                 <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
+                            </div>
+                            <div class="profit mt-1">
+                                <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
                             </div>
                         <?php } ?>
                         <?php if($product->available['icon_name']) { ?>
-                            <div class="stock-avail mt-1">
-                                <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-                            </div>
+                            <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                                      $product->available['icon_name'] == 'new-item' || 
+                                      $product->available['icon_name'] == 'low-stock' || 
+                                      $product->available['icon_name'] == 'coming-soon') { ?>
+                                <div class="stock-avail mt-1">
+                                    <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                </div>
+                            <?php } else { ?>
+                                <div class="stock-avail mt-1">
+                                    <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                </div>
+                            <?php } ?>
                         <?php } ?>
                     </div>
                 </div>
@@ -224,7 +257,7 @@ if($view_mode == 'grid') {
                 <?php if(!empty($user_info)) { 
                     if($product->price >= 0) {
                 ?>
-                    <div class="d-flex flex-column justify-content-end align-items-end ms-0 ms-md-2 pb-2">
+                    <div class="d-flex flex-column justify-content-end align-items-end ms-0 ms-md-2">
                         <div class="prod-price d-flex flex-column align-items-center justify-content-center mx-auto">
                             <?php if($product->price == 0) { ?>
                                 <div class="current-price call-for-price">Call for Price</div>

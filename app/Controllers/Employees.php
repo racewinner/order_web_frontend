@@ -283,10 +283,10 @@ class Employees extends Secure_area
 		$employee_id = request()->getPost('person_id');
 		if ($employee_id == 0 || $employee_id == '') $employee_id = -1;
 
-    $organization_id = session()->get('organization_id');
-    if (empty($organization_id)) {
-      $organization_id = -1;
-    }
+		$organization_id = session()->get('organization_id');
+		if (empty($organization_id)) {
+		$organization_id = -1;
+		}
 
 		$employee_data = array(
 			'username' => request()->getPost('username'),
@@ -305,18 +305,24 @@ class Employees extends Secure_area
 			'delivery_charge' => request()->getPost('delivery_charge') ?? 0,
 			'collect' => request()->getPost('collect'),
 			'pay' => request()->getPost('pay'),
-      'organization_id' => $organization_id,
+      		'organization_id' => $organization_id,
 		);
-
 		if (request()->getPost('password') != '') {
 			$employee_data['password'] = md5(request()->getPost('password'));
 		}
+		$Employee->save_employees($employee_data, $employee_id);
 
-		if ($Employee->save_employees($employee_data, $employee_id)) {
-			return redirect()->to(base_url('employees'));
-		} else {
+		// Delivery Type
+		// $db = \Config\Database::connect();
+		// $cond_array = array('emp_id' => $employee_id);
+		// $query = $db->table('epos_emp_order_types')->where($cond_array);
+		// $rowSet = $query->get();
+		// if ($rowSet->getNumRows() > 0) {
 
-		}
+		// } else {
+		// }
+
+		return redirect()->to(base_url('employees'));
 	}
 	function get_form_width()
 	{

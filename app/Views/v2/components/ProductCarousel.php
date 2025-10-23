@@ -29,7 +29,7 @@
         > 
             <div class="swiper-wrapper"> 
                 <?php foreach($data['products'] as $product) { ?>
-                    <div class="swiper-slide p-2">
+                    <div class="swiper-slide p-4">
                         <?= view('v2/components/Product', ['product' => $product]) ?>
                     </div>
                 <?php } ?>

@@ -459,7 +459,7 @@ footer {
         z-index: 10;
         img {
             width: 40px;
-            opacity: 0.7;
+            /* opacity: 0.7; */
             border-radius: 50%;
             @media (max-width: 576px) {
                 width: 30px;

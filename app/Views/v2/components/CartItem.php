@@ -14,7 +14,11 @@
 
     <div class="card-body p-2 d-flex">
         <div class="d-flex justify-content-center align-items-center">
-            <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+            <?php if(!empty($product->image_url)) { ?>
+                <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+            <?php } else { ?>
+                <img class="prod-image" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">
+            <?php } ?>
         </div>
 
         <div class="ms-2 flex-fill d-flex flex-column position-relative">
@@ -96,14 +100,26 @@
 
             <div class="profit-avail d-flex align-items-end">
                 <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
-                    <div class="profit">
+                    <div class="profit d-none">
                         <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
+                    </div>
+                    <div class="profit">
+                        <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
                     </div>
                 <?php } ?>
                 <?php if($product->available['icon_name']) { ?>
-                    <div class="stock-avail ms-1">
-                        <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-                    </div>
+                    <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                            $product->available['icon_name'] == 'new-item' || 
+                            $product->available['icon_name'] == 'low-stock' || 
+                            $product->available['icon_name'] == 'coming-soon') { ?>
+                        <div class="stock-avail ms-1">
+                            <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                        </div>
+                    <?php } else { ?>
+                        <div class="stock-avail ms-1">
+                            <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                        </div>
+                    <?php } ?>
                 <?php } ?>
             </div>
 
