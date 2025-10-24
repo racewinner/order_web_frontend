@@ -211,6 +211,20 @@ class Employee extends Model
 		return $q->get();
 	}
 
+	function get_payment_methods($employee_id)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_emp_payment_methods')
+			->select('*')
+			->where('emp_id', $employee_id)
+			->get();
+
+		if ($query->getNumRows() == 0) {
+			return [];
+		}
+		return $query->getResult()[0];
+	}
 	/*
 	Gets information about a particular employee
 	*/
@@ -249,7 +263,6 @@ class Employee extends Model
 	*/
 	function update_key($pid, $key)
 	{
-
 		$db = \Config\Database::connect();
 		$data = array('api_key' => $key);
 		$success = $db->table('epos_employees')
@@ -258,6 +271,46 @@ class Employee extends Model
 		return true;
 	}
 
+	function save_payment_methods($payment_methods, $employee_id, $new_employee_id) 
+	{
+		$db = \Config\Database::connect();
+		$arr = explode(",", $payment_methods);
+
+		$payment_methods_to_save = array();
+		if($payment_methods) {
+			foreach ($arr as $value) {
+				$payment_methods_to_save[$value] = 1;
+			}
+		}
+		
+		foreach (["e_order", "depot", "echo_pay", "bank_transfer", "credit_account", "debit_credit_card"] as $value) {
+			if (!in_array($value, $arr)) {
+				$payment_methods_to_save[$value] = 0;
+			}	
+		}
+		$payment_methods_to_save['emp_id'] = $new_employee_id;
+
+		$success = false;
+		if (intval($employee_id) < 1) {
+			$success = $db->table('epos_emp_payment_methods')->insert($payment_methods_to_save);
+		} else {
+			$db = \Config\Database::connect();
+
+			$query = $db->table('epos_emp_payment_methods')
+			->select('emp_id')
+			->where('emp_id', $employee_id)
+			->get();
+
+			if ($query->getNumRows() == 0) {
+				$success = $db->table('epos_emp_payment_methods')->insert($payment_methods_to_save);
+			} else {
+				$success = $db->table('epos_emp_payment_methods')
+							->where('emp_id', $employee_id)
+							->update($payment_methods_to_save);
+			}
+		}
+		return $success;
+	}
 	/*
 	Inserts or updates an employee
 	*/
@@ -330,11 +383,12 @@ class Employee extends Model
 
 				if ($employee_id == 1)
 					$success = $db->table('epos_permissions')->insert(array('module_id' => 'employees', 'person_id' => 1));
-				return true;//$employee_id;
+
+				return $employee_id;
 			}
 		}
 
-		return false;
+		return -1;
 	}
 
 	/*

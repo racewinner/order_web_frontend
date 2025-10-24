@@ -2,6 +2,7 @@
     <form id="employee_form" method="post" action="/employees/save" class="<?= empty($employee) ? 'need-password' : '' ?>">
         <input type="hidden" id="person_id" name="person_id" value="<?= $employee?->person_id ?? '' ?>" />
         <input type="hidden" id="branches" name="branches" value="" />
+        <input type="hidden" id="payment_methods" name="payment_methods" value="" />
         <input type="hidden" id="username_email_available" value="0" />
 
         <div class="d-flex justify-content-between">
@@ -93,13 +94,46 @@
                     </ul>
                 </div>
             </div>
+            <div class="flex-fill user-payment-methods card ms-2">
+                <div class="card-header p-2">
+                    <div class='m-0'>Payment Methods</div>
+                </div>
+                <div class="card-body p-3">
+                    <ul>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="e_order" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->e_order) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Pay with Order</label>
+                        </li>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="depot" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->depot) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Pay at Depot</label>
+                        </li>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="echo_pay" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->echo_pay) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Pay by EchoPay</label>
+                        </li>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="bank_transfer" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->bank_transfer) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Pay by Bank Transfer</label>
+                        </li>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="credit_account" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->credit_account) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Pay by Credit Account</label>
+                        </li>
+                        <li class="form-check mb-3">
+                            <input class="form-check-input payment-methods" type="checkbox" value="debit_credit_card" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->debit_credit_card) ? 'checked' : '' ?> />
+                            <label class="form-check-label">Debit / Credit Card</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <div class="user-order-types card mt-4">
+        <div class="user-order-types card mt-4 justify-content-center">
             <div class="card-header p-2">
                 <div class='m-0'>Order Types</div>      
             </div>
-            <div class="card-body p-3 d-flex align-items-center">
+            <div class="card-body p-3 d-flex align-items-center justify-content-center">
                 <div class="d-flex delivery align-items-center">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="delivery" value="1" <?= ($employee?->delivery == '1') ? 'checked' : '' ?> />
@@ -117,12 +151,13 @@
                         <label class="form-check-label">Click and Collect</label>
                     </div>
                 </div>
-                <div class="d-flex align-items-center ms-4">
+                <!-- <div class="d-flex align-items-center ms-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="pay" value="1" <?= ($employee?->pay == '1') ? 'checked' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="pay" value="1" 
+                        < ?= ($employee?->pay == '1') ? 'checked' : '' ?> />
                         <label class="form-check-label">Pay</label>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 

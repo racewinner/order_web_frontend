@@ -9,8 +9,8 @@ class Order extends Model
 	function get_all_cart($person_id, $type='general')
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$query =  " SELECT * FROM epos_cart WHERE person_id={$person_id} " . 
               " AND branch={$branch} ";

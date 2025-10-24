@@ -1250,7 +1250,7 @@ class Product extends Model
 
 			return $cond;
 		} catch (\Exception $e) {
-			return " ";
+			return " is_disabled='N' ";
 		}
 	}
 

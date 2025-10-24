@@ -73,6 +73,10 @@ class Orders extends Secure_area implements iData_controller
 	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
+		$this->data['du_prefer_delivery'] = $user_info->delivery;
+		$this->data['delivery_charge'] = $user_info->delivery_charge;
+		$this->data['du_prefer_collect'] = $user_info->collect;
+
 		$this->data['credit_account_info'] = session()->get('credit_account_info');
 		$this->data['payment_card_info'] = session()->get('payment_card_info');
 
@@ -114,6 +118,26 @@ class Orders extends Secure_area implements iData_controller
 			$collection_delivery_dates[] = $next_datetime;
 		}
 		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
+
+		if(!empty($pid)) {
+			$payment_methods = $Employee->get_payment_methods($pid);
+			$this->data['payment_methods'] = $payment_methods;
+			$this->data['payment_default_method'] = '';
+
+			$arr_payment_methods = (array) $payment_methods;
+			$keys = array_keys(array_filter($arr_payment_methods, function($v) {
+				return $v === "1" || $v === 1;
+			}));
+			$keys = array_filter($keys, function($v) {
+				return $v !== 'emp_id';
+			});
+			if(!empty($keys)) {
+				$source_payment_methods = ['e_order', 'depot', 'echo_pay', 'bank_transfer', 'credit_account', 'debit_credit_card'];
+				$first_payment_method = $keys[0];
+				$index = array_search($first_payment_method, $source_payment_methods);
+				$this->data['payment_default_method'] = $source_payment_methods[$index];
+			}
+		}
 
 		if($page == 'checkout') {
 			return view('v2/pages/myaccount/checkout', $this->data);

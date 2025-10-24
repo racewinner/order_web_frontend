@@ -261,7 +261,7 @@ class Employees extends Secure_area
 	function edit($person_id=null)
 	{
 		$Employee = new Employee();
-    $Branch = new Branch();
+    	$Branch = new Branch();
 		
 		$this->data['employee'] = null;
 		if(!empty($person_id)) $this->data['employee'] = $Employee->get_info($person_id);
@@ -271,7 +271,8 @@ class Employees extends Secure_area
 		$this->data['price_options'] = PRICE_OPTIONS;
 		unset($this->data['price_options']['001']);
 
-    $this->data['all_branches'] = $Branch->get_all_branches();
+    	$this->data['all_branches'] = $Branch->get_all_branches();
+		if(!empty($person_id)) $this->data['payment_methods'] = $Employee->get_payment_methods($person_id);
 
 		return view('v2/pages/employee/employee_edit', $this->data);
 	}
@@ -281,11 +282,14 @@ class Employees extends Secure_area
 		$Employee = new Employee();
 
 		$employee_id = request()->getPost('person_id');
-		if ($employee_id == 0 || $employee_id == '') $employee_id = -1;
+		if ($employee_id == 0 || $employee_id == '')  {
+			$employee_id = -1;
+		}
 
 		$organization_id = session()->get('organization_id');
 		if (empty($organization_id)) {
-		$organization_id = -1;
+			// $organization_id = -1;
+			return redirect()->to(base_url('login'));
 		}
 
 		$employee_data = array(
@@ -310,7 +314,10 @@ class Employees extends Secure_area
 		if (request()->getPost('password') != '') {
 			$employee_data['password'] = md5(request()->getPost('password'));
 		}
-		$Employee->save_employees($employee_data, $employee_id);
+		$new_employee_id = $Employee->save_employees($employee_data, $employee_id);
+
+		$payment_methods = request()->getPost('payment_methods');
+		$Employee->save_payment_methods($payment_methods, $employee_id, $new_employee_id);
 
 		// Delivery Type
 		// $db = \Config\Database::connect();

@@ -142,6 +142,7 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'button#add_user', function(e) {
+        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -168,6 +169,7 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'table tbody tr i.employee-edit', function(e) {
+        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -265,6 +267,14 @@ $(document).ready(function(e) {
             branches.push($branch_chkboxes[i].value);
         }
         $form.find("input#branches").val(branches);
+
+        // payment_methods
+        let payment_methods = [];
+        $payment_method_chkboxes = $form.find("input.payment-methods:checked");
+        for(let i=0; i<$payment_method_chkboxes.length; i++) {
+            payment_methods.push($payment_method_chkboxes[i].value);
+        }
+        $form.find("input#payment_methods").val(payment_methods);
 
         if(person_id) {         // update account
             if($form.find("#change_password")[0].checked) {
