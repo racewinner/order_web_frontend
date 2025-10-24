@@ -347,7 +347,8 @@
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment" class="btn btn-danger w-100">Next to Complete</a>
+                <!-- <a href="/orders/payment" class="btn btn-danger w-100">Next to Complete</a> -->
+                <a href="#" id="send_orders" class="btn btn-danger w-100">Next to Complete</a>
             </div>
         </div>
         
@@ -356,4 +357,37 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
+<script>
+    $(document).on('click', '#send_orders', function(e) {
+        debugger
+        let data = {};
+        $.ajax({
+            url: '/orders/send_order/general',
+            method:"POST",
+            data:data,
+            cache:false,
+            processData:false,
+            error: function (request, status, error) {
+                // $('#send_payment').prop('disabled', false);
+                // showToast({type: "error", message: d.error});
+                debugger
+                alert('error')
+            },
+            success:function(d) {
+                // if(d.success == true) {
+                //     window.open(d.data.url, "Payment");
+                // } else {
+                //     showToast({type: "error", message: d.error});
+                // }
+
+                // $('#send_payment').prop('disabled', false);
+                // showToast({type: "success", "ok"});
+                debugger
+                alert('success')
+            }
+        })
+        return false;
+    })
+</script>
 <?= $this->endSection() ?>
+

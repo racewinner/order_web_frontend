@@ -168,21 +168,20 @@ class Order extends Model
 	function get_count_cart_products($person_id, $presell=0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
-    $builder = $db->table('epos_cart');
-    $builder->where('person_id', $person_id);
-    $builder->where('presell', $presell);
-    $builder->where('branch', $branch);
-    if (!empty($organization_id)) {
-    $builder->where('organization_id', $organization_id);
-    }
-  
-    $builder->groupBy('prod_code');
-    $count = $builder->countAllResults();
+		$builder = $db->table('epos_cart');
+		$builder->where('person_id', $person_id);
+		$builder->where('presell', $presell);
+		$builder->where('branch', $branch);
+		if (!empty($organization_id)) {
+			$builder->where('organization_id', $organization_id);
+		}
+		$builder->groupBy('prod_code');
 
-    return $count;
+		$count = $builder->countAllResults();
+		return $count;
 	}
 
 	function get_product($prod_id)
@@ -489,32 +488,36 @@ class Order extends Model
 	function save_for_later($person_id , $opened, $type='general', $presell = 0, $ref = "")
 	{
 		$Hom = new Hom();
-
 		$Employee = new Employee();
 		$u = $Employee->get_info($person_id);	
-
 		$db = \Config\Database::connect();
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
+
 		$results = $db->table('epos_orders')
 			->where('person_id' , $person_id)
 			->where('opened' , 1)
-			->where('presell' , $presell)
 			->where('type' , $type)
+			->where('presell' , $presell)
+			->where('branch', $branch)
+			->where('organization_id', $organization_id)
 			->orderBy('order_id','desc')
 			->get();
 		
-		$order_data = array('person_id'  => $person_id ,
-							'order_date' => date("Ymd",time()),
-							'order_time' => date("His",time()),
-							'filename'   => '',
-							'completed'  => 0,
-							'opened'     => $opened, 
-							'presell'    => $presell,
-							'type'       => $type,
+		$order_data = array('person_id'  		=> $person_id ,
+							'order_date' 		=> date("Ymd",time()),
+							'order_time' 		=> date("His",time()),
+							'filename'   		=> '',
+							'completed'  		=> 0,
+							'opened'     		=> $opened, 
+							'type'       		=> $type,
+							'presell'    		=> $presell,
+							'branch'	 		=> $branch,
+							'organization_id' 	=> $organization_id,
 							);
 		
 		if($results->getNumRows() == 0 || $presell == 1){
 			if( $Hom->get_total_items_cart($person_id, $type, $presell) >= 1 ){
-				
 				$db->transStart();
 				$db->table($this->table)->insert($order_data);
 				$order_id = $db->insertID();
@@ -539,14 +542,18 @@ class Order extends Model
 			if ($db->transStatus() === FALSE) return -3;
 		}
 		
-		$db->query("DELETE FROM epos_orders WHERE person_id=".$person_id." AND order_id!='".$order_id."' AND opened=1 AND presell=".$presell."");
-		$query = "DELETE FROM epos_orders_products WHERE order_id='".$order_id."' AND presell=".$presell."";    
+		$db->query("DELETE FROM epos_orders 
+						 WHERE person_id = {$person_id} AND order_id != '{$order_id}' AND opened = 1 AND presell = {$presell} 
+						 								AND branch = {$branch}  	  AND organization_id = {$organization_id}");
+		$query = "DELETE FROM epos_orders_products 
+				  WHERE order_id = '{$order_id}' AND presell = {$presell} AND branch = {$branch} AND organization_id = {$organization_id}";    
 		$db->transStart();
 		$db->query($query);
 		$db->transComplete();
 		if ($db->transStatus() === FALSE) return -4;
 
-		$results1 = $db->query("SELECT * FROM epos_cart WHERE person_id='".$person_id."' and presell=".$presell);		
+		$results1 = $db->query("SELECT * FROM epos_cart 
+									 WHERE person_id='{$person_id}' AND presell={$presell} AND branch = {$branch} AND organization_id = {$organization_id}");		
 		foreach($results1->getResult() as $res1){
 			$found = 0;
 			// TODO check for $ref cart item id in presell table, allow if $ref match.
@@ -555,6 +562,9 @@ class Order extends Model
 				$builder->where('period_ref',$ref);
 				$builder->where('prod_code',$res1->prod_code);
 				$builder->where('ordered','0');
+				$builder->where('branch', $branch);
+				$builder->where('organization_id', $organization_id);
+
 				$q = $builder->get();
 				if($q->getNumRows() > 0){ 
 					$f = str_pad($q->getRow()->price_list, 3, '0', STR_PAD_LEFT);
@@ -570,12 +580,14 @@ class Order extends Model
 				$product = Product::getLowestPriceProductByCode($u, $res1->prod_code, true, $res1->group_type == 'spresell');
 				if($product) {
 					$order_product_data = array(
-						'order_id' => $order_id ,
-						'quantity' => $res1->quantity ,
-						'prod_code'=>$res1->prod_code ,
-						'presell'=>$res1->presell,
-						'group_type' => $res1->group_type,
-						'price' => $product->prod_sell,
+						'order_id' 			=> $order_id ,
+						'quantity' 			=> $res1->quantity ,
+						'prod_code'			=> $res1->prod_code ,
+						'presell'			=> $res1->presell,
+						'group_type' 		=> $res1->group_type,
+						'price' 			=> $product->prod_sell,
+						'branch'	 		=> $branch,
+						'organization_id' 	=> $organization_id,
 					);
 					$db->transStart();
 					$db->table('epos_orders_products')->insert( $order_product_data);
@@ -585,7 +597,8 @@ class Order extends Model
 			}
 		}
 		if($ref == ""){
-			$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' and group_type='".$type."' and presell=".$presell;
+			$query = "DELETE FROM epos_cart WHERE person_id='{$person_id}' AND group_type='{$type}' AND presell={$presell} 
+																		   AND branch = {$branch}   AND organization_id = {$organization_id}";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -649,6 +662,9 @@ class Order extends Model
 	function get_order_file_data($person_id , $option ,$type='general', $presell = 0 , $ref = "")
 	{
 		$db = \Config\Database::connect();
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
+
 		if($option == 1)	//get first line
 		{
 			$res = $db->table('epos_employees')->where('person_id' , $person_id)->get()->getRow();
@@ -657,17 +673,27 @@ class Order extends Model
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
 			$builder->where('presell' , $presell);
+			$builder->where('branch', $branch);
+			$builder->where('organization_id', $organization_id);
             $builder->orderBy('order_id','desc');
             $builder->limit(1);
+
             $result = $builder->get();
-			if($result->getNumRows() == 0) return -201;
+			if($result->getNumRows() == 0) 
+				return -201;
+
             $res = $result->getRow();
 			$order_date = substr($res->order_date,6,2).substr($res->order_date,4,2).substr($res->order_date,0,4);
 			$order_time = $res->order_time;
+
 			$first_line = $order_date;
-			$first_line .= $order_time;
-			$first_line .= $account_number;
-			if($presell == 1){ $first_line .= " Presell_".$ref;}
+			$first_line.= $order_time;
+			$first_line.= $account_number;
+
+			if($presell == 1){ 
+				$first_line .= " Presell_".$ref;
+			}
+			
 			$first_line .= "\r\n";
 			return $first_line;
 		}
@@ -677,23 +703,33 @@ class Order extends Model
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
 			$builder->where('presell' , $presell);
+			$builder->where('branch', $branch);
+			$builder->where('organization_id', $organization_id);
             $builder->orderBy('order_id','desc');
             $builder->limit(1);
+
 			$result = $builder->get();
-			if($result->getNumRows() == 0) return -202;
+			if($result->getNumRows() == 0) 
+				return -202;
 
 			$res = $result->getRow();
 			$order_id = $res->order_id;
-            $result_vv = $db->query("SELECT count(*) as vv FROM epos_orders_products WHERE order_id='".$order_id."' and presell=".$presell."");
+            $result_vv = $db->query("SELECT count(*) AS vv 
+										  FROM epos_orders_products 
+										  WHERE order_id='{$order_id}' AND presell={$presell} AND branch={$branch} AND organization_id={$organization_id}");
 			$result_vv2 = $result_vv->getRow();
 			$vv=substr('000'.$result_vv2->vv,-3);
             $vv_count=0;
 
-            if($presell == 1){ $table = "presell"; }else{ $table = "product"; }
-			$query = "SELECT p.*, op.quantity, op.price ";
-			$query .= " FROM epos_orders_products as op ";
-			$query .= " LEFT JOIN epos_{$table} as p on op.prod_code=p.prod_code ";
-			$query .= " WHERE op.order_id={$order_id} AND op.presell={$presell}";
+            if ($presell == 1) { 
+				$table = "presell"; 
+			} else { 
+				$table = "product"; 
+			}
+			$query = "SELECT p.*, op.quantity, op.price 
+					  FROM epos_orders_products AS op 
+					  LEFT JOIN epos_{$table} AS p ON op.prod_code=p.prod_code 
+					  WHERE op.order_id={$order_id} AND op.presell={$presell} AND op.branch={$branch} AND op.organization_id={$organization_id} ";
 			
 			$results = $db->query($query);
 			$nCount = 1;
@@ -720,10 +756,17 @@ class Order extends Model
 	function close_and_complete_order($person_id, $type='general', $presell = 0)
 	{
 		$db = \Config\Database::connect();
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
+
 		$builder = $db->table($this->table);
 		$builder->where('person_id' , $person_id);
 		$builder->where('opened' , 1);
+		$builder->where('type' , $type);
 		$builder->where('presell' , $presell);
+		$builder->where('branch' , $branch);
+		$builder->where('organization_id' , $organization_id);
+
 		$results = $builder->get();
 		if($results->getNumRows() == 0) return -1;
 

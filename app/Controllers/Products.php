@@ -468,7 +468,7 @@ class Products extends BaseController implements iData_controller
 
 		$q = request()->getPost('term');
 		$user_info = $Employee->get_logged_in_employee_info();
-    $category_id = request()->getPost('category_id');
+    	$category_id = request()->getPost('category_id');
 		$suggestions = $Product->get_search_suggestions2( $user_info , $q , 30 , $category_id);
 		echo json_encode($suggestions);
 		//echo $suggestions;

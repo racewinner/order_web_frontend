@@ -328,29 +328,33 @@ class Orders extends Secure_area implements iData_controller
 		$db = \Config\Database::connect();
 		$Employee = new Employee();
 		$Order = new Order();
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$user_info = $Employee->get_logged_in_employee_info();
-		if($Order->get_count_cart_products($user_info->person_id, $type) == 0)
-		{
+		$presell = $type == 'spresell' ? 1 : 0;
+		if ($Order->get_count_cart_products($user_info->person_id, $presell) == 0) {
 			echo 100;
 			return;
 		}
 		
-		$res = $Order->save_for_later($user_info->person_id , 1, $type);
-		
-		if($res != true)
+		$res = $Order->save_for_later($user_info->person_id , 1, $type, $presell);
+		if ($res != true)
 		{
 			echo "Failed: ".$res;
 			return;
 		}
+
         $datetime=date('dmY_His',time());
   		$q = $db->table('epos_orders');
-		  $q->where('person_id' , $user_info->person_id);
-		  $q->where('type' , $type);
-		  $q->where('opened' , 1);
-		  $q->where('presell' , 0);
-		  $q->orderBy('order_id','desc');
-		  $q->limit(1);
+		$q->where('person_id' , $user_info->person_id);
+		$q->where('type' , $type);
+		$q->where('opened' , 1);
+		$q->where('presell' , 0);
+		$q->where('branch', $branch);
+		$q->where('organization_id', $organization_id);
+		$q->orderBy('order_id','desc');
+		$q->limit(1);
 		$row = $q->get()->getRow();
 		$order_id = $row->order_id;
 		$epos = $row->epos;
@@ -391,7 +395,11 @@ class Orders extends Secure_area implements iData_controller
 			//echo getcwd();
 			return;
 		}
-        if (!$db->query("UPDATE epos_orders SET filename='".$file_name."', type='".$type."', order_date='".date('Ymd',time())."', order_time='".substr($datetime,-6)."' WHERE order_id=".$order_id))
+        if (!$db->query("UPDATE epos_orders 
+							  SET filename='{$file_name}', type='{$type}'"
+							  	.", order_date='".date('Ymd',time())."'"
+								.", order_time='".substr($datetime,-6).
+							"' WHERE order_id={$order_id}"))
         {
             echo -104;
             return;
@@ -402,7 +410,9 @@ class Orders extends Secure_area implements iData_controller
 			return;
 		}
 
-        $db->query('DELETE FROM epos_orders WHERE opened=1 and type="'.$type.'" and person_id='.$user_info->person_id);
+        $db->query("DELETE FROM epos_orders 
+						 WHERE opened=1 AND type='{$type}'   AND person_id={$user_info->person_id} 
+						 				AND branch={$branch} AND organization_id={$organization_id}");
 
 		$addr_mail = $Order->from_addr_mail();
 		$send_message = $Order->from_message_mail($user_info->person_id, $order_id, 0, $type=='spresell');

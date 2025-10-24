@@ -274,8 +274,8 @@ class Product extends Model
 	function get_search_suggestions2($user_info, $search, $limit = 30, $category_id = 0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$Admin = new Admin();
 
@@ -285,45 +285,51 @@ class Product extends Model
 		$search_cond = "";
 		$arr = preg_split("/\ /", $search);
 		foreach ($arr as $a) {
-			$search_cond .= " AND ( ";
-      // original search engine...
-      // $search_cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
-      // $search_cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
-      // $search_cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
-      // $search_cond .= " OR prod_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
-      // $search_cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
-
-      // new search engine, holla.ardy
-      $search_cond .= " p.prod_code LIKE '%" . $db->escapeLikeString($a) . "' ";
-
-			$search_cond .= " OR retail LIKE '" . $db->escapeLikeString($a) . "%' ";
-
-      $search_cond .= " OR wholesale LIKE '" . $db->escapeLikeString($a) . "%' ";
-
-			$search_cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . "' ";
-      $search_cond .= " OR prod_desc LIKE '" . $db->escapeLikeString($a) . " %' ";
-      $search_cond .= " OR prod_desc LIKE '% " . $db->escapeLikeString($a) . " %' ";
-      $search_cond .= " OR prod_desc = '" . $db->escapeLikeString($a) . "' ";
-
-      $search_cond .= " OR prod_pack_desc LIKE '%" . $db->escapeLikeString($a) . "%' ";
-
-			$search_cond .= " OR brand LIKE '%" . $db->escapeLikeString($a) . "%' ";
-
-			$search_cond .= " ) ";
+			$keyword = $a;
+			if (strpos($keyword, '%') !== false) {
+				$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+			} else {
+				$keyword = $db->escapeLikeString($a);
+			}
+			$search_cond .= "AND ( ";
+			// original search engine...
+				// $search_cond .= "p.prod_code LIKE '%" . 	$keyword . "' ";
+				// $search_cond .= "OR retail LIKE '" . 	$keyword . "%' ";
+				// $search_cond .= "OR wholesale LIKE '" . 	$keyword . "%' ";
+				// $search_cond .= "OR prod_desc LIKE '%". 	$keyword . "%' ";
+				// $search_cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
+			// new search engine, holla.ardy
+			$search_cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";
+			// ----------
+			$search_cond .= "OR retail LIKE '" . 			$keyword . "%' ";
+			//----------
+      		$search_cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";
+			//----------
+			$search_cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";
+			$search_cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+			$search_cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+			$search_cond .= "OR prod_desc = '" . 			$keyword . "' ";
+			//----------
+			$search_cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+			//----------
+			$search_cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+			$search_cond .= ") ";
 		}
 
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');
-		$query =  " SELECT p.prod_code, p.prod_desc, pi.url as image_url, pi.version as image_version 
-                FROM epos_product as p 
-                LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
-                LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc 
-                WHERE is_disabled='N' AND ct.display=1 AND branch={$branch}";
-    if (!empty($organization_id)) {
-    $query .= " AND p.organization_id={$organization_id} ";
-    }
-    $query .= $search_cond . " AND ";
-		// limit results to current selected category only.
+		$query =  "SELECT p.prod_code, p.prod_desc, pi.url as image_url, pi.version as image_version 
+                   FROM epos_product as p 
+                   LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code 
+                   LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc 
+                   WHERE is_disabled='N' AND ct.display=1 AND branch={$branch} ";
+		if (!empty($organization_id)) {
+			$query .= "AND p.organization_id={$organization_id} ";
+		}
+    	$query .= $search_cond . " AND ";
+		// limit results to current selected category only. (original, till 2025.10.23)
+		// but from 2025.10.24, because of feedback, not limit, instead of apply on all products
+		/*
 		if ($category_id != 0) {
 			$results_category = $db->query("SELECT * FROM epos_categories WHERE category_id = '" . $category_id . "'");
 			$res_category = $results_category->getRow();
@@ -342,8 +348,8 @@ class Product extends Model
 			} else {
 				$query = "group_desc = '" . $res_category->filter_desc . "' AND ";
 			}
-		}
-		$query .= " ( price_list = '000' ";
+		}*/
+		$query .= "(price_list = '000' ";
 		if (!empty($user_info)) {
 			if (!empty($user_info->price_list999))
 				$query .= "OR price_list = '999' ";
@@ -364,17 +370,17 @@ class Product extends Model
 			if (!empty($user_info->price_list001))
 				$query .= "OR price_list = '01' ";
 		} else {
-			$query .= " OR price_list='999'";
+			$query .= "OR price_list='999'";
 		}
 		$query .= ") GROUP BY prod_desc ";
-    $query .= " ORDER BY prod_desc ASC, prod_pack_desc ASC, brand ASC, meta ASC ";
-    $query .= " LIMIT " . $limit;
+		$query .= " ORDER BY prod_desc ASC, prod_pack_desc ASC, brand ASC, meta ASC ";
+		$query .= " LIMIT " . $limit;
 		$suggestions = array();
 		$result = $db->query($query);
 		foreach ($result->getResult() as $row) {
-      $prod_desc = $row->prod_desc;
-      $prod_desc_alt = str_replace("&", "%26", $prod_desc);
-      $prod_desc_alt = str_replace("%", "%25", $prod_desc);
+			$prod_desc = $row->prod_desc;
+			$prod_desc_alt = str_replace("&", "%26", $prod_desc);
+			$prod_desc_alt = str_replace("%", "%25", $prod_desc);
 
 			$url = base_url() . 'products/index?';
 			$url .= '&search_mode=search';
@@ -383,17 +389,18 @@ class Product extends Model
 			$url .= '&category_id=0';
 
 			$suggestions[] = 
-          '<a href="' . $url . '" style="padding:0px;">
-              <div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
-                  <div style="margin:5px; padding:10px;">
-                      <img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" />
-                  </div>
-                  <div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
-              </div>
-          </a>';
+				'<a href="' . $url . '" style="padding:0px;">
+					<div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
+						<div style="margin:5px; padding:10px;">
+							<img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" />
+						</div>
+						<div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
+					</div>
+				</a>';
 		}
 		return $suggestions;
 	}
+	
 	function get_item_search_suggestions($search, $limit = 25)
 	{
 		return;
@@ -1164,10 +1171,10 @@ class Product extends Model
 						$cond .= "AND ( ";
 						// original search engine...
 							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
-							// $cond .= "OR retail LIKE '" . $keyword . "%' ";
+							// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
 							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
-							// $cond .= "OR prod_desc LIKE '%" . $keyword . "%' ";
-							// $cond .= "OR brand LIKE '%" . $keyword . "%' ";
+							// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+							// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
 						// new search engine, holla.ardy
 						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
 						//----------
@@ -1208,10 +1215,10 @@ class Product extends Model
 						$cond .= " ( ";
 						// original search engine...
 							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
-							// $cond .= "OR retail LIKE '" . $keyword . "%' ";
+							// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
 							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
-							// $cond .= "OR prod_desc LIKE '%" . $keyword . "%' ";
-							// $cond .= "OR brand LIKE '%" . $keyword . "%' ";
+							// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+							// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
 						// new search engine, holla.ardy
 						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";
 						//----------
@@ -1339,13 +1346,13 @@ class Product extends Model
     	$query.= "LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
 		$query.= "WHERE p.branch={$branch} ";
     	if (!empty($organization_id)) {
-    	$query.= "AND organization_id={$organization_id} ";
+    		$query.= "AND organization_id={$organization_id} ";
 		}
 		$query.= "AND p.prod_code={$prod_code} ";
 		$query.= $spresell ? 
 				 "AND price_list='06' " : " AND price_list!='06' ";
 		if ($excludeDisabled) {
-		$query.= "AND is_disabled='N' ";
+			$query.= "AND is_disabled='N' ";
 		}
 		$query.= "AND (price_list = '99999' ";
 		if (!empty($user_info)) {

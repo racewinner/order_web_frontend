@@ -260,6 +260,7 @@ function showToast({ type = 'info', title = '', message = '', delay = 3000, cont
 }
 
 function load_products(filter) {
+    debugger
     const data = {
         sort_key: filter?.sort_key ?? $('#sort_key').val() ?? 3,
         category_id: filter?.category_id ?? $("#category_id").val() ?? 0,
@@ -279,6 +280,14 @@ function load_products(filter) {
     if (filter?.brands?.length > 0) {
         data.filter_brands = JSON.stringify(filter.brands);
     }
+    // switch between search0 and category ---------//
+    if (!filter && data.search0) {                  //
+        data.category_id = '';                      //
+    }                                               //
+    if (data.category_id) {                         //
+        data.search0 = '';                          //                       
+    }                                               //
+    // ---------------------------------------------//
     const queryParams = new URLSearchParams(data);
 
     let url = `/products/index?${queryParams}`;
