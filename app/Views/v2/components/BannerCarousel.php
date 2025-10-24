@@ -14,6 +14,8 @@
         data-bs-interval="<?= ( ( !empty($item['dwell_time']) && $item['dwell_time'] > 0) ? $item['dwell_time'] : $data['dwell_time']) * 1000 ?>"
         data-id="<?= $item['id'] ?>"
         data-link="<?= $item['link_url'] ?>"
+        data-cms-itm-id="<?= $item['id'] ?>"
+        data-cms-itm-tp="<?= $item['type'] ?>"
         data-prodcodes="<?= $item['prod_codes'] ?>"
       >
         <?php if(!empty($item['ribbon']['content'])) { ?>

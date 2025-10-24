@@ -413,8 +413,11 @@ $(document).ready(function () {
         } else if (link && !(cms_itm_nm || prod_codes)) {
             window.open(link, '_blank');
         } else if (!link && (cms_itm_nm || prod_codes)) {
-            // searchProductsByProdCodes(prod_codes);
-            searchProductsByCms(cms_itm_id, cms_itm_tp, cms_itm_nm);
+            if (cms_itm_nm) {
+                searchProductsByCms(cms_itm_id, cms_itm_tp, cms_itm_nm);
+            } else {
+                searchProductsByProdCodes(prod_codes);
+            }
         }
     })
 
