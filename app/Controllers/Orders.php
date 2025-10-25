@@ -124,13 +124,26 @@ class Orders extends Secure_area implements iData_controller
 			$this->data['payment_methods'] = $payment_methods;
 			$this->data['payment_default_method'] = '';
 
-			$arr_payment_methods = (array) $payment_methods;
-			$keys = array_keys(array_filter($arr_payment_methods, function($v) {
-				return $v === "1" || $v === 1;
-			}));
-			$keys = array_filter($keys, function($v) {
-				return $v !== 'emp_id';
-			});
+			$keys = array();
+			if ($payment_methods->e_order == "1" || $payment_methods->e_order == 1) {
+				$keys[] = "e_order";
+			} 
+			if ($payment_methods->depot == "1" || $payment_methods->depot == 1) {
+				$keys[] = "depot";
+			} 
+			if ($payment_methods->echo_pay == "1" || $payment_methods->echo_pay == 1) {
+				$keys[] = "echo_pay";
+			} 
+			if ($payment_methods->bank_transfer == "1" || $payment_methods->bank_transfer == 1) {
+				$keys[] = "bank_transfer";
+			} 
+			if ($payment_methods->credit_account == "1" || $payment_methods->credit_account == 1) {
+				$keys[] = "credit_account";
+			} 
+			if ($payment_methods->debit_credit_card == "1" || $payment_methods->debit_credit_card == 1) {
+				$keys[] = "debit_credit_card";
+			} 
+
 			if(!empty($keys)) {
 				$source_payment_methods = ['e_order', 'depot', 'echo_pay', 'bank_transfer', 'credit_account', 'debit_credit_card'];
 				$first_payment_method = $keys[0];
@@ -354,7 +367,15 @@ class Orders extends Secure_area implements iData_controller
 		$Order = new Order();
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
+		
+		$payload = $this->request->getJSON(true);
+		$delivery_date = $payload['delivery_date'];
+		$delivery_method = $payload['delivery_method'];
+		$delivery_charge = $payload['delivery_charge'];
+		$collection_container = $payload['collection_container'];
+		$payment_method = $payload['payment_method'];
 
+		
 		$user_info = $Employee->get_logged_in_employee_info();
 		$presell = $type == 'spresell' ? 1 : 0;
 		if ($Order->get_count_cart_products($user_info->person_id, $presell) == 0) {
@@ -362,12 +383,14 @@ class Orders extends Secure_area implements iData_controller
 			return;
 		}
 		
-		$res = $Order->save_for_later($user_info->person_id , 1, $type, $presell);
+		$res = $Order->save_for_later($user_info->person_id , 1, $type, $presell, "", $payload);
 		if ($res != true)
 		{
 			echo "Failed: ".$res;
 			return;
 		}
+
+		
 
         $datetime=date('dmY_His',time());
   		$q = $db->table('epos_orders');
@@ -378,6 +401,10 @@ class Orders extends Secure_area implements iData_controller
 		$q->where('branch', $branch);
 		$q->where('organization_id', $organization_id);
 		$q->orderBy('order_id','desc');
+
+
+
+
 		$q->limit(1);
 		$row = $q->get()->getRow();
 		$order_id = $row->order_id;

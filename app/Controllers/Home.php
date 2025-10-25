@@ -31,7 +31,7 @@ class Home extends BaseController
 	{
 		$d = empty($ss);
 
-    $Employee = new Employee();
+    	$Employee = new Employee();
 		$Admin = new Admin();
 		$Product = new Product();
 		$user_info = $Employee->get_logged_in_employee_info();

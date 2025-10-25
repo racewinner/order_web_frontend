@@ -485,7 +485,7 @@ class Order extends Model
 		];
 	}
 	
-	function save_for_later($person_id , $opened, $type='general', $presell = 0, $ref = "")
+	function save_for_later($person_id , $opened, $type='general', $presell = 0, $ref = "", $payload = [])
 	{
 		$Hom = new Hom();
 		$Employee = new Employee();
@@ -493,6 +493,12 @@ class Order extends Model
 		$db = \Config\Database::connect();
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
+	
+		$delivery_date = $payload['delivery_date'];
+		$delivery_method = $payload['delivery_method'];
+		$delivery_charge = $payload['delivery_charge'];
+		$collection_container = $payload['collection_container'];
+		$payment_method = $payload['payment_method'];
 
 		$results = $db->table('epos_orders')
 			->where('person_id' , $person_id)
@@ -514,6 +520,10 @@ class Order extends Model
 							'presell'    		=> $presell,
 							'branch'	 		=> $branch,
 							'organization_id' 	=> $organization_id,
+							'delivery_date'		=> $delivery_date,
+							'delivery_charge'	=> $delivery_charge,
+							'collection_container'	=> $collection_container,
+							'payment_method'	=> $payment_method,
 							);
 		
 		if($results->getNumRows() == 0 || $presell == 1){

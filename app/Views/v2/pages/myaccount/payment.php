@@ -129,6 +129,10 @@
         border: 1px solid #eee;
         padding: 20px 20px 0px 20px;
     }
+    .one-collection-container {
+        border: 1px solid #eee;
+        border-radius: 10px;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -152,7 +156,7 @@
 
                 <div class="branch-select mx-auto">
                     <div class="mt-2">
-                        <select id='branch' name='branch' class="form-select">
+                        <select id='delivery_date' name='delivery_date' class="form-select">
                             <?php 
                                 foreach($collection_delivery_dates as $index => $c_d_date) {
                                     $date_dt_value = $c_d_date->format('d/m/Y');
@@ -205,7 +209,7 @@
                             <span class="comment mt-2 text-black mb-2">
                                 Delivery Charge:
                             </span>
-                            <span style="color: red; font-weight: bold;"><?= $this->data['delivery_charge'] ?></span>
+                            <span id="delivery_charge_v" style="color: red; font-weight: bold;"><?= $this->data['delivery_charge'] ?></span>
                         </div>
                     </div>
                     <div class="tab-pane fade mb-30 mt-0" id="pane-pickup-depot"
@@ -217,28 +221,28 @@
                                 Please select a collection container
                             </div>
 
-                            <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
                                 <div class="flex-fill">Pallet</div>
                                 <div>
                                     <input class="form-check-input" type="radio" name="collection_container" 
-                                        id="pallet" value="pallet" >
+                                        id="pallet" value="pallet" checked>
                                 </div>
                             </div>
-                            <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
                                 <div class="flex-fill">Cage</div>
                                 <div>
                                     <input class="form-check-input" type="radio" name="collection_container" 
                                         id="cage" value="cage" >
                                 </div>
                             </div>
-                            <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
                                 <div class="flex-fill">Trolley</div>
                                 <div>
                                     <input class="form-check-input" type="radio" name="collection_container" 
                                         id="trolley" value="trolley" >
                                 </div>
                             </div>
-                            <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
                                 <div class="flex-fill">Box</div>
                                 <div>
                                     <input class="form-check-input" type="radio" name="collection_container" 
@@ -411,18 +415,29 @@
 <script>
     $(document).on('click', '#send_orders', function(e) {
         debugger
-        let data = {};
+        let delivery_date           = $('#delivery_date').val()
+        let delivery_method         = $('.delivery-methods li.active').data('bs-target')
+        let delivery_charge         = $('#delivery_charge_v').text()
+        let collection_container    = $('input[name="collection_container"]:checked').val()
+        let payment_method          = $('input[name="payment_method"]:checked').val()
+
+        let payload = {
+            delivery_date,
+            delivery_method,
+            delivery_charge,
+            collection_container,
+            payment_method
+        };
+
         $.ajax({
             url: '/orders/send_order/general',
             method:"POST",
-            data:data,
+            data: JSON.stringify(payload),
             cache:false,
             processData:false,
             error: function (request, status, error) {
                 // $('#send_payment').prop('disabled', false);
-                // showToast({type: "error", message: d.error});
-                debugger
-                alert('error')
+                showToast({type: "error", message: d.error});
             },
             success:function(d) {
                 // if(d.success == true) {
@@ -433,8 +448,8 @@
 
                 // $('#send_payment').prop('disabled', false);
                 // showToast({type: "success", "ok"});
-                debugger
-                alert('success')
+                let url = `<?php echo base_url("");?>/pastorders`;
+	            window.location.href = url;
             }
         })
         return false;

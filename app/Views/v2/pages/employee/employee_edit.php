@@ -102,23 +102,23 @@
                     <ul>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="e_order" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->e_order) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay with Order</label>
+                            <label class="form-check-label">Order</label>
                         </li>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="depot" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->depot) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay at Depot</label>
+                            <label class="form-check-label">Depot</label>
                         </li>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="echo_pay" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->echo_pay) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay by EchoPay</label>
+                            <label class="form-check-label">EchoPay</label>
                         </li>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="bank_transfer" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->bank_transfer) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay by Bank Transfer</label>
+                            <label class="form-check-label">Bank Transfer</label>
                         </li>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="credit_account" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->credit_account) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay by Credit Account</label>
+                            <label class="form-check-label">Credit Account</label>
                         </li>
                         <li class="form-check mb-3">
                             <input class="form-check-input payment-methods" type="checkbox" value="debit_credit_card" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->debit_credit_card) ? 'checked' : '' ?> />
