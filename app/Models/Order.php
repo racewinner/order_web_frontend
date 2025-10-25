@@ -495,10 +495,15 @@ class Order extends Model
 		$organization_id = session()->get('organization_id');
 	
 		$delivery_date = $payload['delivery_date'];
-		$delivery_method = $payload['delivery_method'];
 		$delivery_charge = $payload['delivery_charge'];
 		$collection_container = $payload['collection_container'];
 		$payment_method = $payload['payment_method'];
+		$delivery_method = $payload['delivery_method'];
+		if ($delivery_method == '#pane-via-delivery') {
+			$delivery_method = 'via-delivery';
+		} else {
+			$delivery_method = 'from-depot';
+		}
 
 		$results = $db->table('epos_orders')
 			->where('person_id' , $person_id)
@@ -524,6 +529,7 @@ class Order extends Model
 							'delivery_charge'	=> $delivery_charge,
 							'collection_container'	=> $collection_container,
 							'payment_method'	=> $payment_method,
+							'delivery_method' 	=> $delivery_method,
 							);
 		
 		if($results->getNumRows() == 0 || $presell == 1){
