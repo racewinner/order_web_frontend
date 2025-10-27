@@ -61,6 +61,14 @@ class Orders extends Secure_area implements iData_controller
 		}
 		$this->data["types"] = $types;
 
+		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
+		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
+		$this->data['du_prefer_collect'] 	= $user_info->collect;
+
+		$this->data['credit_account_info'] = session()->get('credit_account_info');
+		$this->data['payment_card_info'] = session()->get('payment_card_info');
+
+
 		$cart = Order::get_cart_info($pid);
 		$this->data['cart_typenames'] 	= implode(',', array_keys($cart['cart_types']));
     	$this->data['total_quantity']   = $cart['total_quantity'];
@@ -74,12 +82,7 @@ class Orders extends Secure_area implements iData_controller
 	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
-		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
-		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
-		$this->data['du_prefer_collect'] 	= $user_info->collect;
 
-		$this->data['credit_account_info'] = session()->get('credit_account_info');
-		$this->data['payment_card_info'] = session()->get('payment_card_info');
 
     // filter only 10 product--------------
     // foreach($types as &$type) {
@@ -212,7 +215,7 @@ class Orders extends Secure_area implements iData_controller
 		$this->data["types"] = $types;
 
 		$cart = Order::get_cart_info($pid);
-    $this->data['total_quantity']   = $cart['total_quantity'];
+    	$this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $cart['total_amount'];
 		$this->data['total_epoints']    = $cart['total_epoints'];
 		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
@@ -220,7 +223,7 @@ class Orders extends Secure_area implements iData_controller
 
 		$this->data['form_width'] = $this->get_form_width();
 	    
-	  $this->data["slides"] = $Admin->get_scount('slides');
+	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
     // filter only 10 product--------------
@@ -471,6 +474,8 @@ class Orders extends Secure_area implements iData_controller
 		$mail_subject = lang('orders_email_subject').$user_info->username.' ['.ucfirst($type).'] order id : '.$origin.'-'.$order_id;
 		if($type == 'spresell') $mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
 
+		$this->do_send_email();
+
 		EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
 		// Second email
@@ -717,6 +722,23 @@ class Orders extends Secure_area implements iData_controller
 
 		return redirect(base_url("orders"));
 
+	}
+
+	function do_send_email()
+	{
+		$email = \Config\Services::email();
+        $email->setFrom('telesales@uniteduk.com', 'United UK Telesales');
+        $email->setTo('QSfTfSilinaRoza@gmail.com');
+        $email->setSubject('Test email via mail() transport');
+        $email->setMessage('<p>Test email using PHP mail() transport. </p> <p>Most important is to match the fromAddr to domain name like "uniteduk".</p>');
+        $email->setProtocol('mail');
+        if ($email->send()) {
+            // echo 'Email sent'; 
+			return true;
+        } else {
+            // echo $email->printDebugger(); 
+			return false;
+        }
 	}
 
 }

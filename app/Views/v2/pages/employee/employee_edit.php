@@ -142,7 +142,8 @@
 
                     <div class="ms-2 d-flex align-items-center">
                         <span class="me-1">£</span>
-                        <input type="number" id="delivery_charge" name="delivery_charge" class="form-control" value="<?= $employee?->delivery_charge ?? 0 ?>" style="width:150px;" />
+                        <input type="" id="delivery_charge" name="delivery_charge" 
+                               class="form-control" value="<?= $employee?->delivery_charge ?? 0 ?>" style="width:150px;" />
                     </div>
                 </div>
                 <div class="d-flex align-items-center ms-4">

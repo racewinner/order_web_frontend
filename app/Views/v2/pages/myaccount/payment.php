@@ -100,30 +100,14 @@
             }
         }
     }
-    .mt-0 {
-        margin-top: 0px !important;
-    }
-    .mt-10 {
-        margin-top: 10px !important;
-    }
-    .mt-20 {
-        margin-top: 20px !important;
-    }
-    .mt-30 {
-        margin-top: 30px !important;
-    }
-    .mb-0 {
-        margin-bottom: 0px !important;
-    }
-    .mb-10 {
-        margin-bottom: 10px !important;
-    }
-    .mb-20 {
-        margin-bottom: 20px !important;
-    }
-    .mb-30 {
-        margin-bottom: 30px !important;
-    }
+    .mt-0  { margin-top: 0px !important;     }
+    .mt-10 { margin-top: 10px !important;    }
+    .mt-20 { margin-top: 20px !important;    }
+    .mt-30 { margin-top: 30px !important;    }
+    .mb-0  { margin-bottom: 0px !important;  }
+    .mb-10 { margin-bottom: 10px !important; }
+    .mb-20 { margin-bottom: 20px !important; }
+    .mb-30 { margin-bottom: 30px !important; }
     .delivery-container {
         border-radius: 10px;
         border: 1px solid #eee;
@@ -133,6 +117,7 @@
         border: 1px solid #eee;
         border-radius: 10px;
     }
+   
 </style>
 <?= $this->endSection() ?>
 
@@ -141,135 +126,156 @@
 
 <div class="d-flex flex-column flex-lg-row mx-auto w-fit-content p-4">
     <div class="delivery-payment">
-        <h5>Delivery & Payment</h5>
-        <!-- <div>Tab Selector</div> -->
+        <h5>Check out</h5>
+        <!-- Tab Selector -->
         <div class="delivery-section mt-4">
-            <h6>Delivery Method</h6>
+            <h6>Order Type</h6>
             <div class="delivery-container mb-30">
-                <div style="color: black; font-size: 17px; font-weight: bold;">Pickup Date & Time</div>
-                <div class="comment mt-2 text-black ">
-                    Please select the required (collection/deliervy) date from the dropdown.
-                </div>
-                <div class="comment">
-                    <span class="pickup-date">
-                        (We will notify you when your order is ready for collection/delivery.)
-                    </span>
-                </div>
-
-                <div class="branch-select mx-auto">
-                    <div class="mt-2">
-                        <select id='delivery_date' name='delivery_date' class="form-select">
-                            <?php 
-                                foreach($collection_delivery_dates as $index => $c_d_date) {
-                                    $date_dt_value = $c_d_date->format('d/m/Y');
-                                    $date_df_value = $c_d_date->format('l'); //'l': Monday, 'D': Mon
-                                    // $date_tm_value = $c_d_date->format('Y-m-d');
-                                    $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
-                                    echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
-                                }
-                            ?>
-                        </select>
-                    </div>
-                </div>
-
-                <ul class="d-inline-flex delivery-methods mt-20 mb-10" role="tablist" aria-label="Delivery Methods">
-                    
-                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
-                    <li class="nav-link one-delivery-method via-delivery 
-                        <?= $this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ? 'active' : '' ?>"
-                        data-bs-toggle="pill"
-                        data-bs-target="#pane-via-delivery" 
-                        role="tab" 
-                        aria-controls="pane-via-delivery" 
-                    >
-                        Via Delivery
-                    </li>
-                    <?php } ?>
+                <ul class="d-inline-flex delivery-methods mt-10 mb-10" role="tablist" aria-label="Delivery Methods">
                     <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
-                    <li class="one-delivery-method pickup-depot 
-                        <?= $this->data['du_prefer_delivery'] != 1 && $this->data['du_prefer_delivery'] != '1' && 
-                           ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect']  == '1') ? 'active' : '' ?>"
-                        data-bs-toggle="pill"
-                        data-bs-target="#pane-pickup-depot" 
-                        role="tab" 
-                        aria-controls="pane-pickup-depot" 
-                    >
-                        Pickup from Depot
-                    </li>
+                        <li class="one-delivery-method pickup-depot 
+                            <?= $this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == '1' ? 'active' : '' ?>"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pane-pickup-depot" 
+                            role="tab" 
+                            aria-controls="pane-pickup-depot" 
+                        >
+                            Collection
+                        </li>
+                    <?php } ?>
+                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                        <li class="nav-link one-delivery-method via-delivery 
+                            <?= $this->data['du_prefer_collect'] != 1 && $this->data['du_prefer_collect'] != '1' && 
+                            ($this->data['du_prefer_delivery']  == 1 || $this->data['du_prefer_delivery']  == '1') ? 'active' : '' ?>"
+                            data-bs-toggle="pill"
+                            data-bs-target="#pane-via-delivery" 
+                            role="tab" 
+                            aria-controls="pane-via-delivery" 
+                        >
+                            Delivery
+                        </li>
                     <?php } ?>
                 </ul>
 
                 <div class="tab-content">
-                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
-                    <div class="tab-pane fade  
-                        <?= $this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ? 'show active' : '' ?>" 
-                        id="pane-via-delivery"
-                        role="tabpanel" 
-                        aria-labelledby="tab-via-delivery"
-                    >
-                        <!-- <h6 class="d-flex">
-                            <div class="fw-bold flex-fill">Delivery Address</div>
-                            <div><i class="bi bi-truck"></i></div>
-                        </h6>
-
-                        <div class="username">Your Name</div>
-                        <div class="address">110 Easter Queenslie Rd, Glasgow G33 4UL</div>
-
-                        <div class="mt-2">
-                            <a class="edit-address">Edit Address</a>
-                        </div> -->
-                        <div class="payment-section mt-10 mb-20">
-                            <span class="comment mt-2 text-black mb-2">
-                                Delivery Charge:
-                            </span>
-                            <span id="delivery_charge_v" style="color: red; font-weight: bold;"><?= $this->data['wiy_delivery_charge'] ?></span>
-                        </div>
-                    </div>
-                    <?php } ?>
                     <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
-                    <div class="tab-pane fade mb-30 mt-0 
-                        <?= $this->data['du_prefer_delivery'] != 1 && $this->data['du_prefer_delivery'] != '1' && 
-                           ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect']  == '1') ? 'show active' : '' ?>" 
-                        id="pane-pickup-depot"
-                        role="tabpanel" 
-                        aria-labelledby="tab-pickup-depot"
-                    >
-                        <div class="payment-section mt-0">
-                            <div class="comment mt-2 text-black mb-2">
-                                Please select a collection container
-                            </div>
+                        <div class="tab-pane fade mb-30 mt-0 
+                            <?= $this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == '1' ? 'show active' : '' ?>"
+                            id="pane-pickup-depot"
+                            role="tabpanel" 
+                            aria-labelledby="tab-pickup-depot"
+                        >
+                            <div class="payment-section mt-10 mb-20">
+                                <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
+                                <div class="comment mt-2 text-black ">
+                                    We will do our best to have the order ready on time.
+                                </div>
+                                <div class="comment">
+                                    <span class="pickup-date">
+                                        (We will notify you when your order is ready for collection/delivery.)
+                                    </span>
+                                </div>
 
-                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                <div class="flex-fill">Pallet</div>
-                                <div>
-                                    <input class="form-check-input" type="radio" name="collection_container" 
-                                        id="pallet" value="pallet" checked>
+                                <div class="branch-select mx-auto">
+                                    <div class="mt-2">
+                                        <select id='delivery_date1' name='delivery_date1' class="form-select">
+                                            <?php 
+                                                foreach($collection_delivery_dates as $index => $c_d_date) {
+                                                    $date_dt_value = $c_d_date->format('d/m/Y');
+                                                    $date_df_value = $c_d_date->format('l');
+                                                    $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                                    echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                <div class="flex-fill">Cage</div>
-                                <div>
-                                    <input class="form-check-input" type="radio" name="collection_container" 
-                                        id="cage" value="cage" >
+
+                                <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
+                                    Please select a collection container
                                 </div>
-                            </div>
-                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                <div class="flex-fill">Trolley</div>
-                                <div>
-                                    <input class="form-check-input" type="radio" name="collection_container" 
-                                        id="trolley" value="trolley" >
+
+                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="flex-fill">Pallet</div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="collection_container" 
+                                            id="pallet" value="pallet" checked>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                <div class="flex-fill">Box</div>
-                                <div>
-                                    <input class="form-check-input" type="radio" name="collection_container" 
-                                        id="box" value="box" >
+                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="flex-fill">Cage</div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="collection_container" 
+                                            id="cage" value="cage" >
+                                    </div>
                                 </div>
+                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="flex-fill">Trolley</div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="collection_container" 
+                                            id="trolley" value="trolley" >
+                                    </div>
+                                </div>
+                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="flex-fill">Box</div>
+                                    <div>
+                                        <input class="form-check-input" type="radio" name="collection_container" 
+                                            id="box" value="box" >
+                                    </div>
+                                </div>
+                                
                             </div>
-                            
                         </div>
-                    </div>
+                    <?php } ?>
+                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                        <div class="tab-pane fade  
+                            <?= $this->data['du_prefer_collect'] != 1 && $this->data['du_prefer_collect'] != '1' && 
+                            ($this->data['du_prefer_delivery']  == 1 || $this->data['du_prefer_delivery']  == '1') ? 'show active' : '' ?>"
+                            id="pane-via-delivery"
+                            role="tabpanel" 
+                            aria-labelledby="tab-via-delivery"
+                        >
+                            <div class="payment-section mt-10 mb-20">
+                                <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
+                                <div class="comment mt-2 text-black ">
+                                    We will do our best to have the order ready on time.
+                                </div>
+                                <div class="comment">
+                                    <span class="pickup-date">
+                                        (We will notify you when your order is ready for collection/delivery.)
+                                    </span>
+                                </div>
+
+                                <div class="branch-select mx-auto">
+                                    <div class="mt-2">
+                                        <select id='delivery_date2' name='delivery_date2' class="form-select">
+                                            <?php 
+                                                foreach($collection_delivery_dates as $index => $c_d_date) {
+                                                    $date_dt_value = $c_d_date->format('d/m/Y');
+                                                    $date_df_value = $c_d_date->format('l');
+                                                    $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                                    echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
+                                    Delivery Charge
+                                </div>
+
+                                <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
+                                <span id="delivery_charge_v" 
+                                    style="font-weight: bold; color: gray;">£<?= $this->data['wiy_delivery_charge'] ?></span>
+                                <?php } ?>
+                                <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
+                                <span id="delivery_charge_v" 
+                                    style="font-weight: bold; color: #008000">FREE</span>
+                                <?php } ?>
+
+                            </div>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -278,69 +284,69 @@
         <div class="payment-section mt-0">
             <h6>Payment Method</h6>
             <?php if ($this->data['payment_methods']->e_order) { ?>
-            <div class="one-pay-method pay-with-order d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">with Order</div>
-                <div>
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                        id="pay_with_order" value="pay_with_order" 
-                        <?php if ($this->data["payment_default_method"] == "e_order") { ?>
-                            checked
-                        <?php } ?>
-                    >
+                <div class="one-pay-method pay-with-order d-flex align-items-center p-2 px-4 mb-2">
+                    <div class="flex-fill">with Order</div>
+                    <div>
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_with_order" value="pay_with_order" 
+                            <?php if ($this->data["payment_default_method"] == "e_order") { ?>
+                                checked
+                            <?php } ?>
+                        >
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php if ($this->data['payment_methods']->depot) { ?>
-            <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">at Depot</div>
-                <div>
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                        id="pay_in_depot" value="pay_in_depot" 
-                        <?php if ($this->data["payment_default_method"] == "depot") { ?>
-                            checked
-                        <?php } ?>
-                    >
+                <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
+                    <div class="flex-fill">at Depot</div>
+                    <div>
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_in_depot" value="pay_in_depot" 
+                            <?php if ($this->data["payment_default_method"] == "depot") { ?>
+                                checked
+                            <?php } ?>
+                        >
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php if ($this->data['payment_methods']->echo_pay) { ?>
-            <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">EchoPay</div>
-                <div>
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                        id="pay_by_echopay" value="pay_by_echopay" 
-                        <?php if ($this->data["payment_default_method"] == "echo_pay") { ?>
-                            checked
-                        <?php } ?>
-                    >
+                <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                    <div class="flex-fill">EchoPay</div>
+                    <div>
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_by_echopay" value="pay_by_echopay" 
+                            <?php if ($this->data["payment_default_method"] == "echo_pay") { ?>
+                                checked
+                            <?php } ?>
+                        >
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php if ($this->data['payment_methods']->bank_transfer) { ?>
-            <div class="one-pay-method pay_by_bank_transfer d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Bank Transfer</div>
-                <div>
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                        id="pay_by_bank_transfer" value="pay_by_bank_transfer" 
-                        <?php if ($this->data["payment_default_method"] == "bank_transfer") { ?>
-                            checked
-                        <?php } ?>
-                    >
+                <div class="one-pay-method pay_by_bank_transfer d-flex align-items-center p-2 px-4 mb-2">
+                    <div class="flex-fill">Bank Transfer</div>
+                    <div>
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_by_bank_transfer" value="pay_by_bank_transfer" 
+                            <?php if ($this->data["payment_default_method"] == "bank_transfer") { ?>
+                                checked
+                            <?php } ?>
+                        >
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php if ($this->data['payment_methods']->credit_account) { ?>
-            <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Credit Account</div>
-                <div>
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                        id="pay_by_credit_account" value="pay_by_credit_account" 
-                        <?php if ($this->data["payment_default_method"] == "credit_account") { ?>
-                            checked
-                        <?php } ?>
-                    >
+                <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
+                    <div class="flex-fill">Credit Account</div>
+                    <div>
+                        <input class="form-check-input" type="radio" name="payment_method" 
+                            id="pay_by_credit_account" value="pay_by_credit_account" 
+                            <?php if ($this->data["payment_default_method"] == "credit_account") { ?>
+                                checked
+                            <?php } ?>
+                        >
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php if ($this->data['payment_methods']->debit_credit_card) { ?>
             <div class="one-pay-method pay-in-card p-2 px-4">
@@ -362,35 +368,10 @@
                         >
                     </div>
                 </div>
-                <!-- <div class="card-detail-info mt-2">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-fill">
-                            <input class="form-control w-100" placeholder="Card Number" name="card_holder_name" />
-                        </div>
-                        <div class="ms-3">
-                            <input class="form-control" placeholder="Card Holder Name" name="card_holder_name" />
-                        </div>
-                    </div>
-                    <div class="d-flex mt-2">
-                        <input class="form-control expire-date" name="expire_date" placeholder="00/00" />
-                        <input class="form-control ms-2 cvv" name="cvv" placeholder="CVV" />
-                    </div>
-                </div> -->
+               
             </div>
             <?php } ?>
-
-            <!-- <div class="one-pay-method pay-in-paypal p-3 px-4 mt-3">
-                <div class="d-flex align-items-center">
-                    <div class="flex-fill">
-                        <img src="/images/icons/png/paypal.png" style="height: 25px; width: auto;" />
-                    </div>
-                    <div>
-                        <input class="form-check-input" type="radio" name="payment_method" id="pay_in_paypal" value="pay_in_paypal">
-                    </div>
-                </div>
-            </div> -->
         </div>
-        
     </div>
 
     <div class="billing card ms-0 mt-4 ms-lg-4">
@@ -403,9 +384,15 @@
                 <div class="flex-fill me-8"><label>Item Total</label></div>
                 <div><span class="value" id="cart_total_amount">£<?= $total_amount ?></span></div>
             </div>
-            <div class="billing-item d-flex">
-                <div class="flex-fill me-8"><label>Delivery Charge</label></div>
-                <div><span class="value" id="cart_delivery_charge">£<?= $delivery_charge ?></span></div>
+            <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
+                <div class="flex-fill me-8" id="order_type_label">Delivery Charge</div>
+                <div id="order_type_vctl">
+                    <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
+                        <span id="cart_delivery_charge" style="font-weight: bold; color: black;">£<?= $delivery_charge ?></span></div>
+                    <?php } ?>
+                    <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
+                        <span id="cart_delivery_charge" style="font-weight: bold; color: #008000">FREE</span></div>
+                    <?php } ?>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>VAT</label></div>
@@ -416,21 +403,16 @@
         <div class="card-footer">
             <div class="subtotal">
                 <div><label>Subtotal</label></div>
-                <!-- <div class="value">£5535.36</div> -->
-                <div class="value" id="cart_subtotal">£<?= $total_amount + $delivery_charge + $total_vats ?></div>
+                <div class="value" id="cart_subtotal2">£<?= $total_amount + $delivery_charge + $total_vats ?></div>
             </div>
 
             <div class="mt-4">
-                <!-- <a href="/orders/payment" class="btn btn-danger w-100">Next to Complete</a> -->
                 <a href="#" id="send_orders" class="btn btn-danger w-100">Next to Complete</a>
             </div>
         </div>
-        
     </div>
 </div>
-
 <?= view("v2/partials/confirm_order_trolley_modal"); ?>
-
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
@@ -442,32 +424,6 @@
             data: JSON.stringify(payload),
             cache:false,
             processData:false,
-            // error: function (request, status, error) {
-            //     // $('#send_payment').prop('disabled', false);
-            //     //showToast({type: "error", message: d.error});
-            //     debugger
-            //     if (cb_error) {
-            //         cb_error(error)
-            //     } else {
-            //         showToast({type: "error", message: d.error});
-            //     }
-            // },
-            // success:function(d) {
-            //     // if(d.success == true) {
-            //     //     window.open(d.data.url, "Payment");
-            //     // } else {
-            //     //     showToast({type: "error", message: d.error});
-            //     // }
-
-            //     // $('#send_payment').prop('disabled', false);
-            //     // showToast({type: "success", "ok"});
-            //     debugger
-            //     if (cb_success) {
-            //         cb_success(d)
-            //     } else {
-            //         return {success: true}
-            //     }
-            // }
         })
         .then(function(d) {
             if (cb_success) {
@@ -484,22 +440,26 @@
             }
         })
     }
+
     $(document).on('click', '#send_orders', function(e) {
         debugger
         let cart_typenames = $('#cart_typenames').val();
         var arr = cart_typenames.split(',');
-        // no trolley
+        // no trolley ----------
         if (arr.length == 0) {
             showToast({type: "error", message: "There is not any product in any trolley"});
             return;
         }
         
-        let delivery_date           = $('#delivery_date').val()
+        let delivery_date           = $('#delivery_date1').val()
+        if ($('.one-delivery-method.via-delivery').hasClass('active')) {
+            delivery_date           = $('#delivery_date2').val()
+        }
         let delivery_charge         = $('#delivery_charge_v').text()
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
         let delivery_method         = $('.delivery-methods li.active').data('bs-target')
-        // no delivery method
+        // no delivery method ----------
         if(!delivery_method) {
             showToast({type: "error", message: "None of the delivery method is selected"});
             return;
@@ -524,6 +484,49 @@
         }
     })
 
+    $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
+        $('#order_type_label').text('Click & Collect');
+        $('#order_type_vctl').hide();
+        //----------
+        let cart_total_amount = $('#cart_total_amount').text();
+        let cart_total_vats = $('#cart_total_vats').text();
+
+        cart_total_amount = cart_total_amount.slice(1);
+        cart_total_vats = cart_total_vats.slice(1);
+
+        let cart_subtotal2 = parseFloat(cart_total_amount) + parseFloat(cart_total_vats);
+        $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+        //----------
+        $('#delivery_date1').val($('#delivery_date2').val());
+    })
+
+    $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
+        $('#order_type_label').text('Delivery Charge');
+        $('#order_type_vctl').show();
+        //----------
+        let cart_total_amount = $('#cart_total_amount').text();
+        let cart_delivery_charge = $('#cart_delivery_charge').text();
+        let cart_total_vats = $('#cart_total_vats').text();
+
+        cart_total_amount = cart_total_amount.slice(1);
+        cart_delivery_charge = cart_delivery_charge == 'FREE' ? 0 : cart_delivery_charge.slice(1);
+        cart_total_vats = cart_total_vats.slice(1);
+
+        let cart_subtotal2 = parseFloat(cart_total_amount) + parseFloat(cart_delivery_charge) + parseFloat(cart_total_vats);
+        $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+         //----------
+        $('#delivery_date2').val($('#delivery_date1').val());
+    })
+
+    $(document).ready(function() {
+        let el = $('.delivery-methods li')
+        if (el.length == 0) {
+            return;
+        } else {
+            el[0].click();
+        }
+    })
+
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
         debugger
         let delivery_date           = $('#delivery_date').val()
@@ -531,7 +534,7 @@
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
         let delivery_method         = $('.delivery-methods li.active').data('bs-target')
-        // no delivery method
+        // no delivery method----------
         if(!delivery_method) {
             showToast({type: "error", message: "None of the delivery method is selected"});
             return;
@@ -545,7 +548,7 @@
             payment_method
         };
 
-        let typename    = $('input[name="trolley_container"]:checked').val()
+        let typename  = $('input[name="trolley_container"]:checked').val()
         if (typename != 'all') {
             let res = make_order(typename, payload, function() {
                 let url = `<?php echo base_url("");?>/pastorders`;
@@ -569,10 +572,6 @@
                 }
             })
         }
-        // const id = $(e.target).data('id');
-        // const prod_codes = $(e.target).data('prodcodes');
-        // $("#cmslink_dialog").modal("close");
-        // searchProductsByProdCodes(prod_codes);
     })
 </script>
 <?= $this->endSection() ?>

@@ -98,7 +98,12 @@
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>Delivery Charge</label></div>
+                <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
                 <div><span class="value" id="cart_delivery_charge">£<?= $delivery_charge ?></span></div>
+                <?php } ?>
+                <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
+                <div><span class="value" style="color: #008000" id="cart_delivery_charge">FREE</span></div>
+                <?php } ?>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>VAT</label></div>

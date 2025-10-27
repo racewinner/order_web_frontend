@@ -17,4 +17,30 @@ class EmailService
 		$email->send();
 		$email->clear();
     }
+
+	 public static function sendEmail ($from, $to, $senderCompany, $subject, $message) {
+		// This method was made by holla.ardy, 2025.10.26
+		/* to test? use this codebase
+        $email = \Config\Services::email();
+        $email->setFrom('telesales@uniteduk.com', 'United UK Telesales');
+        $email->setTo('QSfTfSilinaRoza@gmail.com');
+        $email->setSubject('Test email via mail() transport');
+        $email->setMessage('<p>Test email using PHP mail() transport. </p> <p>Most important is to match the fromAddr to domain name like "uniteduk".</p>');
+        $email->setProtocol('mail');
+        if ($email->send()) {
+            echo 'Email sent'; 
+        } else {
+            echo $email->printDebugger(); 
+        } 
+		*/
+	    $email = \Config\Services::email();
+        $email->setFrom($from, $senderCompany);
+        $email->setTo($to);
+		$email->setSubject($subject);
+        $email->setMessage($message);
+        $email->setProtocol('mail');
+		$email->setMailType('html');
+        $email->send();
+		$email->clear();
+    }
 }

@@ -29,6 +29,10 @@
             }
         }
     }
+    .user-order-types #delivery_charge.invalid {
+        border: 1px solid #ff0000;
+        box-shadow: 0px 0px 0px 4px #ffa3a3;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -275,6 +279,19 @@ $(document).ready(function(e) {
             payment_methods.push($payment_method_chkboxes[i].value);
         }
         $form.find("input#payment_methods").val(payment_methods);
+
+        // check if the deivery charge is valid
+        let delivery_charge_v = $('.user-order-types #delivery_charge').val();
+        const isPureNumericString = (s) => typeof s === "string" && /^-?\d+(.\d+)?([eE][-+]?\d+)?$/.test(s);
+        if (delivery_charge_v != '' && !isPureNumericString(delivery_charge_v)) {
+            $('.user-order-types #delivery_charge').addClass('invalid');
+
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+
+            return false;
+        }
 
         if(person_id) {         // update account
             if($form.find("#change_password")[0].checked) {

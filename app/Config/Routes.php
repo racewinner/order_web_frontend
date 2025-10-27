@@ -8,6 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 
 
 $routes->addRedirect('/', '/home');
+$routes->get('/test/send_email', 'TestController::sendEmail');
+
 $routes->get('/home/preview', 'Home::preview');
 $routes->get('/home/logout', 'Home::logout');
 $routes->get('/login', 'Login::index');

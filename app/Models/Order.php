@@ -432,15 +432,15 @@ class Order extends Model
 
 		$Employee = new Employee();
 		$person_info = $Employee->get_info($person_id);
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
 		$query =  " SELECT * FROM epos_cart WHERE person_id={$person_id} " .
               " AND branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND organization_id={$organization_id} ";
-    }
-    $query .= " AND presell=0 ORDER BY group_type";
+		if (!empty($organization_id)) {
+		$query .= " AND organization_id={$organization_id} ";
+		}
+		$query .= " AND presell=0 ORDER BY group_type";
 		$results = $db->query($query);
 
 		$cart_types = [];
@@ -448,7 +448,7 @@ class Order extends Model
 		$total_quantity = 0;
 		$total_amount = 0;
 		$total_epoints = 0;
-    $total_vats = 0;
+    	$total_vats = 0;
 		foreach($results->getResult() as $res)
 		{
 			$product = Product::getLowestPriceProductByCode($person_info, $res->prod_code, true, $res->group_type == 'spresell');
