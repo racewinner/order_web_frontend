@@ -282,39 +282,60 @@ class Product extends Model
 		$category_id = intval($category_id);
 		$suggestions = array();
 
-		$search_cond = "";
-		$arr = preg_split("/\ /", $search);
-		foreach ($arr as $a) {
-			$keyword = $a;
-			if (strpos($keyword, '%') !== false) {
-				$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
-			} else {
-				$keyword = $db->escapeLikeString($a);
+		$cond = "";
+		$search0 = $search;
+		try {
+			$cond .= "AND (";
+			$arr0 = preg_split("/\,/", $search0);
+			foreach ($arr0 as $index0 => $a0) {
+				if ($index0 > 0)
+					$cond .= " OR ";
+				$cond .= "( ";
+				//------------
+				$a0 = trim($a0);
+				$arr = preg_split("/\ /", $a0);
+				foreach ($arr as $index => $a) {
+					$keyword = $a;
+					if (strpos($keyword, '%') !== false) {
+						$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+					} else {
+						$keyword = $db->escapeLikeString($a);
+					}
+					if ($index > 0)
+						$cond .= " AND ";
+					$cond .= "( ";
+					// original search engine...
+						// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+						// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
+						// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+						// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+						// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
+					// new search engine, holla.ardy
+					$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
+					//----------
+					$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
+					//----------
+					$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
+					//----------
+					$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
+					$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+					$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+					$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+					//----------
+					$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+					//----------
+					$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+					$cond .= ") ";
+				}
+				//------------
+				$cond .= ") ";
 			}
-			$search_cond .= "AND ( ";
-			// original search engine...
-				// $search_cond .= "p.prod_code LIKE '%" . 	$keyword . "' ";
-				// $search_cond .= "OR retail LIKE '" . 	$keyword . "%' ";
-				// $search_cond .= "OR wholesale LIKE '" . 	$keyword . "%' ";
-				// $search_cond .= "OR prod_desc LIKE '%". 	$keyword . "%' ";
-				// $search_cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
-			// new search engine, holla.ardy
-			$search_cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";
-			// ----------
-			$search_cond .= "OR retail LIKE '" . 			$keyword . "%' ";
-			//----------
-      		$search_cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";
-			//----------
-			$search_cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";
-			$search_cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
-			$search_cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
-			$search_cond .= "OR prod_desc = '" . 			$keyword . "' ";
-			//----------
-			$search_cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
-			//----------
-			$search_cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
-			$search_cond .= ") ";
+			$cond .= ") ";
+		} catch (\Exception $e) {
+
 		}
+		//-------------------
+		$search_cond = $cond;
 
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');
@@ -374,7 +395,8 @@ class Product extends Model
 		}
 		$query .= ") GROUP BY prod_desc ";
 		$query .= " ORDER BY prod_desc ASC, prod_pack_desc ASC, brand ASC, meta ASC ";
-		$query .= " LIMIT " . $limit;
+		// here, we paginate the result as many as limit because speed up
+		$query .= " LIMIT " . $limit; 
 		$suggestions = array();
 		$result = $db->query($query);
 		foreach ($result->getResult() as $row) {
@@ -427,14 +449,12 @@ class Product extends Model
 		if (!empty($user_info) && !empty($filter['favorite'])) {
 			$query .= " INNER JOIN epos_favorites as ef on (ef.prod_code = p.prod_code and ef.person_id=" . $user_info->person_id . ") ";
    		}
-
-    $query .= " LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
-
+    	$query .= " LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
 		$query .= " WHERE ct.display=1 AND branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND p.organization_id={$organization_id} ";
-    }
-    $query .= " AND " . $cond . " GROUP BY p.prod_code ";
+		if (!empty($organization_id)) {
+			$query .= " AND p.organization_id={$organization_id} ";
+		}
+		$query .= " AND " . $cond . " GROUP BY p.prod_code ";
 
 		$results = $db->query($query);
 		return $results->getNumRows();
@@ -1159,39 +1179,52 @@ class Product extends Model
 			if (!empty($filter['search0'])) {
 				$search0 = urldecode($filter['search0']);
 				try {
-					$arr = preg_split("/\ /", $search0);
-					foreach ($arr as $a) {
-						$keyword = $a;
-						if (strpos($keyword, '%') !== false) {
-							$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
-						} else {
-							$keyword = $db->escapeLikeString($a);
+					$cond .= "AND (";
+					$arr0 = preg_split("/\,/", $search0);
+					foreach ($arr0 as $index0 => $a0) {
+						if ($index0 > 0)
+							$cond .= " OR ";
+						$cond .= "( ";
+						//------------
+						$a0 = trim($a0);
+						$arr = preg_split("/\ /", $a0);
+						foreach ($arr as $index => $a) {
+							$keyword = $a;
+							if (strpos($keyword, '%') !== false) {
+								$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+							} else {
+								$keyword = $db->escapeLikeString($a);
+							}
+							if ($index > 0)
+								$cond .= " AND ";
+							$cond .= "( ";
+							// original search engine...
+								// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+								// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
+								// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+								// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+								// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
+							// new search engine, holla.ardy
+							$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
+							//----------
+							$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
+							//----------
+							$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
+							//----------
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
+							$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+							$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+							//----------
+							$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+							//----------
+							$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+							$cond .= ") ";
 						}
-
-						$cond .= "AND ( ";
-						// original search engine...
-							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
-							// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
-							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
-							// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
-							// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
-						// new search engine, holla.ardy
-						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
-						//----------
-						$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
-						//----------
-						$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
-						//----------
-						$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
-						$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
-						$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
-						$cond .= "OR prod_desc = '" . 			$keyword . "' ";
-						//----------
-						$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
-						//----------
-						$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+						//------------
 						$cond .= ") ";
 					}
+					$cond .= ") ";
 				} catch (\Exception $e) {
 
 				}
@@ -1201,44 +1234,48 @@ class Product extends Model
 				$search0 = urldecode($filter['search1']);
 				try {
 					$cond .= "AND (";
-					$arr = preg_split("/\,/", $search0);
-					foreach ($arr as $index => $a) {
-						$keyword = $a;
-						if (strpos($keyword, '%') !== false) {
-							$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
-						} else {
-							$keyword = $db->escapeLikeString($a);
-						}
-
-						if ($index > 0)
+					$arr0 = preg_split("/\,/", $search0);
+					foreach ($arr0 as $index0 => $a0) {
+						if ($index0 > 0)
 							$cond .= " OR ";
-						$cond .= " ( ";
-						// original search engine...
-							// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
-							// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
-							// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
-							// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
-							// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
-						// new search engine, holla.ardy
-						$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";
-						//----------
-						$cond .= "OR retail LIKE '" . 			$keyword . "%' ";
-						//----------
-						$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";
-						//----------
-						$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";
-						$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
-						$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
-						$cond .= "OR prod_desc = '" . 			$keyword . "' ";
-						//----------
-						$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
-						//----------
-						$cond .= "OR meta LIKE '% " . 			$keyword . "' ";
-						$cond .= "OR meta LIKE '" . 			$keyword . " %' ";
-						$cond .= "OR meta LIKE '% " . 			$keyword . " %' ";
-						$cond .= "OR meta = '" . 				$keyword . "' ";
-						//----------
-						$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+						$cond .= "( ";
+						//------------
+						$a0 = trim($a0);
+						$arr = preg_split("/\ /", $a0);
+						foreach ($arr as $index => $a) {
+							$keyword = $a;
+							if (strpos($keyword, '%') !== false) {
+								$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+							} else {
+								$keyword = $db->escapeLikeString($a);
+							}
+							if ($index > 0)
+								$cond .= " AND ";
+							$cond .= "( ";
+							// original search engine...
+								// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+								// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
+								// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+								// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+								// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
+							// new search engine, holla.ardy
+							$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
+							//----------
+							$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
+							//----------
+							$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
+							//----------
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
+							$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+							$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+							//----------
+							$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+							//----------
+							$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+							$cond .= ") ";
+						}
+						//------------
 						$cond .= ") ";
 					}
 					$cond .= ") ";

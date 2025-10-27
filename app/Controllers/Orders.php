@@ -62,6 +62,7 @@ class Orders extends Secure_area implements iData_controller
 		$this->data["types"] = $types;
 
 		$cart = Order::get_cart_info($pid);
+		$this->data['cart_typenames'] 	= implode(',', array_keys($cart['cart_types']));
     	$this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $cart['total_amount'];
 		$this->data['total_epoints']    = $cart['total_epoints'];
@@ -73,9 +74,9 @@ class Orders extends Secure_area implements iData_controller
 	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
-		$this->data['du_prefer_delivery'] = $user_info->delivery;
-		$this->data['delivery_charge'] = $user_info->delivery_charge;
-		$this->data['du_prefer_collect'] = $user_info->collect;
+		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
+		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
+		$this->data['du_prefer_collect'] 	= $user_info->collect;
 
 		$this->data['credit_account_info'] = session()->get('credit_account_info');
 		$this->data['payment_card_info'] = session()->get('payment_card_info');

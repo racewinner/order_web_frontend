@@ -70,8 +70,8 @@
                     padding: 0;
                     margin-right: 10px;
                     img {
-                        height: 30px;
-                        width: 50px;
+                        height: 50px;
+                        /* width: 50px; */
                     }
                 }
             }
@@ -137,6 +137,8 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<input type="hidden" name="cart_typenames" id="cart_typenames" value="<?php echo $cart_typenames;?>">
+
 <div class="d-flex flex-column flex-lg-row mx-auto w-fit-content p-4">
     <div class="delivery-payment">
         <h5>Delivery & Payment</h5>
@@ -171,7 +173,10 @@
                 </div>
 
                 <ul class="d-inline-flex delivery-methods mt-20 mb-10" role="tablist" aria-label="Delivery Methods">
-                    <li class="nav-link one-delivery-method via-delivery active"
+                    
+                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                    <li class="nav-link one-delivery-method via-delivery 
+                        <?= $this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ? 'active' : '' ?>"
                         data-bs-toggle="pill"
                         data-bs-target="#pane-via-delivery" 
                         role="tab" 
@@ -179,7 +184,11 @@
                     >
                         Via Delivery
                     </li>
-                    <li class="one-delivery-method pickup-depot"
+                    <?php } ?>
+                    <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
+                    <li class="one-delivery-method pickup-depot 
+                        <?= $this->data['du_prefer_delivery'] != 1 && $this->data['du_prefer_delivery'] != '1' && 
+                           ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect']  == '1') ? 'active' : '' ?>"
                         data-bs-toggle="pill"
                         data-bs-target="#pane-pickup-depot" 
                         role="tab" 
@@ -187,10 +196,14 @@
                     >
                         Pickup from Depot
                     </li>
+                    <?php } ?>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="pane-via-delivery"
+                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                    <div class="tab-pane fade  
+                        <?= $this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ? 'show active' : '' ?>" 
+                        id="pane-via-delivery"
                         role="tabpanel" 
                         aria-labelledby="tab-via-delivery"
                     >
@@ -209,10 +222,15 @@
                             <span class="comment mt-2 text-black mb-2">
                                 Delivery Charge:
                             </span>
-                            <span id="delivery_charge_v" style="color: red; font-weight: bold;"><?= $this->data['delivery_charge'] ?></span>
+                            <span id="delivery_charge_v" style="color: red; font-weight: bold;"><?= $this->data['wiy_delivery_charge'] ?></span>
                         </div>
                     </div>
-                    <div class="tab-pane fade mb-30 mt-0" id="pane-pickup-depot"
+                    <?php } ?>
+                    <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
+                    <div class="tab-pane fade mb-30 mt-0 
+                        <?= $this->data['du_prefer_delivery'] != 1 && $this->data['du_prefer_delivery'] != '1' && 
+                           ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect']  == '1') ? 'show active' : '' ?>" 
+                        id="pane-pickup-depot"
                         role="tabpanel" 
                         aria-labelledby="tab-pickup-depot"
                     >
@@ -252,6 +270,7 @@
                             
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -260,7 +279,7 @@
             <h6>Payment Method</h6>
             <?php if ($this->data['payment_methods']->e_order) { ?>
             <div class="one-pay-method pay-with-order d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Pay with Order</div>
+                <div class="flex-fill">with Order</div>
                 <div>
                     <input class="form-check-input" type="radio" name="payment_method" 
                         id="pay_with_order" value="pay_with_order" 
@@ -273,7 +292,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->depot) { ?>
             <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Pay at Depot</div>
+                <div class="flex-fill">at Depot</div>
                 <div>
                     <input class="form-check-input" type="radio" name="payment_method" 
                         id="pay_in_depot" value="pay_in_depot" 
@@ -286,7 +305,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->echo_pay) { ?>
             <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Pay by EchoPay</div>
+                <div class="flex-fill">EchoPay</div>
                 <div>
                     <input class="form-check-input" type="radio" name="payment_method" 
                         id="pay_by_echopay" value="pay_by_echopay" 
@@ -299,7 +318,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->bank_transfer) { ?>
             <div class="one-pay-method pay_by_bank_transfer d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Pay by Bank Transfer</div>
+                <div class="flex-fill">Bank Transfer</div>
                 <div>
                     <input class="form-check-input" type="radio" name="payment_method" 
                         id="pay_by_bank_transfer" value="pay_by_bank_transfer" 
@@ -312,7 +331,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->credit_account) { ?>
             <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
-                <div class="flex-fill">Pay by Credit Account</div>
+                <div class="flex-fill">Credit Account</div>
                 <div>
                     <input class="form-check-input" type="radio" name="payment_method" 
                         id="pay_by_credit_account" value="pay_by_credit_account" 
@@ -329,9 +348,9 @@
                     <div class="flex-fill">
                         <div>Debit / Credit Card</div>
                         <ul class="card-types d-flex">
-                            <li><img src="/images/icons/png/master-card.png" /></li>
                             <li><img src="/images/icons/png/visa.png" /></li>
-                            <li><img src="/images/icons/png/discover.png" /></li>
+                            <li><img src="/images/icons/png/master-card.png" /></li>
+                            <li><img src="/images/icons/png/american-express.png" /></li>
                         </ul>
                     </div>
                     <div>
@@ -409,17 +428,114 @@
         
     </div>
 </div>
+
+<?= view("v2/partials/confirm_order_trolley_modal"); ?>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
 <script>
+    function make_order(type, payload, cb_success, cb_error) {
+        return $.ajax({
+            url: `/orders/send_order/${type}`,
+            method:"POST",
+            data: JSON.stringify(payload),
+            cache:false,
+            processData:false,
+            // error: function (request, status, error) {
+            //     // $('#send_payment').prop('disabled', false);
+            //     //showToast({type: "error", message: d.error});
+            //     debugger
+            //     if (cb_error) {
+            //         cb_error(error)
+            //     } else {
+            //         showToast({type: "error", message: d.error});
+            //     }
+            // },
+            // success:function(d) {
+            //     // if(d.success == true) {
+            //     //     window.open(d.data.url, "Payment");
+            //     // } else {
+            //     //     showToast({type: "error", message: d.error});
+            //     // }
+
+            //     // $('#send_payment').prop('disabled', false);
+            //     // showToast({type: "success", "ok"});
+            //     debugger
+            //     if (cb_success) {
+            //         cb_success(d)
+            //     } else {
+            //         return {success: true}
+            //     }
+            // }
+        })
+        .then(function(d) {
+            if (cb_success) {
+                cb_success(d)
+            } else {
+                return {success: true}
+            }
+        })
+        .catch(function(error) {
+            if (cb_error) {
+                cb_error(error)
+            } else {
+                showToast({type: "error", message: d.error});
+            }
+        })
+    }
     $(document).on('click', '#send_orders', function(e) {
         debugger
+        let cart_typenames = $('#cart_typenames').val();
+        var arr = cart_typenames.split(',');
+        // no trolley
+        if (arr.length == 0) {
+            showToast({type: "error", message: "There is not any product in any trolley"});
+            return;
+        }
+        
         let delivery_date           = $('#delivery_date').val()
-        let delivery_method         = $('.delivery-methods li.active').data('bs-target')
         let delivery_charge         = $('#delivery_charge_v').text()
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
+        let delivery_method         = $('.delivery-methods li.active').data('bs-target')
+        // no delivery method
+        if(!delivery_method) {
+            showToast({type: "error", message: "None of the delivery method is selected"});
+            return;
+        }
+
+        if (arr.length == 1) {
+            let payload = {
+                delivery_date,
+                delivery_method,
+                delivery_charge,
+                collection_container,
+                payment_method
+            };
+            let res = make_order(arr[0], payload, function() {
+                let url = `<?php echo base_url("");?>/pastorders`;
+	            window.location.href = url;
+            });
+        } else {
+            const confirm_order_trolley_modal = $("#confirm_order_trolley_dialog");
+            const modal = new bootstrap.Modal(confirm_order_trolley_modal[0]);
+            modal.show();
+        }
+    })
+
+    $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
+        debugger
+        let delivery_date           = $('#delivery_date').val()
+        let delivery_charge         = $('#delivery_charge_v').text()
+        let collection_container    = $('input[name="collection_container"]:checked').val()
+        let payment_method          = $('input[name="payment_method"]:checked').val()
+        let delivery_method         = $('.delivery-methods li.active').data('bs-target')
+        // no delivery method
+        if(!delivery_method) {
+            showToast({type: "error", message: "None of the delivery method is selected"});
+            return;
+        }
 
         let payload = {
             delivery_date,
@@ -429,30 +545,34 @@
             payment_method
         };
 
-        $.ajax({
-            url: '/orders/send_order/general',
-            method:"POST",
-            data: JSON.stringify(payload),
-            cache:false,
-            processData:false,
-            error: function (request, status, error) {
-                // $('#send_payment').prop('disabled', false);
-                showToast({type: "error", message: d.error});
-            },
-            success:function(d) {
-                // if(d.success == true) {
-                //     window.open(d.data.url, "Payment");
-                // } else {
-                //     showToast({type: "error", message: d.error});
-                // }
-
-                // $('#send_payment').prop('disabled', false);
-                // showToast({type: "success", "ok"});
+        let typename    = $('input[name="trolley_container"]:checked').val()
+        if (typename != 'all') {
+            let res = make_order(typename, payload, function() {
                 let url = `<?php echo base_url("");?>/pastorders`;
 	            window.location.href = url;
-            }
-        })
-        return false;
+            });
+        } else {
+            let cart_typenames = $('#cart_typenames').val();
+            var arr = cart_typenames.split(',');
+
+            let res = Promise.all(arr.map(function(type) {
+                return make_order(type, payload)
+            }))
+            .then(function(responses) {
+                debugger
+                let failed_res = responses.filter(itm => !itm.success)
+                if (failed_res.length > 0) {
+                    showToast({type: "error", message: "Sorry, some issues occured during send orders."});
+                } else {
+                    let url = `<?php echo base_url("");?>/pastorders`;
+                    window.location.href = url;
+                }
+            })
+        }
+        // const id = $(e.target).data('id');
+        // const prod_codes = $(e.target).data('prodcodes');
+        // $("#cmslink_dialog").modal("close");
+        // searchProductsByProdCodes(prod_codes);
     })
 </script>
 <?= $this->endSection() ?>

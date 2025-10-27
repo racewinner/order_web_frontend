@@ -17,7 +17,7 @@ function searchProductsByProdCodes(prod_codes) {
         url += "&offset=0";
         url += "&per_page=30";
         url += "&view_mode=" + ($("#view_mode").val() ?? 'grid');
-        url += '&search1=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
+        url += '&search0=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
     window.location.href = url;
 }
 

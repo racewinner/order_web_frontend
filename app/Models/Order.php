@@ -475,13 +475,12 @@ class Order extends Model
 		}
 
 		return [
-			'total_quantity' => $total_quantity ?? 0,
-			'total_amount' => $total_amount ?? 0,
-			'total_epoints' => $total_epoints ?? 0,
-			'total_vats' => $total_vats ?? 0,
-
-			'cart_types' => $cart_types,
-      'delivery_charge' => $person_info->delivery_charge ?? 0,
+			'total_quantity' 	=> $total_quantity ?? 0,
+			'total_amount' 		=> $total_amount ?? 0,
+			'total_epoints' 	=> $total_epoints ?? 0,
+			'total_vats' 		=> $total_vats ?? 0,
+			'cart_types'		=> $cart_types,
+    		'delivery_charge' 	=> $person_info->delivery_charge ?? 0,
 		];
 	}
 	
