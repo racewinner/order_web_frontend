@@ -52,7 +52,7 @@
             <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
                 <?php foreach($types as $index => $type) { ?>
                     <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
-                        id="tab-general" 
+                        id="tab-<?= $type['id'] ?>" 
                         data-bs-toggle="pill" 
                         data-bs-target="#pane-<?= $type['id'] ?>" 
                         role="tab" 
@@ -71,6 +71,10 @@
                         data-lines="<?= $type['lines'] ?>"
                         data-items="<?= $type['items'] ?>"
                     >
+                        <input type="hidden" name="bknd_item_total" id="bknd_item_total" value="<?= $type['item_total'] ?>">
+                        <input type="hidden" name="bknd_vat" id="bknd_vat" value="<?= $type['vat'] ?>">
+
+
                         <div class="d-flex align-items-center cart-lines-items mb-4">
                             <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
                         </div>
@@ -94,32 +98,22 @@
         <div class="card-body">
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>Item Total</label></div>
-                <div><span class="value" id="cart_total_amount">£<?= $total_amount ?></span></div>
-            </div>
-            <div class="billing-item d-flex">
-                <div class="flex-fill me-8"><label>Delivery Charge</label></div>
-                <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
-                <div><span class="value" id="cart_delivery_charge">£<?= $delivery_charge ?></span></div>
-                <?php } ?>
-                <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
-                <div><span class="value" style="color: #008000" id="cart_delivery_charge">FREE</span></div>
-                <?php } ?>
+                <div><span class="value" id="cur_trolley_total_amount"></span></div>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>VAT</label></div>
-                <div><span class="value" id="cart_total_vats">£<?= $total_vats ?></span></div>
+                <div><span class="value" id="cur_trolley_total_vats"></span></div>
             </div>
         </div>
 
         <div class="card-footer">
             <div class="subtotal subtotal-desc">
-                <div><label>Overall order total is </label></div>
-                <!-- <div class="value">£5535.36</div> -->
-                <div class="value" id="cart_subtotal">£<?= $total_amount + $delivery_charge + $total_vats ?></div>
+                <div><label>Trolley total is </label></div>
+                <div class="value" id="cur_trolley_total"></div>
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment" class="btn btn-danger w-100">Next to Complete</a>
+                <a href="/orders/payment/xxx" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
             </div>
         </div>
     </div>
@@ -127,4 +121,29 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
+<script>
+     $(document).ready(function() {
+        let el = $('.one-cart-type')
+        if (el.length == 0) {
+            return;
+        } else {
+            el[0].click();
+        }
+    })
+    $(document).on('click', '.one-cart-type', function(e) {
+        debugger
+        let el_tab_id = e.currentTarget.id
+        let trolley_name = el_tab_id.slice(4)
+        
+        let item_total = $(`#pane-${trolley_name} input#bknd_item_total`).val();
+        let vat = $(`#pane-${trolley_name} input#bknd_vat`).val();
+
+        $('#cur_trolley_total_amount').text(`£${parseFloat(item_total).toFixed(2)}`);
+        $('#cur_trolley_total_vats').text(`£${parseFloat(vat).toFixed(2)}`);
+        $('#cur_trolley_total').text(`£${(parseFloat(item_total) + parseFloat(vat)).toFixed(2)}`);
+
+        $('#nxt2complete').attr('href', `/orders/payment/${trolley_name}`)
+    })
+</script>
+
 <?= $this->endSection() ?>

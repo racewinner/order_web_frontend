@@ -172,7 +172,7 @@
                                 </div>
                                 <div class="comment">
                                     <span class="pickup-date">
-                                        (We will notify you when your order is ready for collection/delivery.)
+                                        (We will notify you when your order is ready for collection.)
                                     </span>
                                 </div>
 
@@ -242,7 +242,7 @@
                                 </div>
                                 <div class="comment">
                                     <span class="pickup-date">
-                                        (We will notify you when your order is ready for collection/delivery.)
+                                        (We will notify you when your order is ready for delivery.)
                                     </span>
                                 </div>
 
@@ -382,21 +382,29 @@
         <div class="card-body">
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>Item Total</label></div>
-                <div><span class="value" id="cart_total_amount">£<?= $total_amount ?></span></div>
+                <div><span class="value" id="pay_total_amount">£<?= $total_amount ?></span></div>
             </div>
             <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
                 <div class="flex-fill me-8" id="order_type_label">Delivery Charge</div>
-                <div id="order_type_vctl">
+                <div id="order_type_delivery_vctl">
                     <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
-                        <span id="cart_delivery_charge" style="font-weight: bold; color: black;">£<?= $delivery_charge ?></span></div>
+                        <span id="cart_delivery_charge" style="font-weight: bold; color: black;">£<?= $delivery_charge ?></span>
                     <?php } ?>
                     <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
-                        <span id="cart_delivery_charge" style="font-weight: bold; color: #008000">FREE</span></div>
+                        <span id="cart_delivery_charge" style="font-weight: bold; color: #008000">FREE</span>
                     <?php } ?>
+
+                    
+                </div>
+                <div id="order_type_collection_vctl">
+                    <?php if ($this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == "1") { ?>
+                        <span id="cart_click_collect" style="font-weight: bold; color: #008000">FREE</span>
+                    <?php } ?>
+                </div>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>VAT</label></div>
-                <div><span class="value" id="cart_total_vats">£<?= $total_vats ?></span></div>
+                <div><span class="value" id="pay_total_vats">£<?= $total_vats ?></span></div>
             </div>
         </div>
 
@@ -473,8 +481,8 @@
                 collection_container,
                 payment_method
             };
-            let res = make_order(arr[0], payload, function() {
-                let url = `<?php echo base_url("");?>/pastorders`;
+            let res = make_order(arr[0], payload, function(res) {
+                let url = `<?php echo base_url("");?>pastorders`;
 	            window.location.href = url;
             });
         } else {
@@ -486,15 +494,17 @@
 
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
         $('#order_type_label').text('Click & Collect');
-        $('#order_type_vctl').hide();
+        $('#order_type_collection_vctl').show();
+        $('#order_type_delivery_vctl').hide();
+
         //----------
-        let cart_total_amount = $('#cart_total_amount').text();
-        let cart_total_vats = $('#cart_total_vats').text();
+        let pay_total_amount = $('#pay_total_amount').text();
+        let pay_total_vats = $('#pay_total_vats').text();
 
-        cart_total_amount = cart_total_amount.slice(1);
-        cart_total_vats = cart_total_vats.slice(1);
+        pay_total_amount = pay_total_amount.slice(1);
+        pay_total_vats = pay_total_vats.slice(1);
 
-        let cart_subtotal2 = parseFloat(cart_total_amount) + parseFloat(cart_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
         //----------
         $('#delivery_date1').val($('#delivery_date2').val());
@@ -502,17 +512,18 @@
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
         $('#order_type_label').text('Delivery Charge');
-        $('#order_type_vctl').show();
+        $('#order_type_collection_vctl').hide();
+        $('#order_type_delivery_vctl').show();
         //----------
-        let cart_total_amount = $('#cart_total_amount').text();
+        let pay_total_amount = $('#pay_total_amount').text();
         let cart_delivery_charge = $('#cart_delivery_charge').text();
-        let cart_total_vats = $('#cart_total_vats').text();
+        let pay_total_vats = $('#pay_total_vats').text();
 
-        cart_total_amount = cart_total_amount.slice(1);
+        pay_total_amount = pay_total_amount.slice(1);
         cart_delivery_charge = cart_delivery_charge == 'FREE' ? 0 : cart_delivery_charge.slice(1);
-        cart_total_vats = cart_total_vats.slice(1);
+        pay_total_vats = pay_total_vats.slice(1);
 
-        let cart_subtotal2 = parseFloat(cart_total_amount) + parseFloat(cart_delivery_charge) + parseFloat(cart_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(cart_delivery_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
          //----------
         $('#delivery_date2').val($('#delivery_date1').val());
@@ -529,7 +540,10 @@
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
         debugger
-        let delivery_date           = $('#delivery_date').val()
+        let delivery_date           = $('#delivery_date1').val()
+        if ($('.one-delivery-method.via-delivery').hasClass('active')) {
+            delivery_date           = $('#delivery_date2').val()
+        }
         let delivery_charge         = $('#delivery_charge_v').text()
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
@@ -550,8 +564,8 @@
 
         let typename  = $('input[name="trolley_container"]:checked').val()
         if (typename != 'all') {
-            let res = make_order(typename, payload, function() {
-                let url = `<?php echo base_url("");?>/pastorders`;
+            let res = make_order(typename, payload, function(res) {
+                let url = `<?php echo base_url("");?>pastorders`;
 	            window.location.href = url;
             });
         } else {
@@ -567,7 +581,7 @@
                 if (failed_res.length > 0) {
                     showToast({type: "error", message: "Sorry, some issues occured during send orders."});
                 } else {
-                    let url = `<?php echo base_url("");?>/pastorders`;
+                    let url = `<?php echo base_url("");?>pastorders`;
                     window.location.href = url;
                 }
             })

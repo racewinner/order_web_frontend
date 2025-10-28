@@ -58,7 +58,7 @@ $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->post('/orders/save_for_later/(:segment)', 'Orders::save_for_later/$1');
     $routes->post('/orders/resend_orders/(:segment)', 'Orders::resend_orders/$1');
     $routes->get('/orders/checkout', 'Orders::checkout');
-    $routes->get('/orders/payment', 'Orders::payment');
+    $routes->get('/orders/payment/(:segment)', 'Orders::payment/$1');
     $routes->get('/orders/mini_cart', 'Orders::mini_cart');
     $routes->get('/orders', 'Orders::index');
 

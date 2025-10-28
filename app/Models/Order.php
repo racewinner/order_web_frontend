@@ -12,13 +12,13 @@ class Order extends Model
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
 
-		$query =  " SELECT * FROM epos_cart WHERE person_id={$person_id} " . 
-              " AND branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND organization_id={$organization_id} ";
-    }
-    $query .= " AND group_type='{$type}' ";
-    $query .= " ORDER BY line_position DESC";
+		$query = "SELECT * FROM epos_cart 
+				  WHERE person_id={$person_id} AND branch={$branch} ";
+		if (!empty($organization_id)) {
+			$query .= "AND organization_id={$organization_id} ";
+		}
+		$query.= "AND group_type='{$type}' ";
+		$query.= "ORDER BY line_position DESC";
 
 		return $db->query($query);
 	}
@@ -77,23 +77,23 @@ class Order extends Model
 	function get_lines($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
-    $builder = $db->table('epos_cart');
-    $builder->where('person_id', $person_id);
-    $builder->where('presell', $presell);
-    $builder->where('group_type', $type);
-    $builder->where('branch', $branch);
-    if (!empty($organization_id)) {
-    $builder->where('organization_id', $organization_id);
-    }
+		$builder = $db->table('epos_cart');
+		$builder->where('person_id', $person_id);
+		$builder->where('presell', $presell);
+		$builder->where('group_type', $type);
+		$builder->where('branch', $branch);
+		if (!empty($organization_id)) {
+			$builder->where('organization_id', $organization_id);
+		}
+		$builder->groupBy('prod_code');
 
-    // $builder->groupBy('prod_code');
-    $result = $builder->get();
-    $numRows = $result->getNumRows();
+		$result = $builder->get();
+		$numRows = $result->getNumRows();
 
-    return $numRows;		
+		return $numRows;		
 	}
 
   function get_lines_ignore_type($person_id, $type='general', $presell=0)
@@ -121,24 +121,23 @@ class Order extends Model
 	function get_items($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
-    $builder = $db->table('epos_cart');
-    $builder->selectSum('quantity');
-    $builder->where('person_id', $person_id);
-    $builder->where('presell', $presell);
-    $builder->where('group_type', $type);
-    $builder->where('branch', $branch);
-    if (!empty($organization_id)) {
-    $builder->where('organization_id', $organization_id);
-    }
-  
-    // $builder->groupBy('prod_code');
-    $result = $builder->get()->getRow();
-    $quantitySum = $result->quantity ?? 0; 
+		$builder = $db->table('epos_cart');
+		$builder->selectSum('quantity');
+		$builder->where('person_id', $person_id);
+		$builder->where('presell', $presell);
+		$builder->where('group_type', $type);
+		$builder->where('branch', $branch);
+		if (!empty($organization_id)) {
+			$builder->where('organization_id', $organization_id);
+		}
+		
+		$result = $builder->get()->getRow();
+		$quantitySum = $result->quantity ?? 0; 
 
-    return $quantitySum;
+		return $quantitySum;
 	}
 
   function get_items_ignore_type($person_id, $type='general', $presell=0)
@@ -212,13 +211,13 @@ class Order extends Model
 		return $addr;
 	}
 
-	function from_message_mail($person_id=0,$order_id=0,$presell=0, $spresell=0)
+	function from_message_mail($person_id=0, $order_id=0, $type="general", $delivery_method="#pane-pickup-depot", $delivery_date="", $presell=0, $spresell=0)
 	{
 		$db = \Config\Database::connect();
 
-    $query = "SELECT p.*, op.order_id, op.quantity, op.group_type, op.price FROM epos_orders_products as op";
+    	$query = "SELECT p.*, op.order_id, op.quantity, op.group_type, op.price FROM epos_orders_products as op";
 		$query .= " LEFT JOIN epos_product as p on op.prod_code=p.prod_code";
-		$query .= " WHERE order_id=".$order_id." GROUP BY op.prod_code ORDER BY p.prod_desc ASC, p.prod_uos ASC";
+		$query .= " WHERE order_id=".$order_id." AND group_type='".$type."' GROUP BY op.prod_code ORDER BY p.prod_desc ASC, p.prod_uos ASC";
 		$results_cart = $db->query($query);
 
 		$nCount = 0;
@@ -228,7 +227,30 @@ class Order extends Model
 			$message .= "<span style='font-family:Arial; font-size:18px;'><b>THIS IS A SEASONAL PRESELL ORDER!<b><p>We will notify you when your stock is available for Collection or Delivery.</br><p></span>";
 		}
 		$message .= "<span style='font-family:Arial; font-size:13px;'>";
-		$message .= "Thank you for your".$presell."order. </br>Your order ref is wo-".$order_id.".</br> Please note prices are shown for guidance only and exclude VAT. e&amp;oe<span>";
+		$message .= "Thank you for your".$presell."order. </br>Your order ref is wo-".$order_id.".</br> Please note prices are shown for guidance only and exclude VAT. ".html_entity_decode("e&oe")."<span>";//e&amp;oe
+		
+		$message .= "<div style='font-family:Arial; font-size:13px; font-weight:bold;'>";
+		$message .= "This order is for your " . ucfirst($type) . " trolley.";
+		$message .= '</div>';
+
+		$message .= "<div style='font-family:Arial; font-size:13px; font-weight:bold;'>";
+		$message .= "It is expected to be ready for ";
+		if ($delivery_method == "#pane-pickup-depot") {
+			$message .= "Collection ";
+		} else {
+			$message .= "Delivery ";
+		}
+		$message .= 'on ' . $delivery_date;
+		$message .= '</div>';
+
+		$message .= "<div style='font-family:Arial; font-size:13px; font-weight:bold;'>";
+		$message .= 'If you need to make a payment, please ensure it is done promptly to avoid delays.';
+		$message .= '</div>';
+
+		$message .= "<div style='font-family:Arial; font-size:13px; font-weight:bold;'>";
+		$message .= 'We reserve the right to charge for restocking items where a customer has failed to make a payment, collect or refuses delivery.';
+		$message .= '</div>';
+
 		$message .= "<table cellspacing='1px' style='width:98%; border: 1px solid #ccc;'>";
 		$message .= "<thead><tr style='background-color:#11ccdd;'><th>No</th><th>Product</th><th>Description</th><th>Size</th><th>UOS</th><th>Price</th><th>Qty</th><th>Total</th></tr></thead>";
 		$message .= "<tbody>";

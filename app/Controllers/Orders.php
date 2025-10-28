@@ -23,7 +23,7 @@ class Orders extends Secure_area implements iData_controller
 		$this->priceList = $PriceList->get_all();	
 	}
 
-	function index($page='')
+	function index($page='', $trolley_name='general')
 	{
 		$Employee = new Employee();
 		$Admin = new Admin();
@@ -42,14 +42,17 @@ class Orders extends Secure_area implements iData_controller
 		$this->data['img_host'] = $img_host;
 		
 		$types = [
-			['id' => 'general', 'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			['id' => 'tobacco', 'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			['id' => 'chilled', 'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0], 
+			['id' => 'general',  'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'tobacco',  'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'chilled',  'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
 		];
 		foreach($types as &$type) {
 			$type['lines'] = $Order->get_lines($pid, $type['id']);
 			$type['items'] = $Order->get_items($pid, $type['id']);
+
+			$sum_item_total = 0;
+			$sum_vat = 0;
 
 			$orders = $Order->get_all_cart($pid, $type['id'])->getResult();
 			foreach($orders as $order) {
@@ -57,53 +60,18 @@ class Orders extends Secure_area implements iData_controller
 				if(!empty($order->product)) {
 					$type['orders'][] = $order;
 				}
+				$sum_item_total += $order->quantity * $order->product->prod_sell;
+				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
 			}
+			$type['item_total'] = $sum_item_total;
+			$type['vat'] = $sum_vat;
 		}
 		$this->data["types"] = $types;
 
-		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
-		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
-		$this->data['du_prefer_collect'] 	= $user_info->collect;
-
-		$this->data['credit_account_info'] = session()->get('credit_account_info');
-		$this->data['payment_card_info'] = session()->get('payment_card_info');
-
-
-		$cart = Order::get_cart_info($pid);
-		$this->data['cart_typenames'] 	= implode(',', array_keys($cart['cart_types']));
-    	$this->data['total_quantity']   = $cart['total_quantity'];
-		$this->data['total_amount']     = $cart['total_amount'];
-		$this->data['total_epoints']    = $cart['total_epoints'];
-		$this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
-		$this->data['total_vats']       = $cart['total_vats'];
-
-		$this->data['form_width'] = $this->get_form_width();
-	    
-	  	$this->data["slides"] = $Admin->get_scount('slides');
-		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
-
-
-
-    // filter only 10 product--------------
-    // foreach($types as &$type) {
-		// 	$type['lines'] = $Order->get_lines($pid, $type['id']);
-		// 	$type['items'] = $Order->get_items($pid, $type['id']);
-
-		// 	$orders = $Order->get_limited_cart($pid, $type['id'])->getResult();
-    //   $type['orders'] = [];
-		// 	foreach($orders as $order) {
-		// 		Order::populateProduct($order, $this->priceList, $user_info, 0);
-		// 		if(!empty($order->product)) {
-		// 			$type['orders'][] = $order;
-		// 		}
-		// 	}
-		// }
-		// $this->data["types"] = $types;
-    // ------------------------------------
-
+		/**
+		 * generate checkout date list
+		 */
 		$now = new DateTime();
-		// $currentDate = $now->format('Y-m-d');
-		// $currentTime = $now->format('H:i:s');
 		$noon = new DateTime('today 12:00:00'); // today at 12:00:00 (noon)
 
 		$collection_delivery_date = new DateTime();
@@ -123,6 +91,9 @@ class Orders extends Secure_area implements iData_controller
 		}
 		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
 
+		/**
+		 * generate payment method list
+		 */
 		if(!empty($pid)) {
 			$payment_methods = $Employee->get_payment_methods($pid);
 			$this->data['payment_methods'] = $payment_methods;
@@ -156,16 +127,80 @@ class Orders extends Secure_area implements iData_controller
 			}
 		}
 
+		/**
+		 * generate ordery type list
+		 */
+		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
+		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
+		$this->data['du_prefer_collect'] 	= $user_info->collect;
+
+		/**
+		 * generate cart info
+		 */
+		// $cart = Order::get_cart_info($pid);
+		// $this->data['cart_typenames'] 	= implode(',', array_keys($cart['cart_types']));
+    	// $this->data['total_quantity']   = $cart['total_quantity'];
+		// $this->data['total_amount']     = $cart['total_amount'];
+		// $this->data['total_epoints']    = $cart['total_epoints'];
+		// $this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
+		// $this->data['total_vats']       = $cart['total_vats'];
+
+		if ($types[0]['id'] == $trolley_name) {
+			$trolledType = $types[0];
+		} else if ($types[1]['id'] == $trolley_name) {
+			$trolledType = $types[1];
+		} else if ($types[2]['id'] == $trolley_name) {
+			$trolledType = $types[2];
+		} else if ($types[3]['id'] == $trolley_name) {
+			$trolledType = $types[3];
+		} 
+		
+		$this->data['cart_typenames'] 	= $trolley_name;
+    	// $this->data['total_quantity']   = $cart['total_quantity'];
+		$this->data['total_amount']     = $trolledType['item_total'];
+		// $this->data['total_epoints']    = $cart['total_epoints'];
+		$this->data['delivery_charge']  = $user_info->delivery_charge;
+		$this->data['total_vats']       = $trolledType['vat'];
+
+
+
+
+
+
+
+
+
+
+
+
+		// $this->data['credit_account_info'] = session()->get('credit_account_info');
+		// $this->data['payment_card_info'] = session()->get('payment_card_info');
+
+
+		
+
+
+
+		$this->data['form_width'] = $this->get_form_width();
+	    
+	  	$this->data["slides"] = $Admin->get_scount('slides');
+		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
+
+
+
+
+		
+
 		if($page == 'checkout') {
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {
 			return view('v2/pages/myaccount/payment', $this->data);
 		} else {
 			if(request()->isAJAX()) {
-        $this->data["cls"] = "my-cart-body-limited";
+        		$this->data["cls"] = "my-cart-body-limited";
 				return view('v2/partials/my_cart_content' , $this->data);
 			} else {
-        $this->data["cls"] = "";
+        		$this->data["cls"] = "";
 				return view('v2/pages/orders' , $this->data);
 			}
 		}
@@ -269,9 +304,9 @@ class Orders extends Secure_area implements iData_controller
 		return $this->index('checkout');
 	}
 
-	public function payment()
+	public function payment($trolley_name='general')
 	{
-		return $this->index('payment');
+		return $this->index('payment', $trolley_name);
 	}
 
 	function search()
@@ -470,16 +505,22 @@ class Orders extends Secure_area implements iData_controller
 						 				AND branch={$branch} AND organization_id={$organization_id}");
 
 		$addr_mail = $Order->from_addr_mail();
-		$send_message = $Order->from_message_mail($user_info->person_id, $order_id, 0, $type=='spresell');
-		$mail_subject = lang('orders_email_subject').$user_info->username.' ['.ucfirst($type).'] order id : '.$origin.'-'.$order_id;
+		$send_message = $Order->from_message_mail($user_info->person_id, $order_id, $type, $delivery_method, $delivery_date, 0, $type=='spresell');
+		// $mail_subject = lang('orders_email_subject').$user_info->username.' ['.ucfirst($type).'] order id : '.$origin.'-'.$order_id;
+		$mail_subject = "Your ";
+		$mail_subject.= $delivery_method == "#pane-pickup-depot" ? "Collection " : "Delivery ";
+		$mail_subject.= "Order for A/C " . $user_info->username . " ";
+		$mail_subject.= '[' . ucfirst($type) . '] ';
+		$mail_subject.= 'order id : ' . $origin . '-' . $order_id;
+		$customer_mail_addr = $user_info->email;
 		if($type == 'spresell') $mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
 
-		$this->do_send_email();
+		$this->do_send_email($addr_mail['email_addr'], $customer_mail_addr, $addr_mail['company_name'], $mail_subject, $send_message);
+		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
+		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
-		EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
-
-		// Second email
-		EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
+		// EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
+		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
 		if($type != 'spresell') {
 			///////////////////////////////////////////////// --- FTP Start
@@ -724,14 +765,19 @@ class Orders extends Secure_area implements iData_controller
 
 	}
 
-	function do_send_email()
+	function do_send_email($from, $to, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
-        $email->setFrom('telesales@uniteduk.com', 'United UK Telesales');
-        $email->setTo('QSfTfSilinaRoza@gmail.com');
-        $email->setSubject('Test email via mail() transport');
-        $email->setMessage('<p>Test email using PHP mail() transport. </p> <p>Most important is to match the fromAddr to domain name like "uniteduk".</p>');
+        $email->setFrom($from, $senderCompany);
+		$email->setCC($from);
+		$email->setReplyTo($from);
+        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
+		
+        $email->setSubject($subject);
+        $email->setMessage($message);
+
         $email->setProtocol('mail');
+		$email->setMailType('html');
         if ($email->send()) {
             // echo 'Email sent'; 
 			return true;
@@ -740,6 +786,5 @@ class Orders extends Secure_area implements iData_controller
 			return false;
         }
 	}
-
 }
 ?>
