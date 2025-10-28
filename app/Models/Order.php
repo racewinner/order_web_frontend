@@ -457,46 +457,49 @@ class Order extends Model
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
 
-		$query =  " SELECT * FROM epos_cart WHERE person_id={$person_id} " .
-              " AND branch={$branch} ";
+		$query = "SELECT * FROM epos_cart WHERE person_id={$person_id} AND branch={$branch} ";
 		if (!empty($organization_id)) {
-		$query .= " AND organization_id={$organization_id} ";
+			$query .= "AND organization_id={$organization_id} ";
 		}
-		$query .= " AND presell=0 ORDER BY group_type";
+		$query .= "AND presell=0 ORDER BY group_type";
 		$results = $db->query($query);
 
 		$cart_types = [];
-		$curr_type = '';
+		$total_lines 	= 0;
 		$total_quantity = 0;
-		$total_amount = 0;
-		$total_epoints = 0;
-    	$total_vats = 0;
+		$total_amount 	= 0;
+		$total_epoints 	= 0;
+    	$total_vats 	= 0;
 		foreach($results->getResult() as $res)
 		{
 			$product = Product::getLowestPriceProductByCode($person_info, $res->prod_code, true, $res->group_type == 'spresell');
 			if($product) {
+				$total_lines    += 1;
 				$total_quantity += $res->quantity;
-				$total_amount = $total_amount + $res->quantity * $product->prod_sell;
-				$total_epoints = $total_epoints + $res->quantity * $product->epoints;
-				$total_vats = $total_vats + (($res->quantity * $product->prod_sell * $product->vat_rate) / 100);
+				$total_amount 	+= $res->quantity * $product->prod_sell;
+				$total_epoints 	+= $res->quantity * $product->epoints;
+				$total_vats 	+= (($res->quantity * $product->prod_sell * $product->vat_rate) / 100);
 
 				if( !in_array($res->group_type, array_keys($cart_types)) ) {
 					$cart_types[$res->group_type] = [
-						'quantity' => $res->quantity,
-						'amount' => $res->quantity * $product->prod_sell,
-						'epoints' => $res->quantity * $product->epoints,
+						'lines' 	=> 1,
+						'quantity' 	=> $res->quantity,
+						'amount' 	=> $res->quantity * $product->prod_sell,
+						'epoints' 	=> $res->quantity * $product->epoints,
 					];
 				} else {
 					$cart_types[$res->group_type] = [
-						'quantity' => $cart_types[$res->group_type]['quantity'] + $res->quantity,
-						'amount' => $cart_types[$res->group_type]['amount'] + $res->quantity * $product->prod_sell,
-						'epoints' => $cart_types[$res->group_type]['epoints'] + $res->quantity * $product->epoints,
+						'lines' 	=> $cart_types[$res->group_type]['lines'   ] + 1,
+						'quantity' 	=> $cart_types[$res->group_type]['quantity'] + $res->quantity,
+						'amount' 	=> $cart_types[$res->group_type]['amount'  ] + $res->quantity * $product->prod_sell,
+						'epoints' 	=> $cart_types[$res->group_type]['epoints' ] + $res->quantity * $product->epoints,
 					];
 				}
 			}
 		}
 
 		return [
+			'total_lines' 		=> $total_lines ?? 0,
 			'total_quantity' 	=> $total_quantity ?? 0,
 			'total_amount' 		=> $total_amount ?? 0,
 			'total_epoints' 	=> $total_epoints ?? 0,

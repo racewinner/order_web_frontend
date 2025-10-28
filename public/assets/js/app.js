@@ -158,7 +158,7 @@ debugger
 
 function update_cart() {
     $.ajax({
-        'url': '/orders/cartinfo',
+        'url' : '/orders/cartinfo',
         'type': 'GET', //the way you want to send data to your URL
         'data': false,
         'success': function (data) {
@@ -173,23 +173,52 @@ function update_cart() {
             // }
             // new codebase created by Victor.C
             if (data) {
-              let total_amount = data.total_amount;
-              $("#cart_total_amount").text("£"+total_amount.toFixed(2));
+                let total_amount    = data.total_amount;
+                let total_lines     = data.total_lines;
+                let total_quantity  = data.total_quantity;
+                let total_vats      = data.total_vats;
+                /**
+                 * set real cart amount to 
+                 * [
+                 *      1. cartIcon in topMenu, 
+                 *      2. cartText in footerBar of trolleyPopupDlg
+                 * ]
+                 */
+                // 1. cartIcon in topMenu
+                let cart_amount = total_amount;/* + total_vats + delivery_charge;*/
+                if(Number.isNaN(cart_amount) || cart_amount.toFixed() == 0) {
+                    $(".header-logo .cart-amount").text('Empty');
+                } else {
+                    $(".header-logo .cart-amount").text('£' + parseFloat(cart_amount).toFixed(2));
+                }
+                // 2. cartText in footerBar of trolleyPopupDlg
+                $('.my-cart-footer #cart_subtotal').text('£' + parseFloat(cart_amount).toFixed(2));
 
-              let total_vats = data.total_vats;
-              $("#cart_total_vats").text("£"+total_vats.toFixed(2));
+                /**
+                 * set total lines & quantity to footerBar of trolleyPopupDlg like this:
+                 * X Lines Y items
+                 */
+                $('.my-cart-footer .cart-total.cart-total-desc span').text(`${total_lines} Lines ${total_quantity} items`);
 
-              let delivery_charge = parseFloat(data.delivery_charge);
-              $("#cart_subtotal").text("£"+(total_amount + total_vats + delivery_charge).toFixed(2));
+                /**
+                 * set item&trolley total amount in checkout page's Billing details
+                 */
+                
+                $('#cur_trolley_total_amount').text('£' + parseFloat(cart_amount).toFixed(2));
+                $('#cur_trolley_total').text('£' + (parseFloat(cart_amount) + parseFloat(total_vats)).toFixed(2));
 
-              //let cart_amount = data.total_amount;// - data.cart_types['spresell']?.amount;
-              let cart_amount = total_amount;/* + total_vats + delivery_charge;*/
 
-              if(Number.isNaN(cart_amount) || cart_amount.toFixed() == 0) {
-                  $(".header-logo .cart-amount").text('Empty');
-              } else {
-                  $(".header-logo .cart-amount").text('£' + parseFloat(cart_amount).toFixed(2));
-              }
+
+            //   $("#cart_total_amount").text("£"+total_amount.toFixed(2));
+
+            //   let total_vats = data.total_vats;
+            //   $("#cart_total_vats").text("£"+total_vats.toFixed(2));
+
+            //   let delivery_charge = parseFloat(data.delivery_charge);
+            //   $("#cart_subtotal").text("£"+(total_amount + total_vats + delivery_charge).toFixed(2));
+
+
+              
           }
         }
     });
