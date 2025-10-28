@@ -553,17 +553,17 @@ class Order extends Model
 							'delivery_method' 	=> $delivery_method,
 							);
 		
-		if($results->getNumRows() == 0 || $presell == 1){
-			if( $Hom->get_total_items_cart($person_id, $type, $presell) >= 1 ){
+		if ($results->getNumRows() == 0 || $presell == 1){
+			if ( $Hom->get_total_items_cart($person_id, $type, $presell) >= 1 ){
 				$db->transStart();
 				$db->table($this->table)->insert($order_data);
 				$order_id = $db->insertID();
 				$db->transComplete();
 				if ($db->transStatus() === FALSE) return -1;
 			}
-			else{ return false;	}
+			else { return false;	}
 		}
-		else if($results->getNumRows() > 0 && $presell == 0){
+		else if ($results->getNumRows() > 0 && $presell == 0){
 			$res = $results->getRow();
 			$order_id = $res->order_id;
 			$db->transStart();
@@ -571,7 +571,7 @@ class Order extends Model
 			$db->transComplete();
 			if ($db->transStatus() === FALSE) return -2;
 		}
-		else if($results->getNumRows() == 0 && $presell == 0){
+		else if ($results->getNumRows() == 0 && $presell == 0){
 			$db->transStart();
 			$db->table($this->table)->insert($order_data);
 			$order_id = $db->insertID();
@@ -594,7 +594,7 @@ class Order extends Model
 		foreach($results1->getResult() as $res1){
 			$found = 0;
 			// TODO check for $ref cart item id in presell table, allow if $ref match.
-			if($ref != ""){			
+			if ($ref != "") {			
 				$builder = $db->table('epos_presell');
 				$builder->where('period_ref',$ref);
 				$builder->where('prod_code',$res1->prod_code);
@@ -603,7 +603,7 @@ class Order extends Model
 				$builder->where('organization_id', $organization_id);
 
 				$q = $builder->get();
-				if($q->getNumRows() > 0){ 
+				if ($q->getNumRows() > 0) { 
 					$f = str_pad($q->getRow()->price_list, 3, '0', STR_PAD_LEFT);
 					$f = 'price_list'.$f;
 					if($u->{$f} == 1){ $found = 1; }
@@ -660,7 +660,7 @@ class Order extends Model
 			$first_line .= "\r\n";
 			return $first_line;
 		}
-		else if($option == 2)	//get file data
+		else if ($option == 2)	//get file data
 		{
 			$order_id = $order->order_id;
             $result_vv = $db->query("SELECT count(*) as vv FROM epos_orders_products WHERE order_id='".$order_id."' and presell=".$order->presell."");
@@ -677,7 +677,7 @@ class Order extends Model
 			$results = $db->query($query);
 			$nCount = 1;
 			$file_data = "";
-			foreach($results->getResult() as $res_prod)
+			foreach ($results->getResult() as $res_prod)
 			{
                 $nCount1 = substr("000".$nCount,-3);
                 $prod_code = substr("0000000".$res_prod->prod_code,-7);
