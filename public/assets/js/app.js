@@ -95,7 +95,6 @@ function removeNumberSymbols(str) {
 }
 
 function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, spresell, onSuccess) {
-  debugger
     const post_data = {
         mode: mode,
         prod_code: prod_code,
@@ -119,7 +118,6 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
             if (response < 0) {
                 return;
             }
-debugger
             // update lines & items in cart
             if(type) {
                 $tab_pane = $(`.my-cart .tab-pane.${type}`);

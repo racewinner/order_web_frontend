@@ -19,14 +19,16 @@
             'orders' => ['icon' => 'bi-clock', 'label' => 'Orders', 'url' => '/pastorders'],
             'contact_us' => ['icon' => 'bi-envelope', 'label' => 'Contact Us', 'url' => '/contactus'],
             'separator1' => ['label' => 'separator'],
-            'myaccount' => ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => LOGON_USER_MENUES],
             'trolley' => ['icon' => 'bi-cart3', 'label' => 'Trolley', 'url' => '/orders']
         ];
 
+        $menus['employees'] = ['icon' => 'bi-person-fill', 'label' => 'User', 'url' => '/employees'];
+
         if(in_array('branch', $allowed_module_ids)) {
-          $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'];
+            $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'];
         }
-            
+
+        $menus['myaccount'] = ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => LOGON_USER_MENUES];
         $menus['separator2'] = ['label' => 'separator'];
         $menus['logout'] = ['icon' => 'bi-box-arrow-left', 'label' => 'Log Out', 'url' => '/home/logout'];
     }

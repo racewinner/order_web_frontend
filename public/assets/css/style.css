@@ -7500,8 +7500,22 @@ textarea.form-control-lg {
   display: table-cell !important;
 }
 
+
 .d-flex {
-  display: flex !important;
+    display: flex !important;
+}
+.d-flex2 {
+    display: flex !important;
+}
+@media (max-width: 992px) {
+  .d-flex2 {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  .full-width-on-mobile {
+    width: 100%;
+  }
 }
 
 .d-inline-flex {
@@ -8216,26 +8230,12 @@ textarea.form-control-lg {
   margin-top: 1.6rem !important;
 }
 
-.mt-5 {
-  margin-top: 2.5rem !important;
-}
-
-.mt-6 {
-  margin-top: 3.5rem !important;
-}
-
-.mt-7 {
-  margin-top: 4rem !important;
-}
-
-.mt-8 {
-  margin-top: 8rem !important;
-}
-
-.mt-9 {
-  margin-top: 11rem !important;
-}
-
+.mt-5    { margin-top: 2.5rem !important; }
+.mt-6    { margin-top: 3.5rem !important; }
+.mt-7    { margin-top: 4rem !important; }
+.mt-8    { margin-top: 8rem !important; }
+.mt-9    { margin-top: 11rem !important; }
+.mt-20px { margin-top: 20px !important;}
 .mt-auto {
   margin-top: auto !important;
 }
@@ -8818,37 +8818,16 @@ textarea.form-control-lg {
   padding-top: 8rem !important;
 }
 
-.pt-9 {
-  padding-top: 11rem !important;
-}
+.pt-9    { padding-top: 11rem  !important; }
+.pt-20px { padding-top: 20px   !important; }
 
-.pe-0 {
-  padding-right: 0 !important;
-}
-
-.pe-1 {
-  padding-right: 0.25rem !important;
-}
-
-.pe-2 {
-  padding-right: 0.5rem !important;
-}
-
-.pe-3 {
-  padding-right: 1rem !important;
-}
-
-.pe-4 {
-  padding-right: 1.6rem !important;
-}
-
-.pe-5 {
-  padding-right: 2.5rem !important;
-}
-
-.pe-6 {
-  padding-right: 3.5rem !important;
-}
+.pe-0 { padding-right: 0       !important; }
+.pe-1 { padding-right: 0.25rem !important; }
+.pe-2 { padding-right: 0.5rem  !important; }
+.pe-3 { padding-right: 1rem    !important; }
+.pe-4 { padding-right: 1.6rem  !important; }
+.pe-5 { padding-right: 2.5rem  !important; }
+.pe-6 { padding-right: 3.5rem  !important; }
 
 .pe-7 {
   padding-right: 4rem !important;
@@ -17748,10 +17727,10 @@ video {
 }
 
 @media (max-width: 1199.98px) {
-  section {
+  /* section {
     padding-top: 5rem;
     padding-bottom: 4rem;
-  }
+  } */
 }
 *:focus-visible {
   outline: none !important;
@@ -19126,4 +19105,22 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
   max-height: 500px;
   overflow-y: scroll;
   padding-top: 0px !important;
+}
+
+.charge-input{
+    width: 150px;
+}
+@media (max-width: 992px) {
+    .charge-input {
+        width: 100px;
+    }
+}
+
+.gap-10px {
+  gap: 10px;
+}
+
+#employee_form .btn {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }

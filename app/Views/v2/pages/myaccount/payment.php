@@ -3,8 +3,9 @@
 <?= $this->section('css') ?>
 <style>
     .delivery-payment {
-        width: 600px;
-        max-width: 95vw;
+        /* width: 600px; */
+        /* max-width: 95vw; */
+        padding: 20px;
         input[type='radio'] {
             width: 25px;
             height: 25px;
@@ -66,6 +67,7 @@
                 list-style: none;
                 margin-top: 5px;
                 padding: 0px;
+                align-items: center;
                 li {
                     padding: 0;
                     margin-right: 10px;
@@ -78,6 +80,7 @@
         }
     }
     .billing.card {
+        padding: 20px;
         height: fit-content;
         border: none;
         box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
@@ -118,6 +121,21 @@
         border-radius: 10px;
     }
    
+    .chk-out-pad-on-mobile {
+        width: fit-content !important;
+    }
+    @media (max-width: 992px) {
+        img.img-sz-on-mobile {
+            width: 50px !important;
+            height: auto !important;
+        }
+        .chk-out-pad-on-mobile {
+            width: 100%;
+        }
+        .charge-value-on-mobile {
+            margin-right: 0px !important;
+        }
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -126,7 +144,7 @@
 <input type="hidden" name="cc_charge" id="cc_charge" value="<?php echo $cc_charge;?>">
 <input type="hidden" name="dv_charge" id="dv_charge" value="<?php echo $dv_charge;?>">
 
-<div class="d-flex flex-column flex-lg-row mx-auto w-fit-content p-4">
+<div class="d-flex flex-column flex-lg-row mx-auto chk-out-pad-on-mobile">
     <div class="delivery-payment">
         <h5>Check out</h5>
         <!-- Tab Selector -->
@@ -358,12 +376,12 @@
                     <div class="flex-fill">
                         <div>Debit / Credit Card</div>
                         <ul class="card-types d-flex">
-                            <li><img src="/images/icons/png/visa.png" /></li>
-                            <li><img src="/images/icons/png/master-card.png" /></li>
-                            <li><img src="/images/icons/png/american-express.png" /></li>
+                            <li><img class="img-sz-on-mobile" src="/images/icons/png/visa.png" /></li>
+                            <li><img class="img-sz-on-mobile" src="/images/icons/png/master-card.png" /></li>
+                            <li><img class="img-sz-on-mobile" src="/images/icons/png/american-express.png" /></li>
                         </ul>
                     </div>
-                    <div>
+                    <div style="padding-top: 10px">
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_in_card" value="pay_in_card" 
                              <?php if ($this->data["payment_default_method"] == "debit_credit_card") { ?>
@@ -378,37 +396,39 @@
         </div>
     </div>
 
-    <div class="billing card ms-0 mt-4 ms-lg-4">
-        <div class="card-header">
-            <h5 class="card-title">Billing Details</h5>
-        </div>
-
-        <div class="card-body">
-            <div class="billing-item d-flex">
-                <div class="flex-fill me-8"><label>Item Total</label></div>
-                <div><span class="value" id="pay_total_amount">£<?= $total_amount ?></span></div>
+    <div style="padding-left: 20px; padding-right: 20px">
+        <div class="billing card ms-0 mt-4 ms-lg-4">
+            <div class="card-header">
+                <h5 class="card-title">Billing Details</h5>
             </div>
-            <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
-                <div class="flex-fill me-8" id="order_type_label">Delivery Charge</div>
-                <div>
-                    <span id="charge" style="font-weight: bold; color: black;"></span>
+
+            <div class="card-body">
+                <div class="billing-item d-flex">
+                    <div class="flex-fill me-8 charge-value-on-mobile"><label>Item Total</label></div>
+                    <div><span class="value" id="pay_total_amount">£<?= $total_amount ?></span></div>
                 </div>
-                
+                <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
+                    <div class="flex-fill me-8 charge-value-on-mobile" id="order_type_label">Delivery Charge</div>
+                    <div>
+                        <span id="charge" style="font-weight: bold; color: black;"></span>
+                    </div>
+                    
+                </div>
+                <div class="billing-item d-flex">
+                    <div class="flex-fill me-8 charge-value-on-mobile"><label>VAT</label></div>
+                    <div><span class="value" id="pay_total_vats">£<?= $total_vats ?></span></div>
+                </div>
             </div>
-            <div class="billing-item d-flex">
-                <div class="flex-fill me-8"><label>VAT</label></div>
-                <div><span class="value" id="pay_total_vats">£<?= $total_vats ?></span></div>
-            </div>
-        </div>
 
-        <div class="card-footer">
-            <div class="subtotal">
-                <div><label>Subtotal</label></div>
-                <div class="value" id="cart_subtotal2"></div>
-            </div>
+            <div class="card-footer">
+                <div class="subtotal">
+                    <div><label>Subtotal</label></div>
+                    <div class="value" id="cart_subtotal2"></div>
+                </div>
 
-            <div class="mt-4">
-                <a href="#" id="send_orders" class="btn btn-danger w-100">Next to Complete</a>
+                <div class="mt-4">
+                    <a href="#" id="send_orders" class="btn btn-danger w-100">Next to Complete</a>
+                </div>
             </div>
         </div>
     </div>

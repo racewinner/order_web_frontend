@@ -33,6 +33,29 @@
         border: 1px solid #ff0000;
         box-shadow: 0px 0px 0px 4px #ffa3a3;
     }
+    .user-table-on-mobile {
+        display: none;
+    }
+    @media (max-width: 992px) {
+        .add_user_btn_on_mobile {
+            margin-left: 5px !important;
+            padding: 0px !important;
+            font-size: 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 74px;
+            overflow: hidden;
+        }
+        .user-table-on-desktop {
+            display: none;
+        }
+        .user-table-on-mobile {
+            display: block;
+        }
+        .vertical-middle-on-mobile {
+            vertical-align: middle;
+        }
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -42,7 +65,7 @@
 
     <h5 class="mt-2">Common List of Users</h5>
 
-    <div class="order-table-header d-flex">
+    <div class="order-table-header d-flex2">
         <div class="flex-fill d-flex align-items-center">
             <div class="d-flex align-items-center whitespace-nowrap">
                 <?php if($total_rows > 0) { ?>
@@ -67,11 +90,11 @@
 
         <div class="d-flex">
             <?= view('v2/components/SearchInput2', ['name'=>'search', 'id'=>'search', 'value'=>$search ?? '', 'placeholder' => 'Search here']) ?>
-            <button class="btn btn-primary m-0 ms-4 px-3" id="add_user">New User</button>
+            <button class="btn btn-primary m-0 ms-4 px-3 add_user_btn_on_mobile" id="add_user">New User</button>
         </div>
     </div>
 
-    <div class="mt-3" style="overflow: auto;">
+    <div class="mt-3 user-table-on-desktop" style="overflow: auto;">
         <table class="table order-primary-table">
             <thead>
                 <tr>
@@ -118,6 +141,43 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-3 user-table-on-mobile" style="overflow: auto;">
+        <table class="table order-primary-table">
+            <thead>
+                <tr>
+                    <th width="60%" scope="col">Account</th>
+                    <th width="40%" scope="col" style="text-align: center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                if($total_rows > 0) {
+                    foreach($employees as $employee) { 
+                ?>
+                    <tr 
+                        data-person-id="<?= $employee->person_id ?>"
+                        data-username="<?= $employee->username ?>"
+                        data-username="<?= $employee->email ?>"
+                    >
+                        <td width="60%">
+                            <div><?= $employee->username ?></div>
+                            <div><?= $employee->email ?></div>
+                        </td>
+                        <td width="40%" class="vertical-middle-on-mobile" style="text-align: center">
+                            <i class="bi bi-pencil-square employee-edit cursor-pointer" style="font-size:20px; color: #ff6c00;"></i>
+                        </td>
+                    </tr>
+                <?php }
+                } else { ?>
+                    <tr>
+                        <td colspan="4" class="text-center">No found Employees</td>
+                    </tr>
+                <?php 
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
 
     <?php if($total_rows > 0) { ?>
         <div class="d-flex justify-content-end mt-4">
@@ -143,7 +203,6 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'button#add_user', function(e) {
-        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -170,7 +229,6 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'table tbody tr i.employee-edit', function(e) {
-        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -254,7 +312,6 @@ $(document).ready(function(e) {
     })
 
     $(document).on('submit', '.employee-edit form', function(e) {
-      debugger
         const $form = $(e.target);
         const person_id = $form.find("#person_id").val();
         const password = $form.find("#password").val();
@@ -321,7 +378,6 @@ $(document).ready(function(e) {
         let collect  = $('.user-order-types [name="collect"]' ).is(':checked') ? 1: 0;
         let dv_mpi   = $('.user-order-types [name="dv_mpi"]'  ).is(':checked') ? 1: 0;
         let cc_mpi   = $('.user-order-types [name="cc_mpi"]'  ).is(':checked') ? 1: 0;
-debugger
 
         // set charges
         let payment_charges = {
