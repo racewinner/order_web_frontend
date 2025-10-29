@@ -159,7 +159,7 @@
                         data-username="<?= $employee->username ?>"
                         data-username="<?= $employee->email ?>"
                     >
-                        <td width="60%">
+                        <td width="60%" style="overflow-wrap: anywhere; white-space: normal;">
                             <div><?= $employee->username ?></div>
                             <div><?= $employee->email ?></div>
                         </td>
