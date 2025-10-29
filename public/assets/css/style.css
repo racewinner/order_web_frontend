@@ -5762,6 +5762,8 @@ textarea.form-control-lg {
   position: relative;
   flex: 1 1 auto;
   padding: var(--bs-modal-padding);
+  max-height: 700px;
+  overflow-y: scroll;
 }
 
 .modal-footer {

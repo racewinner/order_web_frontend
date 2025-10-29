@@ -123,6 +123,8 @@
 
 <?= $this->section('content') ?>
 <input type="hidden" name="cart_typenames" id="cart_typenames" value="<?php echo $cart_typenames;?>">
+<input type="hidden" name="cc_charge" id="cc_charge" value="<?php echo $cc_charge;?>">
+<input type="hidden" name="dv_charge" id="dv_charge" value="<?php echo $dv_charge;?>">
 
 <div class="d-flex flex-column flex-lg-row mx-auto w-fit-content p-4">
     <div class="delivery-payment">
@@ -131,10 +133,14 @@
         <div class="delivery-section mt-4">
             <h6>Order Type</h6>
             <div class="delivery-container mb-30">
+                <?php if ($this->data['payment_charges'] &&  
+                         ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' || 
+                          $this->data['payment_charges']->delivery    == 1 || $this->data['payment_charges']->delivery   == '1' )) { ?>
                 <ul class="d-inline-flex delivery-methods mt-10 mb-10" role="tablist" aria-label="Delivery Methods">
-                    <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
+                    <?php if ($this->data['payment_charges'] && 
+                             ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
                         <li class="one-delivery-method pickup-depot 
-                            <?= $this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == '1' ? 'active' : '' ?>"
+                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active' : '' ?>"
                             data-bs-toggle="pill"
                             data-bs-target="#pane-pickup-depot" 
                             role="tab" 
@@ -143,10 +149,11 @@
                             Collection
                         </li>
                     <?php } ?>
-                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                    <?php if ($this->data['payment_charges'] && 
+                             ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
                         <li class="nav-link one-delivery-method via-delivery 
-                            <?= $this->data['du_prefer_collect'] != 1 && $this->data['du_prefer_collect'] != '1' && 
-                            ($this->data['du_prefer_delivery']  == 1 || $this->data['du_prefer_delivery']  == '1') ? 'active' : '' ?>"
+                            <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
+                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? 'active' : '' ?>"
                             data-bs-toggle="pill"
                             data-bs-target="#pane-via-delivery" 
                             role="tab" 
@@ -156,11 +163,13 @@
                         </li>
                     <?php } ?>
                 </ul>
+                <?php } ?>
 
                 <div class="tab-content">
-                    <?php if ($this->data['du_prefer_collect']  == 1 || $this->data['du_prefer_collect'] == '1') { ?>
+                    <?php if ($this->data['payment_charges'] && 
+                             ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
                         <div class="tab-pane fade mb-30 mt-0 
-                            <?= $this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == '1' ? 'show active' : '' ?>"
+                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active show' : '' ?>"
                             id="pane-pickup-depot"
                             role="tabpanel" 
                             aria-labelledby="tab-pickup-depot"
@@ -227,10 +236,11 @@
                             </div>
                         </div>
                     <?php } ?>
-                    <?php if ($this->data['du_prefer_delivery'] == 1 || $this->data['du_prefer_delivery'] == '1' ) { ?>
+                    <?php if ($this->data['payment_charges'] && 
+                             ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
                         <div class="tab-pane fade  
-                            <?= $this->data['du_prefer_collect'] != 1 && $this->data['du_prefer_collect'] != '1' && 
-                            ($this->data['du_prefer_delivery']  == 1 || $this->data['du_prefer_delivery']  == '1') ? 'show active' : '' ?>"
+                            <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
+                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? 'active show' : '' ?>"
                             id="pane-via-delivery"
                             role="tabpanel" 
                             aria-labelledby="tab-via-delivery"
@@ -260,24 +270,18 @@
                                         </select>
                                     </div>
                                 </div>
-                                
-                                <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
+                                <!-- <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
                                     Delivery Charge
-                                </div>
-
-                                <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
-                                <span id="delivery_charge_v" 
-                                    style="font-weight: bold; color: gray;">£<?= $this->data['wiy_delivery_charge'] ?></span>
-                                <?php } ?>
-                                <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
-                                <span id="delivery_charge_v" 
-                                    style="font-weight: bold; color: #008000">FREE</span>
-                                <?php } ?>
-
+                                </div> -->
                             </div>
                         </div>
                     <?php } ?>
                 </div>
+                <?php if (!$this->data['payment_charges'] ||  
+                         ( $this->data['payment_charges']->collection  != 1 && $this->data['payment_charges']->collection != '1' && 
+                           $this->data['payment_charges']->delivery    != 1 && $this->data['payment_charges']->delivery   != '1' )) { ?>
+                    <div style="color: red; padding-bottom: 20px">There is not any order type.</div>
+                 <?php } ?>
             </div>
         </div>
 
@@ -386,21 +390,10 @@
             </div>
             <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
                 <div class="flex-fill me-8" id="order_type_label">Delivery Charge</div>
-                <div id="order_type_delivery_vctl">
-                    <?php if ((float)$this->data['delivery_charge'] > 0 ) { ?>
-                        <span id="cart_delivery_charge" style="font-weight: bold; color: black;">£<?= $delivery_charge ?></span>
-                    <?php } ?>
-                    <?php if ((float)$this->data['delivery_charge'] == 0 ) { ?>
-                        <span id="cart_delivery_charge" style="font-weight: bold; color: #008000">FREE</span>
-                    <?php } ?>
-
-                    
+                <div>
+                    <span id="charge" style="font-weight: bold; color: black;"></span>
                 </div>
-                <div id="order_type_collection_vctl">
-                    <?php if ($this->data['du_prefer_collect'] == 1 || $this->data['du_prefer_collect'] == "1") { ?>
-                        <span id="cart_click_collect" style="font-weight: bold; color: #008000">FREE</span>
-                    <?php } ?>
-                </div>
+                
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill me-8"><label>VAT</label></div>
@@ -411,7 +404,7 @@
         <div class="card-footer">
             <div class="subtotal">
                 <div><label>Subtotal</label></div>
-                <div class="value" id="cart_subtotal2">£<?= $total_amount + $delivery_charge + $total_vats ?></div>
+                <div class="value" id="cart_subtotal2"></div>
             </div>
 
             <div class="mt-4">
@@ -493,46 +486,65 @@
     })
 
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
+        debugger
         $('#order_type_label').text('Click & Collect');
-        $('#order_type_collection_vctl').show();
-        $('#order_type_delivery_vctl').hide();
-
+        $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
         //----------
-        let pay_total_amount = $('#pay_total_amount').text();
-        let pay_total_vats = $('#pay_total_vats').text();
+        let pay_total_amount    = $('#pay_total_amount').text();
+        let pay_total_vats      = $('#pay_total_vats').text();
+        let pay_charge          = $('#cc_charge').val();
 
         pay_total_amount = pay_total_amount.slice(1);
         pay_total_vats = pay_total_vats.slice(1);
 
-        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
         //----------
         $('#delivery_date1').val($('#delivery_date2').val());
+        //----------
+        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
+        //----------
+        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+
     })
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
+        debugger
         $('#order_type_label').text('Delivery Charge');
-        $('#order_type_collection_vctl').hide();
-        $('#order_type_delivery_vctl').show();
+        $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
         //----------
-        let pay_total_amount = $('#pay_total_amount').text();
-        let cart_delivery_charge = $('#cart_delivery_charge').text();
-        let pay_total_vats = $('#pay_total_vats').text();
+        let pay_total_amount    = $('#pay_total_amount').text();
+        let pay_total_vats      = $('#pay_total_vats').text();
+        let pay_charge          = $('#dv_charge').val();
 
         pay_total_amount = pay_total_amount.slice(1);
-        cart_delivery_charge = cart_delivery_charge == 'FREE' ? 0 : cart_delivery_charge.slice(1);
         pay_total_vats = pay_total_vats.slice(1);
 
-        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(cart_delivery_charge) + parseFloat(pay_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
          //----------
         $('#delivery_date2').val($('#delivery_date1').val());
+        //----------
+        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
+        //----------
+        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
     })
 
     $(document).ready(function() {
         let el = $('.delivery-methods li')
         if (el.length == 0) {
-            return;
+            $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
+            //----------
+            let pay_total_amount    = $('#pay_total_amount').text();
+            let pay_total_vats      = $('#pay_total_vats').text();
+
+            pay_total_amount = pay_total_amount.slice(1);
+            pay_total_vats = pay_total_vats.slice(1);
+
+            let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
+            $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+            //----------
+            $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
         } else {
             el[0].click();
         }

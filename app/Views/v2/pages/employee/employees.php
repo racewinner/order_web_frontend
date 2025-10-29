@@ -29,7 +29,7 @@
             }
         }
     }
-    .user-order-types #delivery_charge.invalid {
+    .user-order-types input.invalid {
         border: 1px solid #ff0000;
         box-shadow: 0px 0px 0px 4px #ffa3a3;
     }
@@ -101,10 +101,7 @@
                                 <span class="mx-1 <?= $employee->delivery != '1' ? 'd-none' : '' ?>">|</span>
                                 <span>Collect</span>
                             <?php } ?>
-                            <?php if($employee->pay == '1') { ?>
-                                <span class="mx-1 <?= ($employee->delivery != '1' && $employee->pay != '1') ? 'd-none' : '' ?>">|</span>
-                                <span>Pay</span>
-                            <?php } ?>
+                           
                         </div></td>
                         <td>
                             <i class="bi bi-pencil-square employee-edit cursor-pointer" style="font-size:20px; color: #ff6c00;"></i>
@@ -280,11 +277,38 @@ $(document).ready(function(e) {
         }
         $form.find("input#payment_methods").val(payment_methods);
 
-        // check if the deivery charge is valid
-        let delivery_charge_v = $('.user-order-types #delivery_charge').val();
+        /**
+         * payment_charges
+         */
+        // check if the charge is valid
+        let dv_min_charge = $('.user-order-types #dv-min-charge').val();
+        let dv_per_item   = $('.user-order-types #dv-per-item'  ).val();
+        let dv_max_charge = $('.user-order-types #dv-max-charge').val();
+        let cc_min_charge = $('.user-order-types #cc-min-charge').val();
+        let cc_per_item   = $('.user-order-types #cc-per-item'  ).val();
+        let cc_max_charge = $('.user-order-types #cc-max-charge').val();
+
         const isPureNumericString = (s) => typeof s === "string" && /^-?\d+(.\d+)?([eE][-+]?\d+)?$/.test(s);
-        if (delivery_charge_v != '' && !isPureNumericString(delivery_charge_v)) {
-            $('.user-order-types #delivery_charge').addClass('invalid');
+        const isChargeInvalid1 = dv_min_charge != undefined && dv_min_charge != '' && !isPureNumericString(dv_min_charge);
+        const isChargeInvalid2 = dv_per_item   != undefined && dv_per_item   != '' && !isPureNumericString(dv_per_item  );
+        const isChargeInvalid3 = dv_max_charge != undefined && dv_max_charge != '' && !isPureNumericString(dv_max_charge);
+        const isChargeInvalid4 = cc_min_charge != undefined && cc_min_charge != '' && !isPureNumericString(cc_min_charge);
+        const isChargeInvalid5 = cc_per_item   != undefined && cc_per_item   != '' && !isPureNumericString(cc_per_item  );
+        const isChargeInvalid6 = cc_max_charge != undefined && cc_max_charge != '' && !isPureNumericString(cc_max_charge);
+
+        if (isChargeInvalid1 || 
+            isChargeInvalid2 || 
+            isChargeInvalid3 || 
+            isChargeInvalid4 || 
+            isChargeInvalid5 || 
+            isChargeInvalid6 
+        ) {
+            if (isChargeInvalid1) $('.user-order-types #dv-min-charge').addClass('invalid');
+            if (isChargeInvalid2) $('.user-order-types #dv-per-item'  ).addClass('invalid');
+            if (isChargeInvalid3) $('.user-order-types #dv-max-charge').addClass('invalid');
+            if (isChargeInvalid4) $('.user-order-types #cc-min-charge').addClass('invalid');
+            if (isChargeInvalid5) $('.user-order-types #cc-per-item'  ).addClass('invalid');
+            if (isChargeInvalid6) $('.user-order-types #cc-max-charge').addClass('invalid');
 
             $btnSave.find("i").remove();
             $btnSave.removeClass('disabled');
@@ -292,6 +316,28 @@ $(document).ready(function(e) {
 
             return false;
         }
+        // extra check boxes        
+        let delivery = $('.user-order-types [name="delivery"]').is(':checked') ? 1: 0;
+        let collect  = $('.user-order-types [name="collect"]' ).is(':checked') ? 1: 0;
+        let dv_mpi   = $('.user-order-types [name="dv_mpi"]'  ).is(':checked') ? 1: 0;
+        let cc_mpi   = $('.user-order-types [name="cc_mpi"]'  ).is(':checked') ? 1: 0;
+debugger
+
+        // set charges
+        let payment_charges = {
+            delivery,
+            dv_min_charge,
+            dv_per_item,
+            dv_max_charge,
+            dv_mpi,
+
+            collection: collect,
+            cc_min_charge,
+            cc_per_item,
+            cc_max_charge,
+            cc_mpi
+        };
+        $form.find("input#payment_charges").val(JSON.stringify(payment_charges));
 
         if(person_id) {         // update account
             if($form.find("#change_password")[0].checked) {

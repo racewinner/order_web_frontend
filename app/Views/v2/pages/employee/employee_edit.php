@@ -3,6 +3,7 @@
         <input type="hidden" id="person_id" name="person_id" value="<?= $employee?->person_id ?? '' ?>" />
         <input type="hidden" id="branches" name="branches" value="" />
         <input type="hidden" id="payment_methods" name="payment_methods" value="" />
+        <input type="hidden" id="payment_charges" name="payment_charges" value="" />
         <input type="hidden" id="username_email_available" value="0" />
 
         <div class="d-flex justify-content-between">
@@ -133,22 +134,19 @@
             <div class="card-header p-2">
                 <div class='m-0'>Order Types</div>      
             </div>
-            <div class="card-body p-3 d-flex align-items-center justify-content-center">
+            <div class="card-body p-3 d-flex align-items-center justify-content-around">
                 <div class="d-flex delivery align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="delivery" value="1" <?= ($employee?->delivery == '1') ? 'checked' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="delivery" 
+                            <?= (!empty($employee) && !empty($payment_charges) && $payment_charges?->delivery) ? 'checked' : '' ?> />
                         <label class="form-check-label">Delivery, Delivery Charge:</label>
                     </div>
-
-                    <div class="ms-2 d-flex align-items-center">
-                        <span class="me-1">£</span>
-                        <input type="" id="delivery_charge" name="delivery_charge" 
-                               class="form-control" value="<?= $employee?->delivery_charge ?? 0 ?>" style="width:150px;" />
-                    </div>
+                    
                 </div>
                 <div class="d-flex align-items-center ms-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="collect" value="1" <?= ($employee?->collect == '1') ? 'checked' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="collect" 
+                            <?= (!empty($employee) && !empty($payment_charges) && $payment_charges?->collection) ? 'checked' : '' ?> />
                         <label class="form-check-label">Click and Collect</label>
                     </div>
                 </div>
@@ -159,6 +157,56 @@
                         <label class="form-check-label">Pay</label>
                     </div>
                 </div> -->
+            </div>
+            <div class="card-body p-3 d-flex align-items-center justify-content-around pt-0">
+                <div class="d-flex delivery align-items-center">
+                    <div>
+                        <div class="ms-2 d-flex align-items-center">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 15px;">Min Charge</span>
+                            <input type="" id="dv-min-charge" name="dv-min-charge" 
+                                class="form-control" value="<?= $payment_charges->dv_min_charge ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 40px;">per item</span>
+                            <input type="" id="dv-per-item" name="dv-per-item" 
+                                class="form-control" value="<?= $payment_charges->dv_per_item ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 10px;">Max Charge</span>
+                            <input type="" id="dv-max-charge" name="dv-max-charge" 
+                                class="form-control" value="<?= $payment_charges->dv_max_charge ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <label class="form-check-label" style="padding-right: 10px">Min plus Item</label>
+                            <input class="form-check-input ms-0" type="checkbox" name="dv_mpi" 
+                                <?= ($payment_charges && $payment_charges->dv_mpi == '1') ? 'checked' : '' ?> />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex delivery align-items-center">
+                    <div>
+                        <div class="ms-2 d-flex align-items-center">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 15px;">Min Charge</span>
+                            <input type="" id="cc-min-charge" name="cc-min-charge" 
+                                class="form-control" value="<?= $payment_charges->cc_min_charge ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 40px;">per item</span>
+                            <input type="" id="cc-per-item" name="cc-per-item" 
+                                class="form-control" value="<?= $payment_charges->cc_per_item ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <span class="me-1" style="padding-right: 4px; margin-left: 10px;">Max Charge</span>
+                            <input type="" id="cc-max-charge" name="cc-max-charge" 
+                                class="form-control" value="<?= $payment_charges->cc_max_charge ?? 0 ?>" style="width:150px;" />
+                        </div>
+                        <div class="ms-2 d-flex align-items-center my-2">
+                            <label class="form-check-label" style="padding-right: 10px">Min plus Item</label>
+                            <input class="form-check-input ms-0" type="checkbox" name="cc_mpi" 
+                                <?= ($payment_charges && $payment_charges->cc_mpi == '1') ? 'checked' : '' ?> />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

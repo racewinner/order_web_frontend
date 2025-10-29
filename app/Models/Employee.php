@@ -225,6 +225,20 @@ class Employee extends Model
 		}
 		return $query->getResult()[0];
 	}
+	function get_payment_charges($employee_id)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_emp_payment_charges')
+			->select('*')
+			->where('emp_id', $employee_id)
+			->get();
+
+		if ($query->getNumRows() == 0) {
+			return [];
+		}
+		return $query->getResult()[0];
+	}
 	/*
 	Gets information about a particular employee
 	*/
@@ -307,6 +321,36 @@ class Employee extends Model
 				$success = $db->table('epos_emp_payment_methods')
 							->where('emp_id', $employee_id)
 							->update($payment_methods_to_save);
+			}
+		}
+		return $success;
+	}
+
+	function save_payment_charges($payment_charges, $employee_id, $new_employee_id) 
+	{
+		$db = \Config\Database::connect();
+		$arr = explode(",", $payment_charges);
+
+		$payment_charges_to_save = json_decode($payment_charges, true);
+		$payment_charges_to_save['emp_id'] = $new_employee_id;
+
+		$success = false;
+		if (intval($employee_id) < 1) {
+			$success = $db->table('epos_emp_payment_charges')->insert($payment_charges_to_save);
+		} else {
+			$db = \Config\Database::connect();
+
+			$query = $db->table('epos_emp_payment_charges')
+			->select('emp_id')
+			->where('emp_id', $employee_id)
+			->get();
+
+			if ($query->getNumRows() == 0) {
+				$success = $db->table('epos_emp_payment_charges')->insert($payment_charges_to_save);
+			} else {
+				$success = $db->table('epos_emp_payment_charges')
+							->where('emp_id', $employee_id)
+							->update($payment_charges_to_save);
 			}
 		}
 		return $success;
@@ -406,8 +450,6 @@ class Employee extends Model
 		if ($result) {
 			session()->set('person_id', $result['person_id']);
 			session()->set('organization_id', $result['organization_id']);
-			session()->set('credit_account_info', $result['credit_account_info']);
-			session()->set('payment_card_info', $result['payment_card_info']);
 
 			return true;
 		}

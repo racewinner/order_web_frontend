@@ -272,7 +272,10 @@ class Employees extends Secure_area
 		unset($this->data['price_options']['001']);
 
     	$this->data['all_branches'] = $Branch->get_all_branches();
-		if(!empty($person_id)) $this->data['payment_methods'] = $Employee->get_payment_methods($person_id);
+		if(!empty($person_id)) {
+			$this->data['payment_methods'] = $Employee->get_payment_methods($person_id);
+			$this->data['payment_charges'] = $Employee->get_payment_charges($person_id);
+		}
 
 		return view('v2/pages/employee/employee_edit', $this->data);
 	}
@@ -305,10 +308,6 @@ class Employees extends Secure_area
 			'price_list011' => request()->getPost('price_list011') == '' ? 0 : 1,
 			'price_list012' => request()->getPost('price_list012') == '' ? 0 : 1,
 			'price_list999' => request()->getPost('price_list999') == '' ? 0 : 1,
-			'delivery' => request()->getPost('delivery'),
-			'delivery_charge' => request()->getPost('delivery_charge') ?? 0,
-			'collect' => request()->getPost('collect'),
-			'pay' => request()->getPost('pay'),
       		'organization_id' => $organization_id,
 		);
 		if (request()->getPost('password') != '') {
@@ -318,6 +317,9 @@ class Employees extends Secure_area
 
 		$payment_methods = request()->getPost('payment_methods');
 		$Employee->save_payment_methods($payment_methods, $employee_id, $new_employee_id);
+
+		$payment_charges = request()->getPost('payment_charges');
+		$Employee->save_payment_charges($payment_charges, $employee_id, $new_employee_id);
 
 		// Delivery Type
 		// $db = \Config\Database::connect();

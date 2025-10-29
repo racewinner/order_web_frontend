@@ -41,56 +41,6 @@ class Orders extends Secure_area implements iData_controller
 		$img_host = $Admin->get_plink('img_host');
 		$this->data['img_host'] = $img_host;
 		
-		$types = [
-			['id' => 'general',  'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
-			['id' => 'tobacco',  'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
-			['id' => 'chilled',  'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
-			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
-		];
-		foreach($types as &$type) {
-			$type['lines'] = $Order->get_lines($pid, $type['id']);
-			$type['items'] = $Order->get_items($pid, $type['id']);
-
-			$sum_item_total = 0;
-			$sum_vat = 0;
-
-			$orders = $Order->get_all_cart($pid, $type['id'])->getResult();
-			foreach($orders as $order) {
-				Order::populateProduct($order, $this->priceList, $user_info, 0);
-				if(!empty($order->product)) {
-					$type['orders'][] = $order;
-				}
-				$sum_item_total += $order->quantity * $order->product->prod_sell;
-				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
-			}
-			$type['item_total'] = $sum_item_total;
-			$type['vat'] = $sum_vat;
-		}
-		$this->data["types"] = $types;
-
-		/**
-		 * generate checkout date list
-		 */
-		$now = new DateTime();
-		$noon = new DateTime('today 12:00:00'); // today at 12:00:00 (noon)
-
-		$collection_delivery_date = new DateTime();
-
-		$hasPassedNoon = $now > $noon;
-		if ($hasPassedNoon) {
-			$collection_delivery_date->modify('+3 days'); // add 3 days
-		} else {
-			$collection_delivery_date->modify('+2 days'); // add 2 days
-		}
-
-		$collection_delivery_dates[] = $collection_delivery_date;
-		for ($i = 1; $i < 5; $i++) {
-			$next_datetime = clone $collection_delivery_date;
-			$next_datetime->modify('+' . $i . ' days'); // add 1 days
-			$collection_delivery_dates[] = $next_datetime;
-		}
-		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
-
 		/**
 		 * generate payment method list
 		 */
@@ -130,9 +80,97 @@ class Orders extends Secure_area implements iData_controller
 		/**
 		 * generate ordery type list
 		 */
-		$this->data['du_prefer_delivery'] 	= $user_info->delivery;
-		$this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
-		$this->data['du_prefer_collect'] 	= $user_info->collect;
+		if(!empty($pid)) {
+			$payment_charges = $Employee->get_payment_charges($pid);
+			$this->data['payment_charges'] = $payment_charges;
+		}
+
+		$types = [
+			['id' => 'general',  'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'tobacco',  'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'chilled',  'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+		];
+		foreach($types as &$type) {
+			$type['lines'] = $Order->get_lines($pid, $type['id']);
+			$type['items'] = $Order->get_items($pid, $type['id']);
+
+			$sum_item_total = 0;
+			$sum_vat = 0;
+			$sum_charge = 0;
+
+			$orders = $Order->get_all_cart($pid, $type['id'])->getResult();
+			foreach($orders as $order) {
+				Order::populateProduct($order, $this->priceList, $user_info, 0);
+				if(!empty($order->product)) {
+					$type['orders'][] = $order;
+				}
+				$sum_item_total += $order->quantity * $order->product->prod_sell;
+				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
+				if ($payment_charges && $payment_charges->collection == 1) {
+					$sum_charge += $order->quantity * $payment_charges->cc_per_item;
+				} else if ($payment_charges && $payment_charges->delivery == 1) {
+					$sum_charge += $order->quantity * $payment_charges->dv_per_item;
+				}
+			}
+			$type['item_total'] = $sum_item_total;
+			$type['vat'] = $sum_vat;
+			if ($sum_item_total > 0 && $payment_charges && $payment_charges->collection == 1) {
+				if ($payment_charges->cc_mpi == 1) {
+					$type['cc_charge'] = $sum_charge + $payment_charges->cc_min_charge;
+				} else {
+					if ($sum_charge < $payment_charges->cc_min_charge) {
+						$type['cc_charge'] = $payment_charges->cc_min_charge;
+					} else {
+						$type['cc_charge'] = $payment_charges->cc_max_charge;
+					}
+				}
+			} else {
+				$type['cc_charge'] = 0;
+			}
+			if ($sum_item_total > 0 && $payment_charges && $payment_charges->delivery == 1) {
+				if ($payment_charges->dv_mpi == 1) {
+					$type['dv_charge'] = $sum_charge + $payment_charges->dv_min_charge;
+				} else {
+					if ($sum_charge < $payment_charges->dv_min_charge) {
+						$type['dv_charge'] = $payment_charges->dv_min_charge;
+					} else {
+						$type['dv_charge'] = $payment_charges->dv_max_charge;
+					}
+				}
+			} else {
+				$type['dv_charge'] = 0;
+			}
+		}
+		$this->data["types"] = $types;
+
+		/**
+		 * generate checkout date list
+		 */
+		$now = new DateTime();
+		$noon = new DateTime('today 12:00:00'); // today at 12:00:00 (noon)
+
+		$collection_delivery_date = new DateTime();
+
+		$hasPassedNoon = $now > $noon;
+		if ($hasPassedNoon) {
+			$collection_delivery_date->modify('+3 days'); // add 3 days
+		} else {
+			$collection_delivery_date->modify('+2 days'); // add 2 days
+		}
+
+		$collection_delivery_dates[] = $collection_delivery_date;
+		for ($i = 1; $i < 5; $i++) {
+			$next_datetime = clone $collection_delivery_date;
+			$next_datetime->modify('+' . $i . ' days'); // add 1 days
+			$collection_delivery_dates[] = $next_datetime;
+		}
+		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
+
+		
+		// $this->data['du_prefer_delivery'] 	= $user_info->delivery;
+		// $this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
+		// $this->data['du_prefer_collect'] 	= $user_info->collect;
 
 		/**
 		 * generate cart info
@@ -159,7 +197,8 @@ class Orders extends Secure_area implements iData_controller
     	// $this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $trolledType['item_total'];
 		// $this->data['total_epoints']    = $cart['total_epoints'];
-		$this->data['delivery_charge']  = $user_info->delivery_charge;
+		$this->data['cc_charge']  		= $trolledType['cc_charge'];
+		$this->data['dv_charge']  		= $trolledType['dv_charge'];
 		$this->data['total_vats']       = $trolledType['vat'];
 
 
