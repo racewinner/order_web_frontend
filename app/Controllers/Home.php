@@ -261,6 +261,16 @@ class Home extends BaseController
 		return $Employee->logout();
 	}
 
+	function forgot_password() 
+	{
+		echo view('v2/pages/forgot_password'); // after you stored the query results inside the $data array, send the array to the view 
+	}
+
+	function reinstall_password()
+	{
+		echo view('v2/pages/reinstall_password'); // after you stored the query results inside the $data array, send the array to the view 
+	}
+
 }
 
 ?>

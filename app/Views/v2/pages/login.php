@@ -50,6 +50,11 @@
                 LOGIN
             </button>
         </div>
+        <div class="mb-4" style="margin-top: -10px; text-align: right;">
+            <a href="/forgot-password" style="color: red; text-decoration: underline;">forgot password?</a>
+        </div>
+
+
         <div class="mb-4 text-center">OR</div>
         
         <div class="mb-4">

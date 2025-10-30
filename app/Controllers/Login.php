@@ -2,6 +2,8 @@
 namespace App\Controllers;
 use App\Models\Employee;
 use App\Models\Manager;
+use DateInterval;
+use DateTime;
 
 class Login extends BaseController 
 {
@@ -16,12 +18,71 @@ class Login extends BaseController
     // $branch = session()->get('branch');
 		if ($Employee->is_logged_in()/* && !empty($branch)*/)
 		{			
-      return redirect()->to(base_url('home'));
+    		return redirect()->to(base_url('home'));
 		}
 		// echo view('login');
 		echo view("v2/pages/login");
 	}
 	
+	function reset_password() {
+		$username 	= request()->getPost("username");
+		$email 		= request()->getPost("email");
+
+		$Employee = new Employee();
+		if(!$Employee->existsByEmailAndUsername($email, $username))
+		{
+			return redirect()->to(base_url('forgot-password'));
+		}
+
+		// generate 8-digit random number
+		$min = 10000000;
+		$max = 99999999;
+		$rand8 = mt_rand($min, $max);
+
+		// generate expired time
+		$now = new DateTime();
+		$now->add(new DateInterval('PT1H'));	// add 1 hour
+		$oneHourFromNow = $now->format('Y-m-d H:i:s');
+
+		if(!$Employee->pinResetPwdVerifyInfo($email, $username, $rand8, $oneHourFromNow))
+		{
+			return redirect()->to(base_url('forgot-password'));
+		}
+
+		$this->data['email'] 	= $email;
+		$this->data['username'] = $username;
+		// return redirect()->to(base_url('reset-password'));
+		echo view("v2/pages/reinstall_password", $this->data);
+	}
+
+	function upgrade_password()
+	{
+		$email 				= request()->getPost("email");
+		$username 			= request()->getPost("username");
+		$pin_very_number 	= request()->getPost("pin_verify_number");
+		$password 			= request()->getPost("password");
+		$password2 			= request()->getPost("password2");
+
+		if ($password != $password2) 
+		{
+			$this->data['email'] 	= $email;
+			$this->data['username'] = $username;
+
+			return view("v2/pages/reinstall_password", $this->data);
+		}
+
+		$Employee = new Employee();
+		if(!$Employee->upgradePasswordByPinCode($email, $username, $pin_very_number, $password))
+		{
+			$this->data['email'] 	= $email;
+			$this->data['username'] = $username;
+
+			return view("v2/pages/reinstall_password", $this->data);
+		}
+
+		return redirect()->to(base_url('/login'));
+
+	}
 	function login_check(){
 		$rules = [
 			'username' => [
@@ -46,47 +107,46 @@ class Login extends BaseController
 		$is_mobile = request()->getPost("is_mobile");
 
 		$Employee = new Employee();
-
 		
 		if($Employee->login($username,$password))
 		{
 			session()->set('is_mobile', $is_mobile);
 
-      $person_id = session()->get('person_id');
-      $branch_list = $Employee->get_info($person_id)->branches;
+			$person_id = session()->get('person_id');
+			$branch_list = $Employee->get_info($person_id)->branches;
 
-      if (count($branch_list) == 0) {
-          $macc = new MyAccount();
-          $nearest_branch_id = $macc->getBranch();
-          if ($nearest_branch_id > 0) {
-            session()->set('branch', $nearest_branch_id);
-            return redirect()->to(base_url('home'));
-          }
+			if (count($branch_list) == 0) {
+				$macc = new MyAccount();
+				$nearest_branch_id = $macc->getBranch();
+				if ($nearest_branch_id > 0) {
+					session()->set('branch', $nearest_branch_id);
+					return redirect()->to(base_url('home'));
+				}
 
-      } else if (count($branch_list) == 1) {
-          $my_branch = $branch_list[0];
-          if ($my_branch > 0) {
-            session()->set('branch', $my_branch);
-            return redirect()->to(base_url('home'));
-          }
+			} else if (count($branch_list) == 1) {
+				$my_branch = $branch_list[0];
+				if ($my_branch > 0) {
+					session()->set('branch', $my_branch);
+					return redirect()->to(base_url('home'));
+				}
 
-      } else {
-        $macc = new MyAccount();
-        $nearest_branch_id = $macc->getAllocatedBranch();
+			} else {
+				$macc = new MyAccount();
+				$nearest_branch_id = $macc->getAllocatedBranch();
 
-        $last_kiss_branch_id = $macc->getLastKissBranch($person_id);
-        if (!empty($last_kiss_branch_id)) {
-          $nearest_branch_id = $last_kiss_branch_id;
-        }
+				$last_kiss_branch_id = $macc->getLastKissBranch($person_id);
+				if (!empty($last_kiss_branch_id)) {
+					$nearest_branch_id = $last_kiss_branch_id;
+				}
 
-        if ($nearest_branch_id > 0) {
-          session()->set('branch', $nearest_branch_id);
-          return redirect()->to(base_url('home'));
-          // return redirect()->to(base_url('myaccount/sel_allocated_branch'));
-        }
-      }
+				if ($nearest_branch_id > 0) {
+					session()->set('branch', $nearest_branch_id);
+					return redirect()->to(base_url('home'));
+					// return redirect()->to(base_url('myaccount/sel_allocated_branch'));
+				}
+			}
 
-      return redirect()->to(base_url('login'));
+      		return redirect()->to(base_url('login'));
 		}	
 		else
 		{
@@ -110,21 +170,20 @@ class Login extends BaseController
 		// {						
 		// 	return redirect()->to(base_url('home'));
 		// }
-    $branch = session()->get('branch');
-    if (!empty($branch)) {
-      return redirect()->to(base_url('home'));
-    }
+		$branch = session()->get('branch');
+		if (!empty($branch)) {
+			return redirect()->to(base_url('home'));
+		}
 
-    $macc = new MyAccount();
-    $nearest_branch_id = $macc->getBranch();
+		$macc = new MyAccount();
+		$nearest_branch_id = $macc->getBranch();
 
-    if ($nearest_branch_id > 0) {
-      session()->set('branch', $nearest_branch_id);
+		if ($nearest_branch_id > 0) {
+			session()->set('branch', $nearest_branch_id);
+			return redirect()->to(base_url('home'));
+		}
 
-      return redirect()->to(base_url('home'));
-    }
-
-    return redirect()->to(base_url('login'));
+		return redirect()->to(base_url('login'));
 	}
 	
 	

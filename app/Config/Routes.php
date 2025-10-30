@@ -15,6 +15,10 @@ $routes->get('/home/logout', 'Home::logout');
 $routes->get('/login', 'Login::index');
 $routes->post('/login', 'Login::login_check');
 $routes->get('/login/guest_login', 'Login::guest_login');
+$routes->get('/forgot-password', 'Home::forgot_password');
+$routes->post('/reset-password', 'Login::reset_password');
+$routes->get('/reset-password', 'Home::reinstall_password');
+$routes->post('/reinstall-password', 'Login::upgrade_password');
 
 $routes->get('/myaccount/sel_allocated_branch', 'MyAccount::getAllocatedSelectBranch');
 $routes->get('/myaccount/sel_branch', 'MyAccount::getSelectBranch');
