@@ -54,6 +54,46 @@ class Employee extends Model
 			->where('username', $username)
 			->update($data);
 
+		// get New generated pin_verify_number
+		$query = $db->table('epos_employees')
+					->where('email', $email)
+					->where('username', $username)
+					->get();
+
+		if ($query->getNumRows() == 0) {
+			return false;
+		}
+
+		$row = $query->getRow();
+		$pin_very_number = $row->pin_verify_number;
+
+		// send email
+		$db = \Config\Database::connect();
+		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
+		$mail_addr = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
+		$company_name = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
+		$seller_mail_addr = $result->value;
+
+		$mail_subject = "Your password reset request";
+
+		$message = "<html><body>";
+		
+		$message .= "<div style='font-family:Arial; font-size:13px;'>";
+		$message .= "Your password reset verification code is ";
+		$message .= $pin_very_number;
+		$message .= '</div>';
+		$message .= "<div style='font-family:Arial; font-size:13px;'>";
+		$message .= "The code is only valid for the next 10 minutes.";
+		$message .= '</div>';
+
+		$message .= "</body></html>";
+
+		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
+
 		return $success;
 	}
 
@@ -91,31 +131,7 @@ class Employee extends Model
 			->where('username', $username)
 			->update($data);
 
-		// send email
-		$db = \Config\Database::connect();
-		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
-		$mail_addr = $result->value;
-
-		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
-		$company_name = $result->value;
-
-		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
-		$seller_mail_addr = $result->value;
-
-		$mail_subject = "Upgrade your password";
-
-
-		$message = "<html><body>";
 		
-		$message .= "<div style='font-family:Arial; font-size:13px;'>";
-		$message .= "Your verify number to upgrade your password is ";
-		$message .= $pin_very_number;
-		$message .= '.</div>';
-
-		$message .= "</body></html>";
-
-		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
-
 		return $success;
 	}
 
