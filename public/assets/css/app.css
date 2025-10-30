@@ -1,3 +1,6 @@
+body {
+    margin: 0px !important;
+}
 body.auth-layout {
     header {
         border-bottom: 2px solid #eee;
@@ -329,6 +332,11 @@ footer {
             }
         }
     }
+    @media (max-width: 992px) {
+        .my-cart-body {
+            /* text-align: center; */
+        }
+    }
 }
 
 
@@ -582,7 +590,7 @@ footer {
             @media (min-width: 640px) {
               /* padding: 10px; */
               /* width: 100%; */
-              min-height: 75px;
+              min-height: 65px;
             }
         }
         .prod-image {

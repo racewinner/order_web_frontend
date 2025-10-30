@@ -79,45 +79,24 @@
     <div class="my-cart">
         <div class="my-cart-header d-flex">
             <div class="flex-fill">
-                <h5 class="fw-bold">My Trolley</h5>
+                <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
             </div>
         </div>
+        <?php if (isset($type['orders'])) { ?>
+            <div class="cart-recent-notify">Latest changes to your trolley</div>
+        <?php } else { ?>
+            <div class="cart-recent-notify">Your trolley is empty</div>
+        <?php } ?>
         <div class="my-cart-body">
-            <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
-                <?php foreach($types as $index => $type) { ?>
-                    <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
-                        id="tab-<?= $type['id'] ?>" 
-                        data-bs-toggle="pill" 
-                        data-bs-target="#pane-<?= $type['id'] ?>" 
-                        role="tab" 
-                        aria-controls="pane-<?= $type['id'] ?>" 
-                        aria-selected="true"
-                    ><?= $type['label'] ?></li>
-                <?php } ?>
-            </ul>
-
             <div class="tab-content mt-3">
-                <?php foreach($types as $index => $type) { ?>
-                    <div class="tab-pane fade <?= $index == 0 ? 'show active' : '' ?> <?= $type['id'] ?>" 
-                        id="pane-<?= $type['id'] ?>" 
-                        role="tabpanel" 
-                        aria-labelledby="tab-<?= $type['id'] ?>"
-                        data-lines="<?= $type['lines'] ?>"
-                        data-items="<?= $type['items'] ?>"
-                    >
-                        <input type="hidden" name="bknd_item_total" id="bknd_item_total" value="<?= $type['item_total'] ?>">
-                        <input type="hidden" name="bknd_vat" id="bknd_vat" value="<?= $type['vat'] ?>">
+                <input type="hidden" name="bknd_item_total" id="bknd_item_total" value="<?= $type['item_total'] ?>">
+                <input type="hidden" name="bknd_vat" id="bknd_vat" value="<?= $type['vat'] ?>">
 
-
-                        <div class="d-flex align-items-center cart-lines-items mb-4">
-                            <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
-                        </div>
-
-                        <div class="cart-items mt-2 cart-items-on-mobile">
-                            <?php foreach($type['orders'] as $order) { 
-                                echo view("v2/components/CartItem", ['order' => $order]);
-                            } ?>
-                        </div>
+                <?php if (isset($type['orders'])) { ?>
+                    <div class="cart-items mt-2 cart-items-on-mobile">
+                        <?php foreach($type['orders'] as $order) { 
+                            echo view("v2/components/CartItem", ['order' => $order]);
+                        } ?>
                     </div>
                 <?php } ?>
             </div>
@@ -142,12 +121,16 @@
 
         <div class="card-footer">
             <div class="subtotal subtotal-desc">
-                <div><label>Trolley total is </label></div>
+                <div>
+                    <label>
+                        <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
+                        total is </label>
+                </div>
                 <div class="value" id="cur_trolley_total"></div>
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment/xxx" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
+                <a href="/orders/checkout" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
             </div>
         </div>
     </div>
@@ -157,26 +140,9 @@
 <?= $this->section('javascript') ?>
 <script>
      $(document).ready(function() {
-        let el = $('.one-cart-type')
-        if (el.length == 0) {
-            return;
-        } else {
-            el[0].click();
-        }
+      
     })
-    $(document).on('click', '.one-cart-type', function(e) {
-        let el_tab_id = e.currentTarget.id
-        let trolley_name = el_tab_id.slice(4)
-        
-        let item_total = $(`#pane-${trolley_name} input#bknd_item_total`).val();
-        let vat = $(`#pane-${trolley_name} input#bknd_vat`).val();
-
-        $('#cur_trolley_total_amount').text(`£${parseFloat(item_total).toFixed(2)}`);
-        $('#cur_trolley_total_vats').text(`£${parseFloat(vat).toFixed(2)}`);
-        $('#cur_trolley_total').text(`£${(parseFloat(item_total) + parseFloat(vat)).toFixed(2)}`);
-
-        $('#nxt2complete').attr('href', `/orders/payment/${trolley_name}`)
-    })
+    
 </script>
 
 <?= $this->endSection() ?>

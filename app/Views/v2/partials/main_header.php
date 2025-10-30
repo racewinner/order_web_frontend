@@ -85,7 +85,7 @@ if(!empty($category_id) && $category_id > 0) {
 			</div>
 			<?php if(!empty($user_info)) { ?>
 			<div class="d-flex flex-column align-items-center ms-2">
-				<a href="/orders"><i class="bi bi-cart3"></i></a>
+				<a href="/orders/recent"><i class="bi bi-cart3"></i></a>
 			</div>
 			<?php } ?>
 			<div class="ms-2">

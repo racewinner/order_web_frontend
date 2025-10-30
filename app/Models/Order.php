@@ -99,23 +99,23 @@ class Order extends Model
   function get_lines_ignore_type($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
-    $builder = $db->table('epos_cart');
-    $builder->where('person_id', $person_id);
-    $builder->where('presell', $presell);
-    $builder->where('branch', $branch);
-    if (!empty($organization_id)) {
-    $builder->where('organization_id', $organization_id);
-    }
-  
-    // $builder->where('group_type', $type);
-    // $builder->groupBy('prod_code');
-    $result = $builder->get();
-    $numRows = $result->getNumRows();
+		$builder = $db->table('epos_cart');
+		$builder->where('person_id', $person_id);
+		$builder->where('presell', $presell);
+		$builder->where('branch', $branch);
+		if (!empty($organization_id)) {
+			$builder->where('organization_id', $organization_id);
+		}
+	
+		// $builder->where('group_type', $type);
+		// $builder->groupBy('prod_code');
+		$result = $builder->get();
+		$numRows = $result->getNumRows();
 
-    return $numRows;		
+		return $numRows;		
 	}
 
 	function get_items($person_id, $type='general', $presell=0)
@@ -143,24 +143,24 @@ class Order extends Model
   function get_items_ignore_type($person_id, $type='general', $presell=0)
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
 
-    $builder = $db->table('epos_cart');
-    $builder->selectSum('quantity');
-    $builder->where('person_id', $person_id);
-    $builder->where('presell', $presell);
-    $builder->where('branch', $branch);
-    if (!empty($organization_id)) {
-    $builder->where('organization_id', $organization_id);
-    }
-  
-    // $builder->where('group_type', $type);
-    // $builder->groupBy('prod_code');
-    $result = $builder->get()->getRow();
-    $quantitySum = $result->quantity ?? 0; 
+		$builder = $db->table('epos_cart');
+		$builder->selectSum('quantity');
+		$builder->where('person_id', $person_id);
+		$builder->where('presell', $presell);
+		$builder->where('branch', $branch);
+		if (!empty($organization_id)) {
+			$builder->where('organization_id', $organization_id);
+		}
+	
+		// $builder->where('group_type', $type);
+		// $builder->groupBy('prod_code');
+		$result = $builder->get()->getRow();
+		$quantitySum = $result->quantity ?? 0; 
 
-    return $quantitySum;
+		return $quantitySum;
 	}
 
 

@@ -3,6 +3,11 @@
 <?= $this->section('css') ?>
 <style>
     .delivery-payment {
+        .my-cart-header {
+            border: none !important;
+            padding-top: 2rem;
+            padding-bottom: 1rem;
+        }
         /* width: 600px; */
         /* max-width: 95vw; */
         padding: 20px;
@@ -120,20 +125,126 @@
         border: 1px solid #eee;
         border-radius: 10px;
     }
-   
-    .chk-out-pad-on-mobile {
-        width: fit-content !important;
-    }
     @media (max-width: 992px) {
+        .delivery-payment {
+            /* width: 600px; */
+            /* max-width: 95vw; */
+            padding: 0px;
+            input[type='radio'] {
+                width: 25px;
+                height: 25px;
+            }
+            .delivery-section {
+                ul.delivery-methods {
+                    padding: 0px;
+                    list-style: none;
+                    li.one-delivery-method {
+                        cursor: pointer;
+                        width: 200px;
+                        text-align: center;
+                        padding: 8px 20px;
+                        border: 1px solid #aaa;
+                        border-radius: 10px;
+                        margin-right: 20px;
+                        &.active {
+                            border: 1px solid red;
+                            color: red;
+                        }
+                        @media (max-width: 450px) {
+                            font-size: 90%;
+                            width: 170px;
+                        }
+                        @media (max-width: 380px) {
+                            font-size: 90%;
+                            width: fit-content;
+                        }
+                    }
+                }
+                .delivery-method-pane {
+                    border-radius: 10px;
+                    border: 1px solid #eee;
+                    padding: 20px;
+                    i {
+                        font-size: 30px;
+                        color: red;
+                    }
+                    a.edit-address {
+                        color: var(--bs-bright-blue);
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .payment-section {
+                margin-top: 30px;
+                .one-pay-method {
+                    border: 1px solid #eee;
+                    border-radius: 10px;
+                    padding: 20px;
+                    &.pay-in-card {
+                        input.expire-date, input.cvv {
+                            width: 150px;
+                            max-width: 30vw;
+                        }
+                    }
+                }
+                ul.card-types {
+                    list-style: none;
+                    margin-top: 5px;
+                    padding: 0px;
+                    align-items: center;
+                    li {
+                        padding: 0;
+                        margin-right: 10px;
+                        img {
+                            height: 50px;
+                            /* width: 50px; */
+                        }
+                    }
+                }
+            }
+        }
+        .billing.card {
+            padding: 20px;
+            height: fit-content;
+            border: none;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+            .billing-item {
+                margin-bottom: 15px;
+                .value {
+                    font-weight: bold;
+                    color: #111;
+                }
+            }
+            .subtotal {
+                label {
+                    font-weight: bold;
+                    color: #111;
+                }
+                .value {
+                    font-weight: bold;
+                    color: var(--bs-success);
+                    font-size: 150%;
+                }
+            }
+        }
         img.img-sz-on-mobile {
             width: 50px !important;
             height: auto !important;
         }
-        .chk-out-pad-on-mobile {
-            width: 100%;
-        }
         .charge-value-on-mobile {
             margin-right: 0px !important;
+        }
+        .delivery-payment {
+            .my-cart-header {
+                border: none !important;
+                padding-top: 2rem;
+                padding-bottom: 1rem;
+            }
+            .one-cart-item {
+                border: none !important;
+                border-bottom: 1px solid #ddd !important;
+                width: auto;
+            }
         }
     }
 </style>
@@ -144,11 +255,15 @@
 <input type="hidden" name="cc_charge" id="cc_charge" value="<?php echo $cc_charge;?>">
 <input type="hidden" name="dv_charge" id="dv_charge" value="<?php echo $dv_charge;?>">
 
-<div class="d-flex flex-column flex-lg-row mx-auto chk-out-pad-on-mobile">
+<div class="d-flex flex-column flex-lg-row mx-auto main-content-pad-on-mobile">
     <div class="delivery-payment">
-        <h5>Check out</h5>
+        <div class="my-cart-header d-flex">
+            <div class="flex-fill">
+                <h5 class="fw-bold">Check out</h5>
+            </div>
+        </div>
         <!-- Tab Selector -->
-        <div class="delivery-section mt-4">
+        <div class="delivery-section">
             <h6>Order Type</h6>
             <div class="delivery-container mb-30">
                 <?php if ($this->data['payment_charges'] &&  
@@ -396,7 +511,7 @@
         </div>
     </div>
 
-    <div style="padding-left: 20px; padding-right: 20px">
+    <div>
         <div class="billing card ms-0 mt-4 ms-lg-4">
             <div class="card-header">
                 <h5 class="card-title">Billing Details</h5>
@@ -551,6 +666,7 @@
     })
 
     $(document).ready(function() {
+        debugger
         let el = $('.delivery-methods li')
         if (el.length == 0) {
             $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
@@ -564,6 +680,7 @@
             let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
             $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
             //----------
+            $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
             $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
         } else {
             el[0].click();

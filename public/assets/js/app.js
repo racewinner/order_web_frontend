@@ -205,6 +205,12 @@ function update_cart() {
                 $('#cur_trolley_total_amount').text('£' + parseFloat(cart_amount).toFixed(2));
                 $('#cur_trolley_total').text('£' + (parseFloat(cart_amount) + parseFloat(total_vats)).toFixed(2));
 
+                /**
+                 * set vat in checkout page's Billing details
+                 */
+                $('#cur_trolley_total_vats').text('£' + parseFloat(total_vats).toFixed(2));
+
+                
 
 
             //   $("#cart_total_amount").text("£"+total_amount.toFixed(2));
@@ -419,7 +425,6 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.cms-content', function (e) {
-      debugger
         const cms = $(e.target).closest('.cms-content');
         const cms_itm_id = cms.data('cms-itm-id');
         const cms_itm_tp = cms.data('cms-itm-tp');
@@ -654,7 +659,6 @@ $(document).ready(function () {
         $my_cart_sidebar_content = $('#my-cart-sidebar .sidebar-content');
         $my_cart_sidebar_content.addClass('loading');
 
-        debugger
         $.ajax({
             url: `/orders/mini_cart`,
             success: function (response, status, request) {

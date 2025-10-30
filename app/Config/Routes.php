@@ -60,6 +60,7 @@ $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->get('/orders/checkout', 'Orders::checkout');
     $routes->get('/orders/payment/(:segment)', 'Orders::payment/$1');
     $routes->get('/orders/mini_cart', 'Orders::mini_cart');
+    $routes->get('/orders/recent', 'Orders::recent');
     $routes->get('/orders', 'Orders::index');
 
     $routes->post('/home/check_both_promos', 'Home::check_both_promos');

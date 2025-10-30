@@ -297,7 +297,7 @@ if($view_mode == 'grid') {
         data-prod-code="<?= $product->prod_code ?>"
         data-prod-desc="<?= $product->prod_desc ?>"
     >
-        <div class="card-body p-2 d-flex">
+        <div class="card-body p-2 d-flex2">
             <div class="d-flex justify-content-center align-items-center">
                 <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
             </div>

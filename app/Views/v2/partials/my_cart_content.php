@@ -24,7 +24,7 @@
                 data-lines="<?= $type['lines'] ?>"
                 data-items="<?= $type['items'] ?>"
             >
-                <div class="cart-items mt-2">
+                <div class="cart-items mt-2 cart-items-on-mobile">
                     <?php foreach($type['orders'] as $order) { 
                         echo view("v2/components/CartItem", ['order' => $order]);
                     } ?>

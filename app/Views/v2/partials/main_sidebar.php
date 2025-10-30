@@ -19,7 +19,7 @@
             'orders' => ['icon' => 'bi-clock', 'label' => 'Orders', 'url' => '/pastorders'],
             'contact_us' => ['icon' => 'bi-envelope', 'label' => 'Contact Us', 'url' => '/contactus'],
             'separator1' => ['label' => 'separator'],
-            'trolley' => ['icon' => 'bi-cart3', 'label' => 'Trolley', 'url' => '/orders']
+            'trolley' => ['icon' => 'bi-cart3', 'label' => 'Trolley', 'url' => '/orders/recent']
         ];
 
         $menus['employees'] = ['icon' => 'bi-person-fill', 'label' => 'User', 'url' => '/employees'];

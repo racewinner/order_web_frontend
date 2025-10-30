@@ -3,8 +3,10 @@
 <?= $this->section('css') ?>
 <style>
 .login-panel {
-    width: 90%;
+    /* width: 90%; */
     max-width: 450px;
+    padding-left: 40px;
+    padding-right: 40px;
     button#btn-login {
         margin-top: 20px !important;
         width: 100%;
@@ -16,7 +18,7 @@
 <?= $this->section('content') ?>
 <div class="login-panel mx-auto">
     <form action="/login" method="post">
-        <h4 class="text-center mb-4 pt-20px">Welcome</h4>
+        <h4 class="text-center mb-4 pt-4-5">Welcome</h4>
 
         <div class="text-red mb-4">
             <?php if (isset($validation) && $validation->getErrors()): ?>

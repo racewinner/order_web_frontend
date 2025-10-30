@@ -343,6 +343,53 @@ class Orders extends Secure_area implements iData_controller
 		return $this->index('checkout');
 	}
 
+	public function recent()
+	{
+		$Employee = new Employee();
+		$Admin = new Admin();
+		$Order = new Order();
+		$UnknownProduct = new UnknownProduct();
+
+		if(!$Employee->is_logged_in()) {			
+			return redirect()->to('/');			
+		}
+
+		$user_info = $Employee->get_logged_in_employee_info();
+		$pid = $user_info->person_id;
+		$this->data['controller_name'] = request()->uri->getSegment(1);
+
+		$img_host = $Admin->get_plink('img_host');
+		$this->data['img_host'] = $img_host;
+
+		$type['lines'] = $Order->get_lines_ignore_type($pid);
+		$type['items'] = $Order->get_items_ignore_type($pid);
+
+		$sum_item_total = 0;
+		$sum_vat = 0;
+
+		$orders = $Order->get_all_cart_ignore_type($pid)->getResult();
+		foreach($orders as $order) {
+			Order::populateProduct($order, $this->priceList, $user_info, 0);
+			if(!empty($order->product)) {
+				$type['orders'][] = $order;
+			}
+			$sum_item_total += $order->quantity * $order->product->prod_sell;
+			$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
+		}
+		$type['item_total'] = $sum_item_total;
+		$type['vat'] = $sum_vat;
+		
+		$this->data["type"] = $type;
+		
+
+		$this->data['form_width'] = $this->get_form_width();
+	    
+	  	$this->data["slides"] = $Admin->get_scount('slides');
+		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
+
+		return view('v2/pages/myaccount/recent', $this->data);
+	}
+
 	public function payment($trolley_name='general')
 	{
 		return $this->index('payment', $trolley_name);
