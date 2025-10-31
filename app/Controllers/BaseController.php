@@ -77,6 +77,8 @@ abstract class BaseController extends Controller
         $Product = new Product();
         $Branch = new Branch();
         $branch = session()->get('branch');
+        $branchName = $branch ? $Branch->getBranchNameById($branch) : '';
+        $data['branchName'] = $branchName;
 
         if(!request()->isAJAX()) {
             $data['s1_name']  = $Admin->get_plink('s1_name');
@@ -135,6 +137,7 @@ abstract class BaseController extends Controller
             $data['is_mobile'] = session()->get('is_mobile');
             $data['footerconfig'] = FooterConfig::getConfig();
             $data['topRibbonConfig'] = TopRibbonConfig::getConfig();
+            // $data['branchName'] = $branchName;
         
             // data for v2
             $data['top_categories'] = Category::getCategoryTree($branch);
@@ -155,8 +158,7 @@ abstract class BaseController extends Controller
               $response = MyAccountService::get_loyalty($logged_in_employee_info->username);
               if(isset($response['data']) && $response['data']['url']) $data['loyalty_url'] = $response['data']['url'];
             }
-
-            $this->data = $data;
         }
+        $this->data = $data;
     }
 }

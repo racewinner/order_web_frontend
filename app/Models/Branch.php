@@ -33,4 +33,10 @@ class Branch extends Model
 
         return $allocated_branches;
     }
+
+    function getBranchNameById($id)
+    {
+        $branch = Branch::find($id);
+        return $branch['site_name'];
+    }
 }

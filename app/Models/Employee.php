@@ -377,8 +377,9 @@ class Employee extends Model
 	*/
 	function get_info($employee_id)
 	{
-		$query = $this->select('*')
+		$query = $this->select('*, b.site_name')
 			->where('person_id', $employee_id)
+			->join('epos_branches b', 'last_kiss_branch = b.id', 'left') // corrected join clause
 			->get();
 
 		if ($query->getNumRows() == 1) {
