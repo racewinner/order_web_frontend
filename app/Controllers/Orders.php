@@ -109,34 +109,44 @@ class Orders extends Secure_area implements iData_controller
 				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
 				if ($payment_charges && $payment_charges->collection == 1) {
 					$sum_charge += $order->quantity * $payment_charges->cc_per_item;
-				} else if ($payment_charges && $payment_charges->delivery == 1) {
+				} 
+				if ($payment_charges && $payment_charges->delivery == 1) {
 					$sum_charge += $order->quantity * $payment_charges->dv_per_item;
 				}
 			}
 			$type['item_total'] = $sum_item_total;
 			$type['vat'] = $sum_vat;
-			if ($sum_item_total > 0 && $payment_charges && $payment_charges->collection == 1) {
+			
+			
+			if ($payment_charges->collection == 1) {
 				if ($payment_charges->cc_mpi == 1) {
 					$type['cc_charge'] = $sum_charge + $payment_charges->cc_min_charge;
 				} else {
+				    $type['cc_charge'] = $sum_charge;
 					if ($sum_charge < $payment_charges->cc_min_charge) {
 						$type['cc_charge'] = $payment_charges->cc_min_charge;
-					} else {
+					} 
+					if ($sum_charge > $payment_charges->cc_max_charge) {
 						$type['cc_charge'] = $payment_charges->cc_max_charge;
-					}
+					} 
 				}
 			} else {
 				$type['cc_charge'] = 0;
 			}
-			if ($sum_item_total > 0 && $payment_charges && $payment_charges->delivery == 1) {
+			
+			
+			if ($payment_charges->delivery == 1) {
 				if ($payment_charges->dv_mpi == 1) {
 					$type['dv_charge'] = $sum_charge + $payment_charges->dv_min_charge;
 				} else {
+				    $type['dv_charge'] = $sum_charge;
 					if ($sum_charge < $payment_charges->dv_min_charge) {
 						$type['dv_charge'] = $payment_charges->dv_min_charge;
-					} else {
-						$type['dv_charge'] = $payment_charges->dv_max_charge;
 					}
+					if ($sum_charge > $payment_charges->dv_max_charge) {
+						$type['dv_charge'] = $payment_charges->dv_max_charge;
+					}					
+					
 				}
 			} else {
 				$type['dv_charge'] = 0;

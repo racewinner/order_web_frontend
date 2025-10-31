@@ -18,7 +18,7 @@
 <?= $this->section('content') ?>
 <div class="login-panel mx-auto">
     <form action="/reinstall-password" method="post">
-        <h4 class="text-center mb-4 pt-4-5">Upgrade your password</h4>
+        <h4 class="text-center mb-4 pt-4-5">Reset your password</h4>
 
         <input type="hidden" name="email" id="email" value="<?= $email ?>">
         <input type="hidden" name="username" id="username" value="<?= $username ?>">
@@ -39,7 +39,7 @@
 
         <div class="mb-4">
             <button class="btn mb-0 btn-danger" style="width: 100%" id="btn-reset-password" type="submit">
-                Upgrade
+                Save and Login
             </button>
         </div>
     </form>
@@ -48,6 +48,10 @@
             GO BACK
         </button>
     </div>
+
+    <div style="margin-bottom: 5px">If your details have been matched you will be sent an email containing a one time passcode to allow the resetting of your password.</div>
+    <div style="margin-bottom: 5px">Please enter that code on this screen.</div>
+    <div style="margin-bottom: 5px">Note: The code is only valid for 10 minutes.</div>
 </div>
 <?= $this->endSection() ?>
 
