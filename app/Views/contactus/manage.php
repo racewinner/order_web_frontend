@@ -32,10 +32,12 @@ function send_message()
         , timeout : 30000
         , cache : false
         , data : "phone_number=" + phone_number + "&msg=" + msg
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}},
         , success : function(response, status, request) {
 
 			if(response == -1)

@@ -110,9 +110,12 @@ function show_detail(prod_code) {
     $.ajax({
         url: `/products/${prod_code}/show_by_code`,
         type: 'GET',
-        error: function (request, status, error) {
-            showToas("error", error);
-        },
+        error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+                showToast("An error occured: ", xhr.status + " " + xhr.statusText);
+            }},
         success:function(data) {
             $view_modal.find('.modal-title').html("Product Detail");
             $view_modal.find(".modal-content .modal-body").html(data);

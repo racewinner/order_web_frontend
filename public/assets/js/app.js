@@ -111,9 +111,12 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
         , timeout: 30000
         , cache: false
         , data: post_data
-        , error: function (request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success: function (response, status, request) {
             if (response < 0) {
                 return;
@@ -159,6 +162,12 @@ function update_cart() {
         'url' : '/orders/cartinfo',
         'type': 'GET', //the way you want to send data to your URL
         'data': false,
+        'error': function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}},
         'success': function (data) {
             if (data) {
                 let total_amount    = data.total_amount;
@@ -191,18 +200,20 @@ function update_cart() {
                 /**
                  * set item&trolley total amount in checkout page's Billing details
                  */
-                debugger
-                const cart_active_typename = $('.one-cart-type.active').attr('id').slice(4);
-                const cur_trolley_cart_amount = data.cart_types[cart_active_typename].amount;
-                const cur_trolley_cart_vat    = data.cart_types[cart_active_typename].vat;
-                debugger
-                $('#cur_trolley_total_amount').text('£' + parseFloat(cur_trolley_cart_amount).toFixed(2));
-                $('#cur_trolley_total').text('£' + (parseFloat(cur_trolley_cart_amount) + parseFloat(cur_trolley_cart_vat)).toFixed(2));
+                if ($('.one-cart-type.active').length > 0) {
+                    const cart_active_typename = $('.one-cart-type.active').attr('id').slice(4);
+                    const cur_trolley_cart_amount = data.cart_types[cart_active_typename].amount;
+                    const cur_trolley_cart_vat    = data.cart_types[cart_active_typename].vat;
 
-                /**
-                 * set vat in checkout page's Billing details
-                 */
-                $('#cur_trolley_total_vats').text('£' + parseFloat(cur_trolley_cart_vat).toFixed(2));
+                    $('#cur_trolley_total_amount').text('£' + parseFloat(cur_trolley_cart_amount).toFixed(2));
+                    $('#cur_trolley_total').text('£' + (parseFloat(cur_trolley_cart_amount) + parseFloat(cur_trolley_cart_vat)).toFixed(2));
+
+                    /**
+                     * set vat in checkout page's Billing details
+                     */
+                    $('#cur_trolley_total_vats').text('£' + parseFloat(cur_trolley_cart_vat).toFixed(2));
+                }
+                
             }
         }
     });
@@ -219,9 +230,12 @@ function favorite(pid, prod_id, prod_code, state, onSuccess) {
         , timeout: 30000
         , cache: false
         , data: post_data
-        , error: function (request, status, error) {
-            //alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success: function (data) {
             if(onSuccess) onSuccess();
         }
@@ -364,6 +378,12 @@ function sendIsMobile() {
         'url': '/home/mobile',
         'type': 'POST', //the way you want to send data to your URL
         'data': data,
+        'error': function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}},
         'success': function (data) {
         }
     });
@@ -381,8 +401,12 @@ $(document).ready(function () {
         ajaxComplete: function(event, jqXHR, status) {
             $("#ajax-call-indicator").addClass("d-none");
         },
-        ajaxError: function(event, jqXHR, settings, exception) {
-          console.error('AJAX error on', settings.url, 'Status:', jqXHR.status);
+        ajaxError: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}
         },
         ajaxSuccess: function(event, jqXHR, settings) {
         },
@@ -556,9 +580,12 @@ $(document).ready(function () {
                     url: `/products/suggest2`,
                     dataType: "json" ,
                     data: {term:request.term, category_id} ,
-                    error : function(request, status, error) {
-                        console.log(error);
-                    },
+                    error : function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            window.location.href = '/login'; return;
+                        } else {
+                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }},
                     success: function(data) {
                         response(data)
                     },
@@ -641,6 +668,12 @@ $(document).ready(function () {
 
         $.ajax({
             url: `/orders/mini_cart`,
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }},
             success: function (response, status, request) {
                 $my_cart_sidebar_content.removeClass('loading');
                 $my_cart_sidebar_content.find(".my-cart-content").html(response);

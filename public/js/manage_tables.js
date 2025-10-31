@@ -232,9 +232,12 @@ function enable_search1(suggest_url , confirm_search_message)
     			url: suggest_url ,
     			dataType: "json" ,
     			data: {term:request.term} ,
-    			error : function(request, status, error) {
-    		         alert("code");
-    		        },
+    			error : function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
     			success: function(data) {
     				response(data);
     			}
@@ -289,6 +292,12 @@ function do_search0(show_feedback,on_complete)
         , timeout : 30000
         , cache : false
         , data : "search0=" + search0 + "&search1=" + search1 + "&search2=" + search2 + "&sort_key=" + sort_key + "&per_page=" + per_page + "&category_id=" + category_id
+		, errir: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             //$('#search_mode').val(strArray[0]);
@@ -344,6 +353,12 @@ function do_search_orders(show_feedback , on_complete)
         , timeout : 30000
         , cache : false
         , data : "search=" + search + "&sort_key=" + sort_key + "&per_page=" + per_page
+		, error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             $('#search_mode').val("search");
@@ -383,6 +398,12 @@ function do_search1(show_feedback , on_complete)
         , timeout : 30000
         , cache : false
         , data : "search=" + search + "&sort_key=" + sort_key + "&per_page=" + per_page
+		, error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             $('#search_mode').val("search");
@@ -527,10 +548,16 @@ function do_email(url)
 	if(!enable_email.enabled)
 		return;
 
-	$.post(url, { 'ids[]': get_selected_values() },function(response)
-	{
+	$.post(url, { 'ids[]': get_selected_values() }, function(response) {
 		$('#email').attr('href',response);
-	});
+	})
+	.fail(function (xhr, status, error) {
+		if (xhr.status == 401) {
+			window.location.href = '/login'; return;
+		} else {
+			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+		}
+	})
 
 }
 
@@ -598,11 +625,9 @@ function do_delete(url)
 
 	var row_ids = get_selected_values();
 	var selected_rows = get_selected_rows();
-	$.post(url, { 'ids[]': row_ids },function(response)
-	{
+	$.post(url, { 'ids[]': row_ids },function(response) {
 		//delete was successful, remove checkbox rows
-		if(response.success)
-		{
+		if(response.success) {
 			$(selected_rows).each(function(index, dom)
 			{
 				$(this).find("td").animate({backgroundColor:"green"},1200,"linear")
@@ -616,13 +641,16 @@ function do_delete(url)
 			});
 			set_feedback(response.message,'success_message',false);
 		}
-		else
-		{
+		else {
 			set_feedback(response.message,'error_message',true);
+		}}, "json")
+	.fail(function (xhr, status, error) {
+		if (xhr.status == 401) {
+			window.location.href = '/login'; return;
+		} else {
+			alert("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
-
-
-	},"json");
+	})
 }
 
 
@@ -634,11 +662,9 @@ function do_delete_user(url , index_url)
 
 	var row_ids = get_selected_values();
 	var selected_rows = get_selected_rows();
-	$.post(url, { 'ids[]': row_ids },function(response)
-	{
+	$.post(url, { 'ids[]': row_ids },function(response) {
 		//delete was successful, remove checkbox rows
-		if(response.success)
-		{
+		if(response.success) {
 			var nCurrentSortKey = $('#sort_key').val();
 			var search_mode = $('#search_mode').val();
 			var search = $('#search').val();
@@ -658,13 +684,16 @@ function do_delete_user(url , index_url)
 			}
 			location.replace(location_site);
 		}
-		else
-		{
+		else {
 			set_feedback(response.message,'error_message',true);
+		}},"json")
+	.fail(function (xhr, status, error) {
+		if (xhr.status == 401) {
+			window.location.href = '/login'; return;
+		} else {
+			alert("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
-
-
-	},"json");
+	})
 }
 
 
@@ -778,14 +807,20 @@ function update_sortable_table()
 
 function update_row(row_id,url)
 {
-	$.post(url, { 'row_id': row_id },function(response)
-	{
+	$.post(url, { 'row_id': row_id }, function(response) {
 		//Replace previous row
 		var row_to_update = $("#sortable_table tbody tr :checkbox[value="+row_id+"]").parent().parent();
 		row_to_update.replaceWith(response);
 		reinit_row(row_id);
 		hightlight_row(row_id);
-	});
+	})
+	.fail(function (xhr, status, error) {
+		if (xhr.status == 401) {
+			window.location.href = '/login'; return;
+		} else {
+			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+		}
+	})
 }
 
 function reinit_row(checkbox_id)

@@ -29,23 +29,23 @@ $(document).ready(function(){
 				        , timeout : 30000
 				        , cache : false
 				        , data : "person_id=0"
-				        , error : function(request, status, error) {
-					         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-					    }
+				        , error : function (xhr, status, error) {
+							if (xhr.status == 401) {
+								window.location.href = '/login'; return;
+							} else {
+								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+							}}
 				        , success : function(response, status, request) {
 					        alert(response);
 				        }
 				    });
 		        	$(this).dialog('close');
 		        	post_product_form_submit();
-
 				}
 			}
-
 		}
 	);
 });
-
 
 function change_category(){
 	var cat = $('#cat').val();
@@ -54,7 +54,13 @@ function change_category(){
 	    $.ajax({
           url:"<?php echo site_url("$controller_name/fetch_subcategory/");?>",
           method:"POST",
-          data:{cat:cat},
+          data: {cat:cat},
+		  error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}},
           success:function(data){
               $('#subcat').html(data);
 			  $('#subcat').formSelect();
@@ -184,11 +190,13 @@ function sort_product(link){
         , timeout : 30000
         , cache : false
         , data : "sort_key=" + nCurrentSortKey + "&search0=" + search0 + "&search1=" + search1 + "&search2=" + search2 + "&search_mode=" + search_mode + "&category_id=" + category_id + "&per_page=" + per_page
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\nmessage : " + request.reponseText); // + "\nError : " + request.error);
-        }
-        , success : function(response, status, request) {
+        , error : function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
+		, success : function(response, status, request) {
             var strArray = response.split('********************');
             //$('#search_mode').val(strArray[0]);
             //$('#product_pagination_div').html(strArray[0]);
@@ -272,10 +280,13 @@ function set_qty_trolley(){
         , timeout : 30000
         , cache : false
         , data : "prod_code=" + prod_code + "&mode=3" + "&quantity=" + Math.round(Number(qty))
-        , error : function(request, status, error) {
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText+ "\r\nPlease refresh the page ");
-        }
-        , success : function(response, status, request) {
+        , error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
+		, success : function(response, status, request) {
         	$('#how_many_qty').val('');
         	$('#how_many_qty_info').css('visibility' , 'hidden');
         	$('#prod_id').val('');
@@ -285,29 +296,41 @@ function set_qty_trolley(){
 }
 
 function resync_favorites(){
-	    console.log('running resync favorites');
-	    $.ajax({
-          url:"<?php echo site_url("favorites/resync_favorites/");?>",
-          method:"POST",
-          success:function(data){
-              $('#table_holder').html(data);
-			  update_cart();
-          }		  
-    	});
+	console.log('running resync favorites');
+	$.ajax({
+		url:"<?php echo site_url("favorites/resync_favorites/");?>",
+		method:"POST",
+		error: function (xhr, status, error) {
+		if (xhr.status == 401) {
+			window.location.href = '/login'; return;
+		} else {
+			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+		}},
+		success:function(data){
+			$('#table_holder').html(data);
+			update_cart();
+		}		  
+	});
 }
 
 function bulk_favorites(){
-	    console.log('running bulk add favorites to trolley');
-	    $.ajax({
-          url:"<?php echo base_url("favorites/bulk_favorites") ?>",
-          method:"POST",
-          success:function(data){
-              $('#table_holder').html(data);
-		 	  update_cart();
-			  console.log('Redirecting to Cart');
-			  location.replace('<?php echo base_url("pastorders");?>');	
-          }
-    	});
+	console.log('running bulk add favorites to trolley');
+	$.ajax({
+		url:"<?php echo base_url("favorites/bulk_favorites") ?>",
+		method:"POST",
+		error: function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}},
+		success:function(data){
+			$('#table_holder').html(data);
+			update_cart();
+			console.log('Redirecting to Cart');
+			location.replace('<?php echo base_url("pastorders");?>');	
+		}
+	});
 }
 		
 

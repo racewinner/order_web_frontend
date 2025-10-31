@@ -57,10 +57,13 @@ $(document).ready(function(){
 			        , timeout : 30000
 			        , cache : false
 			        , data : "order_id=" + order_id
-			        , error : function(request, status, error) {
-						alert("Order data is not readable. Request: "+request+" Status: "+status+" Error: "+error);
-						$(this).dialog("close");
-			        }
+					, error: function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            window.location.href = '/login'; return;
+                        } else {
+							$(this).dialog("close");
+                            // alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }}
 			        , success : function(response, status, request) {
 			        	var contents = "<legend><?php echo lang("Main.pastorders_product_info"); ?></legend>";
 			        	contents = contents + response.manage_table;
@@ -187,9 +190,12 @@ function resend_order(order_id)
         , dataType : "html"
         , timeout : 30000
         , cache : false
-        , error : function(request, status, error) {
-        	alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			alert("Duplicate order (# "+ order_id +") email sent to telesales");
 			console.log("WORKED: " + request.status);
@@ -267,10 +273,12 @@ function set_qty_trolley(){
         , timeout : 30000
         , cache : false
         , data : "prod_code=" + prod_code + "&mode=3" + "&quantity=" + Math.round(Number(qty))
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
         	$('#how_many_qty').val('');
         	$('#how_many_qty_info').css('visibility' , 'hidden');
@@ -485,9 +493,12 @@ function sort_product(link)
         , timeout : 30000
         , cache : false
         , data : "sort_key=" + nCurrentSortKey + "&search=" + search + "&search_mode=" + search_mode + "&per_page=" + per_page
-        , error : function(request, status, error) {
-                     alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             $('#product_pagination_div').html(strArray[0]);
@@ -557,10 +568,12 @@ function sort_product(link)
         , timeout : 30000
         , cache : false
         , data : "sort_key=" + nCurrentSortKey + "&search=" + search + "&search_mode=" + search_mode + "&per_page=" + per_page
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             $('#product_pagination_div').html(strArray[0]);

@@ -82,9 +82,12 @@
 							url: '<?php echo base_url("products/suggest2")?>' ,
 							dataType: "json" ,
 							data: {term:request.term} ,
-							error : function(request, status, error) {
-								 alert(error);
-								},
+							error : function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 							success: function(data) {
 								//alert(data);
 								response(data);

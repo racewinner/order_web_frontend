@@ -253,9 +253,12 @@ $sort_options = [
 										, timeout: 30000
 										, cache: false
 										, data: "person_id=0"
-										, error: function (request, status, error) {
-											alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-										}
+										, error: function (xhr, status, error) {
+											if (xhr.status == 401) {
+												window.location.href = '/login'; return;
+											} else {
+												alert("An error occured: " + xhr.status + " " + xhr.statusText);
+											}},
 										, success: function (response, status, request) {
 											alert(response);
 										}
@@ -303,9 +306,12 @@ $sort_options = [
 					, timeout: 30000
 					, cache: false
 					, data: "sort_key=" + nCurrentSortKey + "&search0=" + search0 + "&search1=" + search1 + "&search2=" + search2 + "&search_mode=" + search_mode + "&category_id=" + category_id + "&per_page=" + per_page
-					, error: function (request, status, error) {
-						alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-					}
+					, error: function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            window.location.href = '/login'; return;
+                        } else {
+                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }}
 					, success: function (response, status, request) {
 						$('#loading').hide();
 
@@ -464,10 +470,12 @@ $sort_options = [
 					, timeout: 30000
 					, cache: false
 					, data: "prod_code=" + prod_code + "&mode=3" + "&quantity=" + Math.round(Number(qty))
-					, error: function (request, status, error) {
-
-						alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-					}
+					, error: function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            window.location.href = '/login'; return;
+                        } else {
+                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }}
 					, success: function (response, status, request) {
 						$('#how_many_qty').val('');
 						$('#how_many_qty_info').css('visibility', 'hidden');

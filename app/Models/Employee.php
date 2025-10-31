@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 use CodeIgniter\Model;
+use DateInterval;
 use DateTime;
 
 class Employee extends Model
@@ -574,7 +575,6 @@ class Employee extends Model
 	*/
 	function login($username, $password)
 	{
-
 		$result = $this->where([
 			'username' => $username,
 			'password' => md5($password),
@@ -584,10 +584,14 @@ class Employee extends Model
 		if ($result) {
 			session()->set('person_id', $result['person_id']);
 			session()->set('organization_id', $result['organization_id']);
+		
+			$now = new DateTime(); // current date and time
+			$interval = new DateInterval('PT5M'); // 5 minutes
+			$now->add($interval);
+			session()->set('expired_datetime', $now);
 
 			return true;
 		}
-
 		return false;
 	}
 

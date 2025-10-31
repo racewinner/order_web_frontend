@@ -58,9 +58,12 @@
 								, url: "<?php echo base_url("$controller_name/generate_key"); ?>" + "/" + $('#person_id').val()
 								, timeout: 30000
 								, cache: false
-								, error: function (request, status, error) {
-									if (request.status != 200) alert("generate key : " + request.status + "\r\nmessage : " + request.reponseText);
-								}
+								, error: function (xhr, status, error) {
+									if (xhr.status == 401) {
+										window.location.href = '/login'; return;
+									} else {
+										alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									}}
 								, success: function (response, status, request) {
 									$('#api_key').val(response);
 									$('#api_key').trigger('click');
@@ -152,9 +155,12 @@
 									, timeout: 30000
 									, cache: false
 									, data
-									, error: function (request, status, error) {
-										//alert("failed : " + request.status + "\r\nmessage : " + request.reponseText);
-									}
+									, error: function (xhr, status, error) {
+										if (xhr.status == 401) {
+											window.location.href = '/login'; return;
+										} else {
+											alert("An error occured: " + xhr.status + " " + xhr.statusText);
+										}}
 									, success: function (response, status, request) {
 										$(theThis).dialog('close');
 										load_users();
@@ -207,9 +213,12 @@
 				, timeout: 30000
 				, cache: false
 				, data: "person_id=" + person_id
-				, error: function (request, status, error) {
-					if (request.status != 200) alert("get user info : " + request.status + "\r\nmessage : " + request.reponseText);
-				}
+				, error: function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}}
 				, success: function (response, status, request) {
 					$('#username').val(response[0]);
 					$('#email').val(response[1]);

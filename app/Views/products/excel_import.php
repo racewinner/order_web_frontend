@@ -44,10 +44,8 @@ $(document).ready(function()
 	$('#product_form').validate({
 		submitHandler:function(form)
 		{
-
 			$(form).ajaxSubmit({
-			success:function(response)
-			{
+			success:function(response) {
 				tb_remove();
 				//post_product_form_submit(response);
 				location.reload();

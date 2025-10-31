@@ -119,10 +119,12 @@ function set_qty_trolley()
         , timeout : 30000
         , cache : false
         , data : "prod_code=" + prod_code + "&quantity=" + qty
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
         	$('#how_many_qty').val('');
         	$('#how_many_qty_info').css('visibility' , 'hidden');

@@ -91,9 +91,12 @@ $(document).ready(function(){
 					        			"&price_list011=" + price_list011 +
 					        			"&price_list012=" + price_list012 +
 					        			"&price_list999=" + price_list999
-					        , error : function(request, status, error) {
-						         //alert("failed : " + request.status + "\r\nmessage : " + request.reponseText);
-						    }
+					        , error : function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 					        , success : function(response, status, request) {
 						         //alert("success : " + request.status + "\r\nmessage : " + request.reponseText);
 					        }
@@ -143,9 +146,12 @@ function popup_dialog(person_id)
 	        , timeout : 30000
 	        , cache : false
 	        , data : "person_id=" + person_id
-	        , error : function(request, status, error) {
-		         alert("get user info : " + request.status + "\r\nmessage : " + request.reponseText);
-	        }
+	        , error : function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				}}
 	        , success : function(response, status, request) {
 
 	    		$('#username').val(response[0]);
@@ -448,10 +454,12 @@ function sort_product(link)
         , timeout : 30000
         , cache : false
         , data : "sort_key=" + nCurrentSortKey + "&search=" + search + "&search_mode=" + search_mode + "&per_page=" + per_page
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
             $('#customer_pagination_div_left_div').html(strArray[0]);

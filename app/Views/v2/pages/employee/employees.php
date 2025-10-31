@@ -213,9 +213,12 @@ $(document).ready(function(e) {
         $.ajax({
             url: `/employees/create`,
             method: 'GET',
-            error: function (request, status, error) {
-
-            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }},
             success: function(response) {
                 $view_modal.addClass('modal-lg');
                 $view_modal.find(".modal-header .modal-title").html('Create User');
@@ -246,9 +249,12 @@ $(document).ready(function(e) {
         $.ajax({
             url: `/employees/edit/${person_id}`,
             method: 'GET',
-            error: function (request, status, error) {
-
-            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }},
             success: function(response) {
                 $view_modal.addClass('modal-lg');
                 $view_modal.find(".modal-header .modal-title").html('Edit User');
@@ -271,6 +277,12 @@ $(document).ready(function(e) {
         $.ajax({
             url: `/employees/generate_key/${person_id}`,
             method: 'get',
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }},
             success: function(response) {
                 $form.find("input#api_key").val(response);
                 remove_loadingSpinner_from_button(e.target);
@@ -425,13 +437,18 @@ $(document).ready(function(e) {
                         username: $form.find("#username").val(),
                         email: $form.find("#email").val(),
                     },
+                    error: function (xhr, status, error) {
+                        if (xhr.status == 401) {
+                            window.location.href = '/login'; return;
+                        } else {
+                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }},
                     success: function(response) {
                         if(response.success == 0) {
                             showToast({
                                 type: 'error',
                                 message: response.msg
                             })
-
                             remove_loadingSpinner_from_button($form.find("button[type='submit']"));
                         } else {
                             $form.find("#username_email_available").val(1);

@@ -46,8 +46,7 @@ $(document).ready(function()
 			$('#please_wait').attr('class' , 'load_product_status_visible');
 			$('#submit').css('visibility' , 'hidden');
 			$(form).ajaxSubmit({
-			success:function(response)
-			{
+			success:function(response) {
 				tb_remove();
 				post_product_form_submit(response);
 			},

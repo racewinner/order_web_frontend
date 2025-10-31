@@ -111,9 +111,12 @@ function show_detail(prod_code) {
     $.ajax({
         url: `/products/${prod_code}/show_by_code`,
         type: 'GET',
-        error: function (request, status, error) {
-            toast("error", error);
-        },
+    	error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				toast("An error occured: ", xhr.status + " " + xhr.statusText);
+			}}
         success:function(data) {
             $("#add-product-cart-modal .modal-content").html(data);
             const inst = M.Modal.getInstance($("#add-product-cart-modal")[0]);

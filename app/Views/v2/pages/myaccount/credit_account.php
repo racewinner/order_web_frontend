@@ -230,9 +230,13 @@
                 data:$("#payment_form").serialize(),
                 cache:false,
                 processData:false,
-                error: function (request, status, error) {
-                    $('#send_payment').prop('disabled', false);
-                },
+                error: function (xhr, status, error) {
+                    if (xhr.status == 401) {
+                        window.location.href = '/login'; return;
+                    } else {
+                        $('#send_payment').prop('disabled', false);
+                        // alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    }},
                 success:function(d) {
                     if(d.success == true) {
                         window.open(d.data.url, "Payment");

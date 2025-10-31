@@ -134,9 +134,12 @@
 				, timeout: 30000
 				, cache: false
 				, data: post_data
-				, error: function (request, status, error) {
-					//alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-				}
+				, error: function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}}
 				, success: function (data) {
 					if (state == "active") { $(prod_id_).removeClass("active"); }
 					else { $(prod_id_).addClass("active"); }
@@ -197,6 +200,12 @@
 						'url': base_url + '/' + controller + '/refresh_products',
 						'type': 'POST', //the way you want to send data to your URL
 						'data': { 'type': type },
+						'error' : function (xhr, status, error) {
+							if (xhr.status == 401) {
+								window.location.href = '/login'; return;
+							} else {
+								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+							}},
 						'success': function (data) {
 							var container = $('#featured');
 							//jquery selector (get element by id)
@@ -214,6 +223,12 @@
 						'url': base_url + controller + '/refresh_all_products',
 						'type': 'POST', //the way you want to send data to your URL
 						'data': { 'type': 0 },
+						'error' : function (xhr, status, error) {
+							if (xhr.status == 401) {
+								window.location.href = '/login'; return;
+							} else {
+								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+							}},
 						'success': function (data) { //probably this request will return anything, it'll be put in var "data"
 							var container = $('#featured'); //jquery selector (get element by id)
 							if (data) { container.html(data); }
@@ -238,8 +253,14 @@
 							'url': base_url + 'cpanel/update_featured',
 							'type': 'POST', //the way you want to send data to your URL
 							'data': $('#featuredform').serialize(),
+							'error': function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									$('#msg').html(response);
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 							'success': function (data) {
-
 								if (data) { location.reload(); }
 							}
 						});
@@ -278,8 +299,14 @@
 							processData: false,
 							data: form_data,
 							type: 'post',
+							error: function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									$('#msg').html(response);
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 							success: function (response) { $('#msg').html(response); },
-							error: function (response) { $('#msg').html(response); }
 						});
 					}
 					$.ajax({
@@ -290,8 +317,14 @@
 						processData: false,
 						data: form_data,
 						type: 'post',
+						error: function (xhr, status, error) {
+							if (xhr.status == 401) {
+								window.location.href = '/login'; return;
+							} else {
+								$('#msg').html(response);
+								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+							}},
 						success: function (data) { $('#msg').html(data); alert("response" + $('#msg').html(data)); location.reload(); },
-						error: function (response) { $('#msg').html(response); }
 					});
 
 				}
@@ -303,6 +336,12 @@
 							'url': base_url + 'cpanel/push_scount',
 							'type': 'POST',
 							'data': { 's1': s1, 's2': s2 },
+							'error': function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 							'success': function (data) {
 								if (data == true) {
 									location.reload();
@@ -366,6 +405,12 @@
 							'url': base_url + '/' + controller + '/push_plink/',
 							'type': 'POST',
 							'data': { 'l': l, 'v': v },
+							'error': function (xhr, status, error) {
+								if (xhr.status == 401) {
+									window.location.href = '/login'; return;
+								} else {
+									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								}},
 							'success': function (data) {
 								if (data == true) { console.log("[-] " + l + " - " + v); /*location.reload();*/ }
 							}
@@ -398,6 +443,12 @@
 				'url': base_url + controller + '/check_daytoday',
 				'type': 'POST', //the way you want to send data to your URL
 				'data': { 'person_id': pid },
+				'error': function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				'success': function (data) { //probably this request will return anything, it'll be put in var "data"
 					if (data == 'No') { $('#f_dt, #f_dt1, #f_dt1a').css('display', 'none'); $('#dta, #dt, #and').css('display', 'none'); }
 				}
@@ -409,6 +460,12 @@
 				'url': base_url + controller + '/check_usave',
 				'type': 'POST',
 				'data': { 'person_id': pid },
+				'error': function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				'success': function (data) {
 					if (data == 'No') { $('#usa, #us, #and, #f_us, #f_usa').css('display', 'none'); }
 				}
@@ -420,6 +477,12 @@
 				'url': base_url + controller + '/check_both_promos',
 				'type': 'POST',
 				'data': { 'person_id': pid },
+				'error': function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				'success': function (data) {
 					var nlink = $("#promos").attr("href");
 					var nlink1 = $("#presells").attr("href");
@@ -986,6 +1049,12 @@
 				'url': base_url + 'home/mobile',
 				'type': 'POST', //the way you want to send data to your URL
 				'data': data,
+				'error': function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				'success': function (data) {
 				}
 			});
@@ -1005,6 +1074,12 @@
 					type: 'POST',
 					url: '<?= base_url("myaccount/my_branches") ?>',
 					data: { branches },
+					error: function (xhr, status, error) {
+						if (xhr.status == 401) {
+							window.location.href = '/login'; return;
+						} else {
+							alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						}},
 					success: function (data) {
 						$(theThis).removeClass('disabled');
 						toast("success", data.message);

@@ -14,9 +14,12 @@ function handleSendOrder() {
         , timeout : 30000
         , cache : false
         , data : post_data
-        , error : function(request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             if(response == 100)        { 
                 showToast({
@@ -116,9 +119,12 @@ function handleSaveForLater()
         , timeout : 30000
         , cache : false
         , data : data
-        , error : function(request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error : function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success : function(response, status, request) {
             if(response == true) alert("Order saved.");
             else if(response == 100) alert('Nothing in cart to save.');
@@ -132,6 +138,12 @@ function handleSaveForLater()
 function load_orders(type) {
     $.ajax({
         url: `/orders/${type}`,
+        error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}},
         success: function (response, status, request) {
             $("#my-cart-sidebar .my-cart-body .cart-info").html(response);
         }
@@ -155,9 +167,12 @@ function cart_action(mode, prod_id, prod_code, quantity=1) {
         timeout: 30000, 
         cache: false, 
         data: data, 
-        error: function (request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }, 
+        error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}, 
         success: function (response, status, request) {
             window.location.reload();
         }

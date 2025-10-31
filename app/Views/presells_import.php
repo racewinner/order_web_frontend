@@ -208,8 +208,13 @@ $(document).ready(function(){
 		$.ajax({
 			url:"<?php echo base_url(); ?>presells_import/load_data",
 			method:"POST",
-			success:function(data)
-			{
+			error: function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				}},
+			success:function(data) {
 				$('#imported_csv_data').html(data);
 			}
 		})
@@ -220,9 +225,15 @@ $(document).ready(function(){
 		$.ajax({
 			url:"<?php echo base_url(); ?>presells_import/load_ref",
 			method:"POST",
+			error: function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				}},
 			success:function(data){
-              $('#period_reference, #period_reference_add, #period_reference_delete').html(data);
-			  $('#period_reference, #period_reference_add, #period_reference_delete').formSelect();
+				$('#period_reference, #period_reference_add, #period_reference_delete').html(data);
+				$('#period_reference, #period_reference_add, #period_reference_delete').formSelect();
 			}
 		})
 	}
@@ -239,6 +250,12 @@ $(document).ready(function(){
 			beforeSend:function(){
 				$('#import_csv_btn').html('Importing...');
 			},
+			error: function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				}},
 			success:function(data)
 			{
 				//alert("Import response: " +data);
@@ -264,6 +281,12 @@ $(document).ready(function(){
 				beforeSend:function(){
 					$('#process_presell_btn').html('Converting...');
 				},
+				error: function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				success:function(data)
 				{
 					alert("Process response: " + data);
@@ -332,6 +355,12 @@ $(document).ready(function(){
 				beforeSend:function(){
 					$('#delete_presell_btn').html('Deleting...');
 				},
+				error: function (xhr, status, error) {
+					if (xhr.status == 401) {
+						window.location.href = '/login'; return;
+					} else {
+						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					}},
 				success:function(data)
 				{
 					//alert("Delete response: " + data);

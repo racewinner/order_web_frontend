@@ -114,9 +114,12 @@ function cart_inc_quantity(mode, prod_id, prod_code, spresell, prod_desc, onSucc
         , timeout: 30000
         , cache: false
         , data: post_data
-        , error: function (request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+        , error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
         , success: function (response, status, request) {
             if (onSuccess) {
                 onSuccess();
@@ -153,6 +156,12 @@ function update_cart() {
         'url': '/orders/cartinfo',
         'type': 'GET', //the way you want to send data to your URL
         'data': false,
+        'error': function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}},
         'success': function (data) {
             if (data) {
                 $("#combined .cart-amount").text(parseFloat(data.total_amount - data.cart_types['spresell']?.amount).toFixed(2));
@@ -219,9 +228,13 @@ function cart_update_quantity(prod_id, prod_code) {
         , timeout: 30000
         , cache: false
         , data: post_data
-        , error: function (request, status, error) {
-            alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }, success: function (response, status, request) {
+        , error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+	    	}}
+        , success: function (response, status, request) {
             update_cart();
         }
     });

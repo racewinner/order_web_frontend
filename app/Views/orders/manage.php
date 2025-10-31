@@ -99,9 +99,12 @@ function remove_unknown_product(e)
         , url : `<?php echo base_url("unknown_products");?>/${id}`
         , dataType : "html"
         , cache : false
-        , error : function(request, status, error) {
-         	alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			get_unknown_products();
         }
@@ -126,9 +129,12 @@ function get_unknown_products()
         , url : "<?php echo base_url("unknown_products");?>"
         , dataType : "html"
         , cache : false
-        , error : function(request, status, error) {
-         	alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			if(response) {
 				$(".unknown-products").html(response);
@@ -160,9 +166,12 @@ function inc_quantity(mode , prod_id, prod_code, prod_desc)
         , timeout : 30000
         , cache : false
         , data : post_data
-        , error : function(request, status, error) {
-         	alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			if(mode==1) { 
 				M.toast({html: '<strong>Added&nbsp;</strong> "'+prod_desc+'"'}); 
@@ -227,10 +236,12 @@ function change_quantity(prod_id, prod_code, e)
 	        , timeout : 30000
 	        , cache : false
 	        , data : post_data
-	        , error : function(request, status, error) {
-
-	         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-	        }
+			, error : function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				}}
 	        , success : function(response, status, request) {
 				var strArray = response.split('********************');
 				$('#table_holder').html(strArray[0]);
@@ -256,10 +267,12 @@ function save_for_later()
         , timeout : 30000
         , cache : false
         , data : post_data
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			if(response == true) alert("Order saved.");
 			else if(response == 100) alert('Nothing in cart to save.');
@@ -288,10 +301,13 @@ function send_order()
         , timeout : 30000
         , cache : false
         , data : post_data
-        , error : function(request, status, error) {
-        	$('#spinner2').hide();
-         	alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				$('#spinner2').hide();
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 				if(response == 100)        { alert("You must added products to cart.");	return;	}
 				else if(response == -100)  { alert("Error 100.Unable to make trolley into order"); return; }
@@ -377,10 +393,12 @@ function set_qty_trolley()
         , timeout : 30000
         , cache : false
         , data : post_data
-        , error : function(request, status, error) {
-
-         alert("code : " + request.status + "\r\nmessage : " + request.reponseText);
-        }
+		, error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			}}
         , success : function(response, status, request) {
 			var strArray = response.split('********************');
 			$('#table_holder').html(strArray[0]);

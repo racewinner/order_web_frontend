@@ -97,9 +97,12 @@ $table_columns = [
         $.ajax({
             url: '/myaccount/order_history',
             method: 'get',
-            error: function (request, status, error) {
-                showToast("error", error);
-            },
+            error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    showToast("An error occured: ", xhr.status + " " + xhr.statusText);
+                }},
             success:function(d) {
                 if(d.data.status === 'success') {
                     total_orders = d.data.order_headers.filter(function(oh) {

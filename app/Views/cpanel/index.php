@@ -102,10 +102,12 @@ $(document).ready(function(){
 			        , timeout : 30000
 			        , cache : false
 			        , data : "prod_id=" + prod_id
-			        , error : function(request, status, error) {
-						//alert("Presell data is not readable.");
-						//$(this).dialog("close");
-			        }
+			        , error : function (xhr, status, error) {
+                    if (xhr.status == 401) {
+                        window.location.href = '/login'; return;
+                    } else {
+                        alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    }}
 			        , success : function(response, status, request) {
 			        	var contents = "<legend><?php echo lang("Main.presell_info"); ?></legend>";
 			        	contents = contents + response.manage_table;
@@ -180,9 +182,12 @@ function popup_dialog(prod_id , add)
 							beforeSend:function(){
 								$('#edit_item .ui-button-text').html('Editing Item...');
 							},
-							error: function (request, status, error) {
-								alert(request.responseText);
-							},					
+							error: function (xhr, status, error) {
+                  if (xhr.status == 401) {
+                      window.location.href = '/login'; return;
+                  } else {
+                      alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                  }},				
 							success:function(data)
 							{
 								if(data == "Unique ID already exist"){
@@ -220,9 +225,12 @@ function popup_dialog(prod_id , add)
 							beforeSend:function(){
 								$('#delete_item .ui-button-text').html('Adding Item...');
 							},
-							error: function (request, status, error) {
-								alert(request.responseText);
-							},					
+							error: function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                }},				
 							success:function(data)
 							{
 								//alert("Delete response: " + data);
@@ -266,15 +274,18 @@ function popup_dialog(prod_id , add)
 							beforeSend:function(){
 								$('#add_new_item .ui-button-text').html('Adding Item...');
 							},
-							error: function (request, status, error) {
-								alert(request.responseText);
-							},					
+							error: function (xhr, status, error) {
+                  if (xhr.status == 401) {
+                      window.location.href = '/login'; return;
+                  } else {
+                      alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                  }},		
 							success:function(data)
 							{								
 								if(data == "Unique ID already exist"){
 									alert("Unique ID already exist");
 									$('#add_new_item .ui-button-text').html('Add New Item');
-								}else{
+								} else {
 									$('#add_new_item .ui-button-text').html('Item Added [-]');
 									location.reload();
 								}
@@ -373,9 +384,12 @@ function popup_dialog(prod_id , add)
 				url:"<?php echo base_url(); ?>presells_import/get",
 				method:"POST",
 				data: "prod_id=" + $("#prod_id_field").val(),
-				error: function (request, status, error) {
-					alert(request.responseText);
-				},					
+				error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                window.location.href = '/login'; return;
+            } else {
+                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+            }},		
 				success:function(data)
 				{
 					var d = $.parseJSON( data );

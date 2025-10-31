@@ -152,9 +152,12 @@ $(document).ready(function() {
     $.ajax({
         url: '/myaccount/ledger',
         method: 'get',
-        error: function (request, status, error) {
-            toast("error", error);
-        },
+    	error : function (xhr, status, error) {
+			if (xhr.status == 401) {
+				window.location.href = '/login'; return;
+			} else {
+				toast("An error occured: ", xhr.status + " " + xhr.statusText);
+			}}
         success:function(d) {
             total_ledger_logs = d.data.data;
             showLedgerLogs(total_ledger_logs);

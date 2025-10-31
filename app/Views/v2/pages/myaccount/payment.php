@@ -569,6 +569,8 @@
             }
         })
         .catch(function(error) {
+            debugger;
+            alert('payment error');
             if (cb_error) {
                 cb_error(error)
             } else {
