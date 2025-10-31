@@ -22,7 +22,7 @@
 						</h6>
 						<ul class="list-inline mb-0 mt-3">
 							<?php foreach($footerconfig['column1']['links'] as $link) { ?>
-								<li><a href="<?= $link['url'] ?>" style="color: <?= $footerconfig['style']['txt_color'] ?> !important"><?= $link['label'] ?></a></li>
+								<li><a href="<?= $link['url'] ?>" style="color: <?= $footerconfig['style']['txt_color'] ?> !important" target="_blank"><?= $link['label'] ?></a></li>
 							<?php } ?>
 						</ul>						
 					</div>
@@ -35,7 +35,7 @@
 						</h6>
 						<ul class="list-inline mb-0 mt-3">
 							<?php foreach($footerconfig['column2']['links'] as $link) { ?>
-								<li><a href="<?= $link['url'] ?>" style="color: <?= $footerconfig['style']['txt_color'] ?> !important"><?= $link['label'] ?></a></li>
+								<li><a href="<?= $link['url'] ?>" style="color: <?= $footerconfig['style']['txt_color'] ?> !important" target="_blank"><?= $link['label'] ?></a></li>
 							<?php } ?>
 						</ul>						
 					</div>
