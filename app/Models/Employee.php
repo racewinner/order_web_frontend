@@ -49,17 +49,29 @@ class Employee extends Model
 	function pinResetPwdVerifyInfo($email, $username, $rand8, $oneHourFromNow)
 	{
 		$db = \Config\Database::connect();
-		$data = array('pin_verify_number' => $rand8, 'pin_expired_datetime' => $oneHourFromNow);
-		$success = $db->table('epos_employees')
-			->where('email', $email)
-			->where('username', $username)
-			->update($data);
+		$data = array(
+			'username' => $username,
+			'email' => $email,
+			'pin_verify_number' => $rand8, 
+			'pin_expired_datetime' => $oneHourFromNow);
+		$success = $db->table('epos_password_reset')->insert($data);
+
+		// $success = $db->table('epos_employees')
+		// 	->where('email', $email)
+		// 	->where('username', $username)
+		// 	->update($data);
 
 		// get New generated pin_verify_number
-		$query = $db->table('epos_employees')
+		$query = $db->table('epos_password_reset')
 					->where('email', $email)
 					->where('username', $username)
+					->orderBy('id','desc')	
 					->get();
+
+		// $query = $db->table('epos_employees')
+		// 			->where('email', $email)
+		// 			->where('username', $username)
+		// 			->get();
 
 		if ($query->getNumRows() == 0) {
 			return false;
@@ -102,10 +114,16 @@ class Employee extends Model
 	{
 		$db = \Config\Database::connect();
 
-		$query = $db->table('epos_employees')
+		$query = $db->table('epos_password_reset')
 					->where('email', $email)
 					->where('username', $username)
+					->orderBy('id','desc')	
 					->get();
+
+		// $query = $db->table('epos_employees')
+		// 			->where('email', $email)
+		// 			->where('username', $username)
+		// 			->get();
 
 		if ($query->getNumRows() == 0) {
 			return false;
@@ -124,14 +142,13 @@ class Employee extends Model
 
 		$data = array(
 			'password' 				=> md5($password),
-			'pin_verify_number' 	=> null, 
-			'pin_expired_datetime' 	=> null
+			// 'pin_verify_number' 	=> null, 
+			// 'pin_expired_datetime' 	=> null
 		);
 		$success = $db->table('epos_employees')
 			->where('email', $email)
 			->where('username', $username)
 			->update($data);
-
 		
 		return $success;
 	}
