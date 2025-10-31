@@ -79,6 +79,8 @@ abstract class BaseController extends Controller
         $branch = session()->get('branch');
         $branchName = $branch ? $Branch->getBranchNameById($branch) : '';
         $data['branchName'] = $branchName;
+        $branchTelephone = $branch ? $Branch->getBranchPhoneNumberById($branch) : '';
+        $data['branchTelephone'] = $branchTelephone;
 
         if(!request()->isAJAX()) {
             $data['s1_name']  = $Admin->get_plink('s1_name');

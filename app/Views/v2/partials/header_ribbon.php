@@ -6,7 +6,9 @@
             <?= $topRibbonConfig['content_html'] ?? '' ?>
         </div>
         <div class="business-contacts d-flex align-items-center px-4">
-            <span class="phone"><i class="bi bi-telephone me-1"></i><span class="fs-80">0141 781 6608</span></span>
+            <?php if (!empty($branchTelephone)) { ?>
+                <span class="phone"><i class="bi bi-telephone me-1"></i><span class="fs-80"><?= $branchTelephone??'' ?></span></span>
+            <?php } ?>
             <span class="twitter" style="margin-left: 30px;"><i class="bi bi-twitter"></i></span>
             <span class="facebook" style="margin-left: 30px;"><i class="bi bi-facebook"></i></i></span>
             <span class="wifi" style="margin-left: 30px;"><i class="bi bi-wifi"></i></span>

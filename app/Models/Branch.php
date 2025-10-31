@@ -39,4 +39,10 @@ class Branch extends Model
         $branch = Branch::find($id);
         return $branch['site_name'];
     }
+
+    function getBranchPhoneNumberById($id)
+    {
+        $branch = Branch::find($id);
+        return $branch['telephone'];
+    }
 }
