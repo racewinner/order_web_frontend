@@ -486,6 +486,7 @@ class Order extends Model
 						'quantity' 	=> $res->quantity,
 						'amount' 	=> $res->quantity * $product->prod_sell,
 						'epoints' 	=> $res->quantity * $product->epoints,
+						'vat' 		=> (($res->quantity * $product->prod_sell * $product->vat_rate) / 100)
 					];
 				} else {
 					$cart_types[$res->group_type] = [
@@ -493,6 +494,7 @@ class Order extends Model
 						'quantity' 	=> $cart_types[$res->group_type]['quantity'] + $res->quantity,
 						'amount' 	=> $cart_types[$res->group_type]['amount'  ] + $res->quantity * $product->prod_sell,
 						'epoints' 	=> $cart_types[$res->group_type]['epoints' ] + $res->quantity * $product->epoints,
+						'vat' 		=> $cart_types[$res->group_type]['vat' 	   ] + (($res->quantity * $product->prod_sell * $product->vat_rate) / 100),
 					];
 				}
 			}

@@ -160,16 +160,6 @@ function update_cart() {
         'type': 'GET', //the way you want to send data to your URL
         'data': false,
         'success': function (data) {
-            // original codebase blocked by Victor.C
-            // if (data) {
-            //     let cart_amount = data.total_amount - data.cart_types['spresell']?.amount;
-            //     if(Number.isNaN(cart_amount)) {
-            //         $(".header-logo .cart-amount").text('Empty');
-            //     } else {
-            //         $(".header-logo .cart-amount").text('£' + parseFloat(cart_amount).toFixed(2));
-            //     }
-            // }
-            // new codebase created by Victor.C
             if (data) {
                 let total_amount    = data.total_amount;
                 let total_lines     = data.total_lines;
@@ -201,29 +191,19 @@ function update_cart() {
                 /**
                  * set item&trolley total amount in checkout page's Billing details
                  */
-                
-                $('#cur_trolley_total_amount').text('£' + parseFloat(cart_amount).toFixed(2));
-                $('#cur_trolley_total').text('£' + (parseFloat(cart_amount) + parseFloat(total_vats)).toFixed(2));
+                debugger
+                const cart_active_typename = $('.one-cart-type.active').attr('id').slice(4);
+                const cur_trolley_cart_amount = data.cart_types[cart_active_typename].amount;
+                const cur_trolley_cart_vat    = data.cart_types[cart_active_typename].vat;
+                debugger
+                $('#cur_trolley_total_amount').text('£' + parseFloat(cur_trolley_cart_amount).toFixed(2));
+                $('#cur_trolley_total').text('£' + (parseFloat(cur_trolley_cart_amount) + parseFloat(cur_trolley_cart_vat)).toFixed(2));
 
                 /**
                  * set vat in checkout page's Billing details
                  */
-                $('#cur_trolley_total_vats').text('£' + parseFloat(total_vats).toFixed(2));
-
-                
-
-
-            //   $("#cart_total_amount").text("£"+total_amount.toFixed(2));
-
-            //   let total_vats = data.total_vats;
-            //   $("#cart_total_vats").text("£"+total_vats.toFixed(2));
-
-            //   let delivery_charge = parseFloat(data.delivery_charge);
-            //   $("#cart_subtotal").text("£"+(total_amount + total_vats + delivery_charge).toFixed(2));
-
-
-              
-          }
+                $('#cur_trolley_total_vats').text('£' + parseFloat(cur_trolley_cart_vat).toFixed(2));
+            }
         }
     });
 }

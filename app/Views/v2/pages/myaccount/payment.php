@@ -251,7 +251,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<input type="hidden" name="cart_typenames" id="cart_typenames" value="<?php echo $cart_typenames;?>">
+<input type="hidden" name="cart_typename" id="cart_typename" value="<?php echo $cart_typename;?>">
 <input type="hidden" name="cc_charge" id="cc_charge" value="<?php echo $cc_charge;?>">
 <input type="hidden" name="dv_charge" id="dv_charge" value="<?php echo $dv_charge;?>">
 
@@ -579,8 +579,8 @@
 
     $(document).on('click', '#send_orders', function(e) {
         debugger
-        let cart_typenames = $('#cart_typenames').val();
-        var arr = cart_typenames.split(',');
+        let cart_typename = $('#cart_typename').val();
+        var arr = cart_typename.split(',');
         // no trolley ----------
         if (arr.length == 0) {
             showToast({type: "error", message: "There is not any product in any trolley"});
@@ -624,7 +624,7 @@
         debugger
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
-        //----------
+
         let pay_total_amount    = $('#pay_total_amount').text();
         let pay_total_vats      = $('#pay_total_vats').text();
         let pay_charge          = $('#cc_charge').val();
@@ -632,22 +632,35 @@
         pay_total_amount = pay_total_amount.slice(1);
         pay_total_vats = pay_total_vats.slice(1);
 
+        $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
+        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
+
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-        //----------
-        $('#delivery_date1').val($('#delivery_date2').val());
-        //----------
-        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
-        //----------
-        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
 
+        $('#delivery_date1').val($('#delivery_date2').val());
+        const data = {
+            cart_typename:          $('#cart_typename').val(),
+            order_type:             'collection',
+            payment_method:         $('[name="payment_method"]:checked').val(),
+            collection_container:   $('[name="collection_container"]:checked').val(),
+            delivery_date:          $('#delivery_date1').val(),
+        }
+       
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        history.replaceState(null, '', url)
+        // window.location.href = url;
     })
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
         debugger
+        
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
-        //----------
+
         let pay_total_amount    = $('#pay_total_amount').text();
         let pay_total_vats      = $('#pay_total_vats').text();
         let pay_charge          = $('#dv_charge').val();
@@ -655,40 +668,154 @@
         pay_total_amount = pay_total_amount.slice(1);
         pay_total_vats = pay_total_vats.slice(1);
 
+        $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
+        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
+
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-         //----------
+
         $('#delivery_date2').val($('#delivery_date1').val());
-        //----------
-        $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
-        //----------
-        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        const data = {
+            cart_typename: $('#cart_typename').val(),
+            order_type: 'delivery',
+            payment_method: $('[name="payment_method"]:checked').val(),
+            collection_container: $('[name="collection_container"]:checked').val(),
+            delivery_date: $('#delivery_date2').val(),
+        }
+        
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        history.replaceState(null, '', url)
+        // window.location.href = url;
+    })
+
+    $(document).on('click', '[name="payment_method"]', function(e) {
+        const params = new URLSearchParams(window.location.search);
+
+        const cart_typename         = params.get('cart_typename');
+        const order_type            = params.get('order_type');
+        const payment_method        = $(e.target).val();
+        const collection_container  = params.get('collection_container');
+        const delivery_date         = params.get('delivery_date');
+
+        const data = {
+            cart_typename: cart_typename,
+            order_type: order_type,
+            payment_method: payment_method,
+            collection_container: collection_container,
+            delivery_date: delivery_date,
+        }
+        
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        history.replaceState(null, '', url)
+
+    })
+
+    $(document).on('click', '[name="collection_container"]', function(e) {
+        const params = new URLSearchParams(window.location.search);
+
+        const cart_typename         = params.get('cart_typename');
+        const order_type            = params.get('order_type');
+        const payment_method        = params.get('payment_method');
+        const collection_container  = $(e.target).val();
+        const delivery_date         = params.get('delivery_date');
+
+        const data = {
+            cart_typename: cart_typename,
+            order_type: order_type,
+            payment_method: payment_method,
+            collection_container: collection_container,
+            delivery_date: delivery_date,
+        }
+        
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        history.replaceState(null, '', url)
+    })
+
+    
+    $(document).on('click', '#delivery_date1, #delivery_date2', function(e) {
+        const params = new URLSearchParams(window.location.search);
+
+        const cart_typename         = params.get('cart_typename');
+        const order_type            = params.get('order_type');
+        const payment_method        = params.get('payment_method');
+        const collection_container  = params.get('collection_container');
+        const delivery_date         = $(e.target).val();
+
+        const data = {
+            cart_typename: cart_typename,
+            order_type: order_type,
+            payment_method: payment_method,
+            collection_container: collection_container,
+            delivery_date: delivery_date,
+        }
+        
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        history.replaceState(null, '', url)
     })
 
     $(document).ready(function() {
-        debugger
-        let el = $('.delivery-methods li')
-        if (el.length == 0) {
-            $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
-            //----------
-            let pay_total_amount    = $('#pay_total_amount').text();
-            let pay_total_vats      = $('#pay_total_vats').text();
+        const params                = new URLSearchParams(window.location.search);
 
-            pay_total_amount = pay_total_amount.slice(1);
-            pay_total_vats = pay_total_vats.slice(1);
+        const order_type            = params.get('order_type');
+        const payment_method        = params.get('payment_method');
+        const collection_container  = params.get('collection_container');
+        const delivery_date         = params.get('delivery_date');
 
-            let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
-            $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-            //----------
-            $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
-            $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        if (payment_method) {
+            $(`#${payment_method}`).click();
+        } 
+        if (collection_container) {
+            $(`#${collection_container}`).click();
+        }
+        if (delivery_date) {
+            $(`#delivery_date1`).val(delivery_date);
+            $(`#delivery_date2`).val(delivery_date);
+        }
+
+        const charge = $('#charge').text();
+
+        if (order_type) {
+            let bsTgtStr = order_type == 'collection' ? '#pane-pickup-depot' : '#pane-via-delivery';
+            let el = $(`[data-bs-target="${bsTgtStr}"]`);
+            if (!el.hasClass('active') || charge == undefined || charge == '' ) {
+                el.click();
+            }
         } else {
-            el[0].click();
+            let el = $('.delivery-methods li')
+            if (el.length == 0) {
+                $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
+                let pay_total_amount    = $('#pay_total_amount').text();
+                let pay_total_vats      = $('#pay_total_vats').text();
+
+                pay_total_amount = pay_total_amount.slice(1);
+                pay_total_vats = pay_total_vats.slice(1);
+
+                let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
+                $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+                $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
+                $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+            } else {
+                el[0].click();
+
+                let selected_el_bsTarget = $(el[0]).data('bs-target');
+                if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
+                    (order_type == 'delivery' && selected_el_bsTarget != '#pane-via-delivery')) {
+                    el[0].click();
+                }
+            }
         }
     })
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
-        debugger
         let delivery_date           = $('#delivery_date1').val()
         if ($('.one-delivery-method.via-delivery').hasClass('active')) {
             delivery_date           = $('#delivery_date2').val()
@@ -697,7 +824,7 @@
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
         let delivery_method         = $('.delivery-methods li.active').data('bs-target')
-        // no delivery method----------
+
         if(!delivery_method) {
             showToast({type: "error", message: "None of the delivery method is selected"});
             return;
@@ -718,8 +845,8 @@
 	            window.location.href = url;
             });
         } else {
-            let cart_typenames = $('#cart_typenames').val();
-            var arr = cart_typenames.split(',');
+            let cart_typename = $('#cart_typename').val();
+            var arr = cart_typename.split(',');
 
             let res = Promise.all(arr.map(function(type) {
                 return make_order(type, payload)

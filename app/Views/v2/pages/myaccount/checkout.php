@@ -147,7 +147,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment/xxx" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
+                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
             </div>
         </div>
     </div>
@@ -157,6 +157,7 @@
 <?= $this->section('javascript') ?>
 <script>
      $(document).ready(function() {
+        debugger
         let el = $('.one-cart-type')
         if (el.length == 0) {
             return;
@@ -165,17 +166,25 @@
         }
     })
     $(document).on('click', '.one-cart-type', function(e) {
+        debugger
         let el_tab_id = e.currentTarget.id
-        let trolley_name = el_tab_id.slice(4)
+        let cart_typename = el_tab_id.slice(4)
         
-        let item_total = $(`#pane-${trolley_name} input#bknd_item_total`).val();
-        let vat = $(`#pane-${trolley_name} input#bknd_vat`).val();
+        let item_total = $(`#pane-${cart_typename} input#bknd_item_total`).val();
+        let vat = $(`#pane-${cart_typename} input#bknd_vat`).val();
 
         $('#cur_trolley_total_amount').text(`£${parseFloat(item_total).toFixed(2)}`);
         $('#cur_trolley_total_vats').text(`£${parseFloat(vat).toFixed(2)}`);
         $('#cur_trolley_total').text(`£${(parseFloat(item_total) + parseFloat(vat)).toFixed(2)}`);
 
-        $('#nxt2complete').attr('href', `/orders/payment/${trolley_name}`)
+        // set URL to NxtBtn
+        let data = {
+            cart_typename
+        }
+        const queryParams = new URLSearchParams(data);
+
+        let url = `/orders/payment?${queryParams}`;
+        $('#nxt2complete').attr('href', url);
     })
 </script>
 

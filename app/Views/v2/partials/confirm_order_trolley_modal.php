@@ -59,7 +59,7 @@
                         </div>
                         <div class="flex-fill">All</div>
                     </div>
-                    <?php if (strpos($cart_typenames, "general") !== false) { ?>
+                    <?php if (strpos($cart_typename, "general") !== false) { ?>
                     <div class="one-trolley-container d-flex align-items-center p-2 mb-2">
                         <div>
                             <input class="form-check-input mr-5" type="radio" name="trolley_container" 
@@ -68,7 +68,7 @@
                         <div class="flex-fill">General</div>
                     </div>
                     <?php } ?>
-                    <?php if (strpos($cart_typenames, "tobacco") !== false) { ?>
+                    <?php if (strpos($cart_typename, "tobacco") !== false) { ?>
                     <div class="one-trolley-container d-flex align-items-center p-2 mb-2">
                         <div>
                             <input class="form-check-input mr-5" type="radio" name="trolley_container" 
@@ -77,7 +77,7 @@
                         <div class="flex-fill">Tobacco</div>
                     </div>
                     <?php } ?>
-                    <?php if (strpos($cart_typenames, "chilled") !== false) { ?>
+                    <?php if (strpos($cart_typename, "chilled") !== false) { ?>
                     <div class="one-trolley-container d-flex align-items-center p-2 mb-2">
                         <div>
                             <input class="form-check-input mr-5" type="radio" name="trolley_container" 
@@ -86,7 +86,7 @@
                         <div class="flex-fill">Chilled</div>
                     </div>
                     <?php } ?>
-                    <?php if (strpos($cart_typenames, "spresel") !== false) { ?>
+                    <?php if (strpos($cart_typename, "spresel") !== false) { ?>
                     <div class="one-trolley-container d-flex align-items-center p-2 mb-2">
                         <div>
                             <input class="form-check-input mr-5" type="radio" name="trolley_container" 

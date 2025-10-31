@@ -23,7 +23,7 @@ class Orders extends Secure_area implements iData_controller
 		$this->priceList = $PriceList->get_all();	
 	}
 
-	function index($page='', $trolley_name='general')
+	function index($page='', $params=array())
 	{
 		$Employee = new Employee();
 		$Admin = new Admin();
@@ -117,8 +117,7 @@ class Orders extends Secure_area implements iData_controller
 			$type['item_total'] = $sum_item_total;
 			$type['vat'] = $sum_vat;
 			
-			
-			if ($payment_charges->collection == 1) {
+			if ($sum_item_total != 0 && !empty($payment_charges) && $payment_charges->collection == 1) {
 				if ($payment_charges->cc_mpi == 1) {
 					$type['cc_charge'] = $sum_charge + $payment_charges->cc_min_charge;
 				} else {
@@ -135,7 +134,7 @@ class Orders extends Secure_area implements iData_controller
 			}
 			
 			
-			if ($payment_charges->delivery == 1) {
+			if ($sum_item_total != 0 && !empty($payment_charges) && $payment_charges->delivery == 1) {
 				if ($payment_charges->dv_mpi == 1) {
 					$type['dv_charge'] = $sum_charge + $payment_charges->dv_min_charge;
 				} else {
@@ -146,7 +145,6 @@ class Orders extends Secure_area implements iData_controller
 					if ($sum_charge > $payment_charges->dv_max_charge) {
 						$type['dv_charge'] = $payment_charges->dv_max_charge;
 					}					
-					
 				}
 			} else {
 				$type['dv_charge'] = 0;
@@ -186,24 +184,24 @@ class Orders extends Secure_area implements iData_controller
 		 * generate cart info
 		 */
 		// $cart = Order::get_cart_info($pid);
-		// $this->data['cart_typenames'] 	= implode(',', array_keys($cart['cart_types']));
+		// $this->data['cart_typename'] 	= implode(',', array_keys($cart['cart_types']));
     	// $this->data['total_quantity']   = $cart['total_quantity'];
 		// $this->data['total_amount']     = $cart['total_amount'];
 		// $this->data['total_epoints']    = $cart['total_epoints'];
 		// $this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
 		// $this->data['total_vats']       = $cart['total_vats'];
-
-		if ($types[0]['id'] == $trolley_name) {
+		$cart_typename = $params && $params['cart_typename'] ? $params['cart_typename'] : 'general';
+		if ($types[0]['id'] == $cart_typename) {
 			$trolledType = $types[0];
-		} else if ($types[1]['id'] == $trolley_name) {
+		} else if ($types[1]['id'] == $cart_typename) {
 			$trolledType = $types[1];
-		} else if ($types[2]['id'] == $trolley_name) {
+		} else if ($types[2]['id'] == $cart_typename) {
 			$trolledType = $types[2];
-		} else if ($types[3]['id'] == $trolley_name) {
+		} else if ($types[3]['id'] == $cart_typename) {
 			$trolledType = $types[3];
 		} 
 		
-		$this->data['cart_typenames'] 	= $trolley_name;
+		$this->data['cart_typename'] 	= $cart_typename;
     	// $this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $trolledType['item_total'];
 		// $this->data['total_epoints']    = $cart['total_epoints'];
@@ -400,9 +398,20 @@ class Orders extends Secure_area implements iData_controller
 		return view('v2/pages/myaccount/recent', $this->data);
 	}
 
-	public function payment($trolley_name='general')
+	public function payment()
 	{
-		return $this->index('payment', $trolley_name);
+		$cart_typename = urldecode($this->request->getGet('cart_typename')) ?? '';
+		if ($cart_typename == '') {
+			return redirect()->to(base_url('/orders/checkout'));
+		}
+		$order_type = urldecode($this->request->getGet('order_type')) ?? '';
+
+		$params = array(
+			'cart_typename' => $cart_typename,
+			'order_type' => $order_type,
+		);
+
+		return $this->index('payment', $params);
 	}
 
 	function search()
