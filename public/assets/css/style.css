@@ -5762,8 +5762,8 @@ textarea.form-control-lg {
   position: relative;
   flex: 1 1 auto;
   padding: var(--bs-modal-padding);
-  max-height: 820px;
-  overflow-y: scroll;
+  max-height: 930px;
+  overflow-y: auto;
 }
 @media (max-width: 992px) {
   .modal-bocy {
