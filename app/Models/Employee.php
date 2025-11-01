@@ -603,7 +603,7 @@ class Employee extends Model
 			session()->set('organization_id', $result['organization_id']);
 		
 			$now = new DateTime(); // current date and time
-			$interval = new DateInterval('PT5M'); // 5 minutes
+			$interval = new DateInterval('PT1H'); // 5 minutes
 			$now->add($interval);
 			session()->set('expired_datetime', $now);
 

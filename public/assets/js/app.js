@@ -115,7 +115,7 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success: function (response, status, request) {
             if (response < 0) {
@@ -166,7 +166,7 @@ function update_cart() {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}},
         'success': function (data) {
             if (data) {
@@ -234,7 +234,7 @@ function favorite(pid, prod_id, prod_code, state, onSuccess) {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success: function (data) {
             if(onSuccess) onSuccess();
@@ -382,7 +382,7 @@ function sendIsMobile() {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}},
         'success': function (data) {
         }
@@ -405,7 +405,7 @@ $(document).ready(function () {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}
         },
         ajaxSuccess: function(event, jqXHR, settings) {
@@ -584,7 +584,7 @@ $(document).ready(function () {
                         if (xhr.status == 401) {
                             window.location.href = '/login'; return;
                         } else {
-                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                            console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                         }},
                     success: function(data) {
                         response(data)
@@ -672,7 +672,7 @@ $(document).ready(function () {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},
             success: function (response, status, request) {
                 $my_cart_sidebar_content.removeClass('loading');

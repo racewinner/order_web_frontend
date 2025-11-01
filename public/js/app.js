@@ -118,7 +118,7 @@ function cart_inc_quantity(mode, prod_id, prod_code, spresell, prod_desc, onSucc
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success: function (response, status, request) {
             if (onSuccess) {
@@ -160,7 +160,7 @@ function update_cart() {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}},
         'success': function (data) {
             if (data) {
@@ -232,7 +232,7 @@ function cart_update_quantity(prod_id, prod_code) {
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success: function (response, status, request) {
             update_cart();

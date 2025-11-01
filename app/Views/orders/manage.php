@@ -103,7 +103,7 @@ function remove_unknown_product(e)
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			get_unknown_products();
@@ -133,7 +133,7 @@ function get_unknown_products()
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			if(response) {
@@ -170,7 +170,7 @@ function inc_quantity(mode , prod_id, prod_code, prod_desc)
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			if(mode==1) { 
@@ -240,7 +240,7 @@ function change_quantity(prod_id, prod_code, e)
 				if (xhr.status == 401) {
 					window.location.href = '/login'; return;
 				} else {
-					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}}
 	        , success : function(response, status, request) {
 				var strArray = response.split('********************');
@@ -271,7 +271,7 @@ function save_for_later()
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			if(response == true) alert("Order saved.");
@@ -306,7 +306,7 @@ function send_order()
 				window.location.href = '/login'; return;
 			} else {
 				$('#spinner2').hide();
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 				if(response == 100)        { alert("You must added products to cart.");	return;	}
@@ -397,7 +397,7 @@ function set_qty_trolley()
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			var strArray = response.split('********************');

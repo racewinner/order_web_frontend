@@ -212,7 +212,7 @@ $(document).ready(function(){
 				if (xhr.status == 401) {
 					window.location.href = '/login'; return;
 				} else {
-					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}},
 			success:function(data) {
 				$('#imported_csv_data').html(data);
@@ -229,7 +229,7 @@ $(document).ready(function(){
 				if (xhr.status == 401) {
 					window.location.href = '/login'; return;
 				} else {
-					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}},
 			success:function(data){
 				$('#period_reference, #period_reference_add, #period_reference_delete').html(data);
@@ -254,7 +254,7 @@ $(document).ready(function(){
 				if (xhr.status == 401) {
 					window.location.href = '/login'; return;
 				} else {
-					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}},
 			success:function(data)
 			{
@@ -285,7 +285,7 @@ $(document).ready(function(){
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				success:function(data)
 				{
@@ -359,7 +359,7 @@ $(document).ready(function(){
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				success:function(data)
 				{

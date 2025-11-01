@@ -41,7 +41,7 @@ class Login extends BaseController
 
 		// generate expired time
 		$now = new DateTime();
-		$now->add(new DateInterval('PT5M'));	// add 1 hour
+		$now->add(new DateInterval('PT1H'));	// add 1 hour
 		$oneHourFromNow = $now->format('Y-m-d H:i:s');
 
 		if(!$Employee->pinResetPwdVerifyInfo($email, $username, $rand8, $oneHourFromNow))

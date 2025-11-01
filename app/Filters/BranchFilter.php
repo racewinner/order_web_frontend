@@ -26,7 +26,7 @@ class BranchFilter implements FilterInterface {
                 $expired_datetime = session()->get('expired_datetime');
 
                 if ($now < $expired_datetime) {
-                    $interval = new DateInterval('PT5M'); // 5 minutes
+                    $interval = new DateInterval('PT1H'); // 5 minutes
                     $now->add($interval);
 
                     session()->set('expired_datetime', $now);
@@ -42,7 +42,7 @@ class BranchFilter implements FilterInterface {
                 $expired_datetime = session()->get('expired_datetime');
 
                 if ($now < $expired_datetime) {
-                    $interval = new DateInterval('PT5M'); // 5 minutes
+                    $interval = new DateInterval('PT1H'); // 5 minutes
                     $now->add($interval);
 
                     session()->set('expired_datetime', $now);

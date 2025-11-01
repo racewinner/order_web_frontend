@@ -72,7 +72,7 @@
                         <?php foreach($price_options as $key => $lbl) { 
                             $price_field = "price_list" . $key;
                         ?>
-                            <li class="form-check mb-3">
+                            <li class="form-check mb-2">
                                 <input class="form-check-input" name="price_list<?=$key?>" type="checkbox" value="<?= $key ?>" <?= (!empty($employee) && $employee->$price_field == "1") ? 'checked' : '' ?> />
                                 <label class="form-check-label"><?= $lbl ?></label>
                             </li>
@@ -87,7 +87,7 @@
                 <div class="card-body p-3">
                     <ul>
                         <?php foreach($all_branches as $branch) { ?>
-                            <li class="form-check mb-3">
+                            <li class="form-check mb-2">
                                 <input class="form-check-input branch" type="checkbox" value="<?= $branch['id'] ?>" <?= (!empty($employee) && in_array($branch['id'], $employee->branches)) ? 'checked' : '' ?> />
                                 <label class="form-check-label"><?= $branch['site_name'] ?></label>
                             </li>
@@ -101,27 +101,27 @@
                 </div>
                 <div class="card-body p-3">
                     <ul>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="e_order" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->e_order) ? 'checked' : '' ?> />
                             <label class="form-check-label">Order</label>
                         </li>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="depot" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->depot) ? 'checked' : '' ?> />
                             <label class="form-check-label">Depot</label>
                         </li>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="echo_pay" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->echo_pay) ? 'checked' : '' ?> />
                             <label class="form-check-label">EchoPay</label>
                         </li>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="bank_transfer" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->bank_transfer) ? 'checked' : '' ?> />
                             <label class="form-check-label">Bank Transfer</label>
                         </li>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="credit_account" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->credit_account) ? 'checked' : '' ?> />
                             <label class="form-check-label">Credit Account</label>
                         </li>
-                        <li class="form-check mb-3">
+                        <li class="form-check mb-2">
                             <input class="form-check-input payment-methods" type="checkbox" value="debit_credit_card" <?= (!empty($employee) && !empty($payment_methods) && $payment_methods?->debit_credit_card) ? 'checked' : '' ?> />
                             <label class="form-check-label">Debit / Credit Card</label>
                         </li>
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <div class="user-order-types card mt-4 justify-content-center full-width-on-mobile">
+        <div class="user-order-types card mt-2 justify-content-center full-width-on-mobile">
             <div class="card-header p-2">
                 <div class='m-0'>Order Types</div>      
             </div>
@@ -203,7 +203,7 @@
             </div>
         </div>
 
-        <div class="user-api-key card mt-4 full-width-on-mobile">
+        <div class="user-api-key card mt-2 full-width-on-mobile">
             <div class="card-header p-2">
                 <div class='m-0'>API Key</div>
             </div>

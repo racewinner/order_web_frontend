@@ -138,7 +138,7 @@
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}}
 				, success: function (data) {
 					if (state == "active") { $(prod_id_).removeClass("active"); }
@@ -204,7 +204,7 @@
 							if (xhr.status == 401) {
 								window.location.href = '/login'; return;
 							} else {
-								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 							}},
 						'success': function (data) {
 							var container = $('#featured');
@@ -227,7 +227,7 @@
 							if (xhr.status == 401) {
 								window.location.href = '/login'; return;
 							} else {
-								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 							}},
 						'success': function (data) { //probably this request will return anything, it'll be put in var "data"
 							var container = $('#featured'); //jquery selector (get element by id)
@@ -258,7 +258,7 @@
 									window.location.href = '/login'; return;
 								} else {
 									$('#msg').html(response);
-									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 								}},
 							'success': function (data) {
 								if (data) { location.reload(); }
@@ -304,7 +304,7 @@
 									window.location.href = '/login'; return;
 								} else {
 									$('#msg').html(response);
-									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 								}},
 							success: function (response) { $('#msg').html(response); },
 						});
@@ -322,7 +322,7 @@
 								window.location.href = '/login'; return;
 							} else {
 								$('#msg').html(response);
-								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 							}},
 						success: function (data) { $('#msg').html(data); alert("response" + $('#msg').html(data)); location.reload(); },
 					});
@@ -340,7 +340,7 @@
 								if (xhr.status == 401) {
 									window.location.href = '/login'; return;
 								} else {
-									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 								}},
 							'success': function (data) {
 								if (data == true) {
@@ -409,7 +409,7 @@
 								if (xhr.status == 401) {
 									window.location.href = '/login'; return;
 								} else {
-									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 								}},
 							'success': function (data) {
 								if (data == true) { console.log("[-] " + l + " - " + v); /*location.reload();*/ }
@@ -447,7 +447,7 @@
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				'success': function (data) { //probably this request will return anything, it'll be put in var "data"
 					if (data == 'No') { $('#f_dt, #f_dt1, #f_dt1a').css('display', 'none'); $('#dta, #dt, #and').css('display', 'none'); }
@@ -464,7 +464,7 @@
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				'success': function (data) {
 					if (data == 'No') { $('#usa, #us, #and, #f_us, #f_usa').css('display', 'none'); }
@@ -481,7 +481,7 @@
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				'success': function (data) {
 					var nlink = $("#promos").attr("href");
@@ -1053,7 +1053,7 @@
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
 				'success': function (data) {
 				}
@@ -1078,7 +1078,7 @@
 						if (xhr.status == 401) {
 							window.location.href = '/login'; return;
 						} else {
-							alert("An error occured: " + xhr.status + " " + xhr.statusText);
+							console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 						}},
 					success: function (data) {
 						$(theThis).removeClass('disabled');

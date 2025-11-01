@@ -106,7 +106,7 @@ $(document).ready(function(){
                     if (xhr.status == 401) {
                         window.location.href = '/login'; return;
                     } else {
-                        alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                     }}
 			        , success : function(response, status, request) {
 			        	var contents = "<legend><?php echo lang("Main.presell_info"); ?></legend>";
@@ -186,7 +186,7 @@ function popup_dialog(prod_id , add)
                   if (xhr.status == 401) {
                       window.location.href = '/login'; return;
                   } else {
-                      alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                      console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                   }},				
 							success:function(data)
 							{
@@ -229,7 +229,7 @@ function popup_dialog(prod_id , add)
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},				
 							success:function(data)
 							{
@@ -278,7 +278,7 @@ function popup_dialog(prod_id , add)
                   if (xhr.status == 401) {
                       window.location.href = '/login'; return;
                   } else {
-                      alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                      console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                   }},		
 							success:function(data)
 							{								
@@ -388,7 +388,7 @@ function popup_dialog(prod_id , add)
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                console.log("An error occured: " + xhr.status + " " + xhr.statusText);
             }},		
 				success:function(data)
 				{

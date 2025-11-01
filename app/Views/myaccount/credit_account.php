@@ -146,7 +146,7 @@ function registerEventHandlers() {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},
             success:function(d) {
                 if(d.success == true) {

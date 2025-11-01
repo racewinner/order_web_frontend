@@ -95,7 +95,7 @@ $(document).ready(function(){
 								if (xhr.status == 401) {
 									window.location.href = '/login'; return;
 								} else {
-									alert("An error occured: " + xhr.status + " " + xhr.statusText);
+									console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 								}},
 					        , success : function(response, status, request) {
 						         //alert("success : " + request.status + "\r\nmessage : " + request.reponseText);
@@ -150,7 +150,7 @@ function popup_dialog(person_id)
 				if (xhr.status == 401) {
 					window.location.href = '/login'; return;
 				} else {
-					alert("An error occured: " + xhr.status + " " + xhr.statusText);
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}}
 	        , success : function(response, status, request) {
 
@@ -458,7 +458,7 @@ function sort_product(link)
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');

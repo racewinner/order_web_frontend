@@ -62,7 +62,7 @@ $(document).ready(function(){
                             window.location.href = '/login'; return;
                         } else {
 							$(this).dialog("close");
-                            // alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                            // console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                         }}
 			        , success : function(response, status, request) {
 			        	var contents = "<legend><?php echo lang("Main.pastorders_product_info"); ?></legend>";
@@ -194,7 +194,7 @@ function resend_order(order_id)
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
 			alert("Duplicate order (# "+ order_id +") email sent to telesales");
@@ -277,7 +277,7 @@ function set_qty_trolley(){
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
         	$('#how_many_qty').val('');
@@ -497,7 +497,7 @@ function sort_product(link)
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
@@ -572,7 +572,7 @@ function sort_product(link)
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');

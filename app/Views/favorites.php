@@ -33,7 +33,7 @@ $(document).ready(function(){
 							if (xhr.status == 401) {
 								window.location.href = '/login'; return;
 							} else {
-								alert("An error occured: " + xhr.status + " " + xhr.statusText);
+								console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 							}}
 				        , success : function(response, status, request) {
 					        alert(response);
@@ -59,7 +59,7 @@ function change_category(){
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}},
           success:function(data){
               $('#subcat').html(data);
@@ -194,7 +194,7 @@ function sort_product(link){
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
 		, success : function(response, status, request) {
             var strArray = response.split('********************');
@@ -284,7 +284,7 @@ function set_qty_trolley(){
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}}
 		, success : function(response, status, request) {
         	$('#how_many_qty').val('');
@@ -304,7 +304,7 @@ function resync_favorites(){
 		if (xhr.status == 401) {
 			window.location.href = '/login'; return;
 		} else {
-			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 		}},
 		success:function(data){
 			$('#table_holder').html(data);
@@ -322,7 +322,7 @@ function bulk_favorites(){
 			if (xhr.status == 401) {
 				window.location.href = '/login'; return;
 			} else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 			}},
 		success:function(data){
 			$('#table_holder').html(data);

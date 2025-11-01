@@ -5762,7 +5762,7 @@ textarea.form-control-lg {
   position: relative;
   flex: 1 1 auto;
   padding: var(--bs-modal-padding);
-  max-height: 700px;
+  max-height: 820px;
   overflow-y: scroll;
 }
 @media (max-width: 992px) {

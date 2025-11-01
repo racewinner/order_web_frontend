@@ -236,7 +236,7 @@ function enable_search1(suggest_url , confirm_search_message)
 					if (xhr.status == 401) {
 						window.location.href = '/login'; return;
 					} else {
-						alert("An error occured: " + xhr.status + " " + xhr.statusText);
+						console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 					}},
     			success: function(data) {
     				response(data);
@@ -296,7 +296,7 @@ function do_search0(show_feedback,on_complete)
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
@@ -357,7 +357,7 @@ function do_search_orders(show_feedback , on_complete)
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
@@ -402,7 +402,7 @@ function do_search1(show_feedback , on_complete)
             if (xhr.status == 401) {
                 window.location.href = '/login'; return;
             } else {
-				alert("An error occured: " + xhr.status + " " + xhr.statusText);
+				console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 	    	}}
         , success : function(response, status, request) {
             var strArray = response.split('********************');
@@ -555,7 +555,7 @@ function do_email(url)
 		if (xhr.status == 401) {
 			window.location.href = '/login'; return;
 		} else {
-			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
 	})
 
@@ -648,7 +648,7 @@ function do_delete(url)
 		if (xhr.status == 401) {
 			window.location.href = '/login'; return;
 		} else {
-			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
 	})
 }
@@ -691,7 +691,7 @@ function do_delete_user(url , index_url)
 		if (xhr.status == 401) {
 			window.location.href = '/login'; return;
 		} else {
-			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
 	})
 }
@@ -818,7 +818,7 @@ function update_row(row_id,url)
 		if (xhr.status == 401) {
 			window.location.href = '/login'; return;
 		} else {
-			alert("An error occured: " + xhr.status + " " + xhr.statusText);
+			console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 		}
 	})
 }

@@ -100,7 +100,6 @@
                 <tr>
                     <th scope="col">Account No</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Order Types</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -116,16 +115,6 @@
                     >
                         <td><?= $employee->username ?></td>
                         <td><?= $employee->email ?></td>
-                        <td><div class="d-flex">
-                            <?php if($employee->delivery == '1') { ?>
-                                <span>Deliver (Delivery Charte: £ <?= $employee->delivery_charge ?? 0 ?>)</span>
-                            <?php } ?>
-                            <?php if($employee->collect == '1') { ?>
-                                <span class="mx-1 <?= $employee->delivery != '1' ? 'd-none' : '' ?>">|</span>
-                                <span>Collect</span>
-                            <?php } ?>
-                           
-                        </div></td>
                         <td>
                             <i class="bi bi-pencil-square employee-edit cursor-pointer" style="font-size:20px; color: #ff6c00;"></i>
                         </td>
@@ -217,7 +206,7 @@ $(document).ready(function(e) {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},
             success: function(response) {
                 $view_modal.addClass('modal-lg');
@@ -253,7 +242,7 @@ $(document).ready(function(e) {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},
             success: function(response) {
                 $view_modal.addClass('modal-lg');
@@ -281,7 +270,7 @@ $(document).ready(function(e) {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }},
             success: function(response) {
                 $form.find("input#api_key").val(response);
@@ -441,7 +430,7 @@ $(document).ready(function(e) {
                         if (xhr.status == 401) {
                             window.location.href = '/login'; return;
                         } else {
-                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                            console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                         }},
                     success: function(response) {
                         if(response.success == 0) {
