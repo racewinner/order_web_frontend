@@ -335,6 +335,15 @@ $(document).ready(function(e) {
         }
         $form.find("input#payment_methods").val(payment_methods);
 
+        debugger
+        // container_types
+        let container_types = [];
+        $container_type_chkboxes = $form.find("input.container-types:checked");
+        for(let i=0; i<$container_type_chkboxes.length; i++) {
+            container_types.push($container_type_chkboxes[i].value);
+        }
+        $form.find("input#container_types").val(container_types);
+
         /**
          * payment_charges
          */

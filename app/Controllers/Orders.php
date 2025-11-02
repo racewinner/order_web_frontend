@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Controllers\interfaces\iData_controller;
 use CodeIgniter\Email\Email;
+use DateInterval;
 use DateTime;
 
 use App\Models\Employee;
@@ -74,6 +75,36 @@ class Orders extends Secure_area implements iData_controller
 				$first_payment_method = $keys[0];
 				$index = array_search($first_payment_method, $source_payment_methods);
 				$this->data['payment_default_method'] = $source_payment_methods[$index];
+			}
+		}
+
+		/**
+		 * generate container type list
+		 */
+		if(!empty($pid)) {
+			$container_types = $Employee->get_container_types($pid);
+			$this->data['container_types'] = $container_types;
+			$this->data['container_default_type'] = '';
+
+			$keys = array();
+			if ($container_types->pallet == "1" || $container_types->pallet == 1) {
+				$keys[] = "pallet";
+			} 
+			if ($container_types->cage == "1" || $container_types->cage == 1) {
+				$keys[] = "cage";
+			} 
+			if ($container_types->trolley == "1" || $container_types->trolley == 1) {
+				$keys[] = "trolley";
+			} 
+			if ($container_types->box == "1" || $container_types->box == 1) {
+				$keys[] = "box";
+			} 
+
+			if(!empty($keys)) {
+				$source_container_types = ['pallet', 'cage', 'trolley', 'box'];
+				$first_payment_method = $keys[0];
+				$index = array_search($first_payment_method, $source_container_types);
+				$this->data['container_default_type'] = $source_container_types[$index];
 			}
 		}
 
@@ -253,6 +284,90 @@ class Orders extends Secure_area implements iData_controller
 		}
 	}
   
+	function confirm_order()
+	{
+		$Employee = new Employee();
+		$user_info = $Employee->get_logged_in_employee_info();
+
+		$username 	= $user_info->username;
+		$email 		= $user_info->email;	
+
+		$Employee = new Employee();
+		if(!$Employee->existsByEmailAndUsername($email, $username))
+		{
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => "Account info doesn't exist"
+			]);
+		}
+
+		// generate 8-digit random number
+		$min = 10000000;
+		$max = 99999999;
+		$rand8 = mt_rand($min, $max);
+
+		// generate expired time
+		$now = new DateTime();
+		$now->add(new DateInterval('PT1H'));	// add 1 hour
+		$oneHourFromNow = $now->format('Y-m-d H:i:s');
+
+		if(!$Employee->gen_ConfirmOrderNumber_to_Email($email, $username, $rand8, $oneHourFromNow))
+		{
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => "Can't send the order email"
+			]);
+		}
+
+		return response()->setJSON([
+			'success' => 1,
+		]);
+	}
+
+	function check_order_number() {
+		$pin_very_number 	= request()->getPost("pin_verify_number");
+
+		$Employee 	= new Employee();
+		$user_info 	= $Employee->get_logged_in_employee_info();
+		$username 	= $user_info->username;
+		$email 		= $user_info->email;	
+
+		$db = \Config\Database::connect();
+		$query = $db->table('epos_order_confirm')
+					->where('email', $email)
+					->where('username', $username)
+					->orderBy('id','desc')	
+					->get();
+
+		if ($query->getNumRows() == 0) {
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => "Confirm number doesn't exist"
+			]);
+		}
+
+		$row = $query->getRow();
+		$expiredDateTime = new DateTime($row->pin_expired_datetime);
+		$now = new DateTime();
+		if ($expiredDateTime < $now) {
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => "Confirm number was expired"
+			]);
+		}
+
+		if ($pin_very_number != $row->pin_verify_number) {
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => "Confirm number is incorrect"
+			]);
+		}
+		
+		return response()->setJSON([
+			'success' => 1,
+		]);
+	}
+
 	function mini_cart($page='')
 	{
 		$Employee = new Employee();
@@ -628,19 +743,27 @@ class Orders extends Secure_area implements iData_controller
 		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
 		if($type != 'spresell') {
-			///////////////////////////////////////////////// --- FTP Start
-			$ftp_stream = ftp_connect('order2.uniteduk.co.uk');
+			// ### FTP Start 
+			$ftp_credential = $Order->getFTPcredential();
+
+			$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
 			//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
-			if ($ftp_stream==false){ echo 'cannot connect to orders server'; return; }
+			if ($ftp_stream==false) {
+				echo 'Cannot connect to orders server'; 
+				return; 
+			}
 			
-			$login_stat = ftp_login($ftp_stream,'yasir@order2.uniteduk.co.uk','Yasir123$%^');
+			$login_stat = ftp_login($ftp_stream,$ftp_credential['username'], $ftp_credential['password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
 			//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
-			if ($login_stat==false){ echo 'cannot log in to orders server'; ftp_close($ftp_stream); return; }
+			if ($login_stat==false) { 
+				echo 'Cannot log in to orders server'; ftp_close($ftp_stream); 
+				return; 
+			}
 			
 			//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
 			// echo FCPATH.'temp/'.$file_name;
 			// exit;
-			$file_path = FCPATH . 'tempftp/' . $file_name;
+			$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
 			if(write_file($file_path, $file_data))
 			{
 				// echo  FCPATH.'tempftp/'.$file_name;
@@ -652,7 +775,7 @@ class Orders extends Secure_area implements iData_controller
 			// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
 			
 			ftp_close($ftp_stream);
-			//////////////////////////////////////////////// --- FTP End
+			// ### FTP End
 		}
 		
 		echo "Send Order success.";

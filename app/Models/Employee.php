@@ -110,6 +110,60 @@ class Employee extends Model
 		return $success;
 	}
 
+	function gen_ConfirmOrderNumber_to_Email($email, $username, $rand8, $oneHourFromNow)
+	{
+		$db = \Config\Database::connect();
+		$data = array(
+			'username' => $username,
+			'email' => $email,
+			'pin_verify_number' => $rand8, 
+			'pin_expired_datetime' => $oneHourFromNow);
+		$success = $db->table('epos_order_confirm')->insert($data);
+
+		// get New generated pin_verify_number
+		$query = $db->table('epos_order_confirm')
+					->where('email', $email)
+					->where('username', $username)
+					->orderBy('id','desc')	
+					->get();
+
+		if ($query->getNumRows() == 0) {
+			return false;
+		}
+
+		$row = $query->getRow();
+		$pin_very_number = $row->pin_verify_number;
+
+		// send email
+		$db = \Config\Database::connect();
+		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
+		$mail_addr = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
+		$company_name = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
+		$seller_mail_addr = $result->value;
+
+		$mail_subject = "Your order request";
+
+		$message = "<html><body>";
+		
+		$message .= "<div style='font-family:Arial; font-size:13px;'>";
+		$message .= "Your order verification code is ";
+		$message .= $pin_very_number;
+		$message .= '</div>';
+		$message .= "<div style='font-family:Arial; font-size:13px;'>";
+		$message .= "The code is only valid for the next 10 minutes.";
+		$message .= '</div>';
+
+		$message .= "</body></html>";
+
+		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
+
+		return $success;
+	}
+
 	function upgradePasswordByPinCode($email, $username, $pin_very_number, $password)
 	{
 		$db = \Config\Database::connect();
@@ -390,6 +444,20 @@ class Employee extends Model
 		}
 		return $query->getResult()[0];
 	}
+	function get_container_types($employee_id)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_emp_container_types')
+			->select('*')
+			->where('emp_id', $employee_id)
+			->get();
+
+		if ($query->getNumRows() == 0) {
+			return [];
+		}
+		return $query->getResult()[0];
+	}
 	/*
 	Gets information about a particular employee
 	*/
@@ -503,6 +571,47 @@ class Employee extends Model
 				$success = $db->table('epos_emp_payment_charges')
 							->where('emp_id', $employee_id)
 							->update($payment_charges_to_save);
+			}
+		}
+		return $success;
+	}
+
+	function save_container_types($container_types, $employee_id, $new_employee_id) 
+	{
+		$db = \Config\Database::connect();
+		$arr = explode(",", $container_types);
+
+		$container_types_to_save = array();
+		if($container_types) {
+			foreach ($arr as $value) {
+				$container_types_to_save[$value] = 1;
+			}
+		}
+		
+		foreach (["pallet", "cage", "trolley", "box"] as $value) {
+			if (!in_array($value, $arr)) {
+				$container_types_to_save[$value] = 0;
+			}	
+		}
+		$container_types_to_save['emp_id'] = $new_employee_id;
+
+		$success = false;
+		if (intval($employee_id) < 1) {
+			$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
+		} else {
+			$db = \Config\Database::connect();
+
+			$query = $db->table('epos_emp_container_types')
+			->select('emp_id')
+			->where('emp_id', $employee_id)
+			->get();
+
+			if ($query->getNumRows() == 0) {
+				$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
+			} else {
+				$success = $db->table('epos_emp_container_types')
+							->where('emp_id', $employee_id)
+							->update($container_types_to_save);
 			}
 		}
 		return $success;

@@ -19,14 +19,18 @@
             ul.delivery-methods {
                 padding: 0px;
                 list-style: none;
+                width: 100%;
+                gap: 10px;
                 li.one-delivery-method {
                     cursor: pointer;
-                    width: 200px;
+                    /* width: 200px; */
                     text-align: center;
                     padding: 8px 20px;
                     border: 1px solid #aaa;
                     border-radius: 10px;
-                    margin-right: 20px;
+                    margin-right: 0px;
+                    flex-grow: 1;
+                    max-width: 200px;
                     &.active {
                         border: 1px solid red;
                         color: red;
@@ -138,14 +142,19 @@
                 ul.delivery-methods {
                     padding: 0px;
                     list-style: none;
+                    width: 100%;
+                    gap: 10px;
                     li.one-delivery-method {
                         cursor: pointer;
-                        width: 200px;
+                        /* width: 200px; */
                         text-align: center;
                         padding: 8px 20px;
                         border: 1px solid #aaa;
                         border-radius: 10px;
-                        margin-right: 20px;
+                        margin-right: 0px;
+                        flex-grow: 1;
+                        max-width: 200px;
+
                         &.active {
                             border: 1px solid red;
                             color: red;
@@ -336,8 +345,62 @@
                                 <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
                                     Please select a collection container
                                 </div>
+                                <?php if ($this->data['container_types']->pallet) { ?>
+                                    <div class="one-collection-container pay-with-order d-flex align-items-center p-2 px-4 mb-2">
+                                        <div class="flex-fill">Pallet</div>
+                                        <div>
+                                            <input class="form-check-input" type="radio" name="collection_container" 
+                                                id="pallet" value="pallet" 
+                                                <?php if ($this->data["container_default_type"] == "pallet") { ?>
+                                                    checked
+                                                <?php } ?>
+                                            >
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <?php if ($this->data['container_types']->cage) { ?>
+                                    <div class="one-collection-container pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
+                                        <div class="flex-fill">Cage</div>
+                                        <div>
+                                            <input class="form-check-input" type="radio" name="collection_container" 
+                                                id="cage" value="cage" 
+                                                <?php if ($this->data["container_default_type"] == "cage") { ?>
+                                                    checked
+                                                <?php } ?>
+                                            >
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <?php if ($this->data['container_types']->trolley) { ?>
+                                    <div class="one-collection-container pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                                        <div class="flex-fill">Trolley</div>
+                                        <div>
+                                            <input class="form-check-input" type="radio" name="collection_container" 
+                                                id="trolley" value="trolley" 
+                                                <?php if ($this->data["container_default_type"] == "trolley") { ?>
+                                                    checked
+                                                <?php } ?>
+                                            >
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <?php if ($this->data['container_types']->box) { ?>
+                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                        <div class="flex-fill">Box</div>
+                                        <div>
+                                            <input class="form-check-input" type="radio" name="collection_container" 
+                                                id="box" value="box" 
+                                                <?php if ($this->data["container_default_type"] == "box") { ?>
+                                                    checked
+                                                <?php } ?>
+                                            >
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                
 
-                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+
+                                <!-- <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
                                     <div class="flex-fill">Pallet</div>
                                     <div>
                                         <input class="form-check-input" type="radio" name="collection_container" 
@@ -364,7 +427,7 @@
                                         <input class="form-check-input" type="radio" name="collection_container" 
                                             id="box" value="box" >
                                     </div>
-                                </div>
+                                </div> -->
                                 
                             </div>
                         </div>
@@ -542,13 +605,16 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="#" id="send_orders" class="btn btn-danger w-100">Next to Complete</a>
+                    <a href="#" id="confirm_order" class="btn btn-danger w-100">Confirm</a>
+                </div>
+                <div class="">
+                    <a href="#" id="send_orders" class="btn btn-danger w-100 d-none">Next to Complete</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<?= view("v2/partials/confirm_order_trolley_modal"); ?>
+<?= view("v2/partials/confirm_order_modal"); ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
@@ -579,8 +645,75 @@
         })
     }
 
+    $(document).on('click', '#confirm_order', function(e) {
+        e.preventDefault();
+        // debugger
+        // const confirm_order_modal = $("#confirm_order_dialog");
+        // const modal = new bootstrap.Modal(confirm_order_modal[0]);
+        // debugger
+        // modal.show();
+        // return;
+        $.ajax({
+            type : "GET"
+            , async : true
+            , url:"<?php echo base_url(); ?>orders/confirm_order"
+            , dataType : "json"
+            , timeout : 30000
+            , cache : false
+            , error : function (xhr, status, error) {
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+                }}
+            , success : function(response, status, request) {
+                debugger
+                const confirm_order_modal = $("#confirm_order_dialog");
+                const modal = new bootstrap.Modal(confirm_order_modal[0]);
+                modal.show();
+            }
+        });
+    })
+
+    $(document).on('submit', '#confirm_order_form', function(e) {
+        event.preventDefault();
+
+		$.ajax({
+			url:"<?php echo base_url(); ?>orders/check_order_number",
+			method:"POST",
+			data:new FormData(this),
+			contentType:false,
+			cache:false,
+			processData:false,
+			beforeSend:function(){
+				// $('#import_csv_btn').html('Importing...');
+			},
+			error: function (xhr, status, error) {
+				if (xhr.status == 401) {
+					window.location.href = '/login'; return;
+				} else {
+					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+				}},
+			success:function(res)
+			{
+                if (res.success) {
+                    $('#send_orders').click();
+                } else {
+                    showToast({type: 'error', message: res.msg})
+                }
+			},
+            complete: function() {
+                remove_loadingSpinner_from_button(e.target);
+
+                $('#pin_verify_number').val('')
+
+                modalId = $(e.target).attr('id').replace('form', 'dialog')
+                $(`#${modalId}`).find(".btn-close").click();
+            }
+		})
+    })
+
     $(document).on('click', '#send_orders', function(e) {
-        debugger
         let cart_typename = $('#cart_typename').val();
         var arr = cart_typename.split(',');
         // no trolley ----------
@@ -617,13 +750,12 @@
             });
         } else {
             const confirm_order_trolley_modal = $("#confirm_order_trolley_dialog");
-            const modal = new bootstrap.Modal(confirm_order_trolley_modal[0]);
+            const modal = new bootstrap.Modal(confirm_order_trolley_modal[0], {backdrop: 'static'});
             modal.show();
         }
     })
 
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
-        debugger
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -658,8 +790,6 @@
     })
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
-        debugger
-        
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -699,6 +829,11 @@
         const cart_typename         = params.get('cart_typename');
         const order_type            = params.get('order_type');
         const payment_method        = $(e.target).val();
+          if (payment_method == 'pay_with_order') {
+            $('#confirm_order').text('Make Payment and Submit Order')
+          } else {
+            $('#confirm_order').text('Submit Order')
+          }
         const collection_container  = params.get('collection_container');
         const delivery_date         = params.get('delivery_date');
 

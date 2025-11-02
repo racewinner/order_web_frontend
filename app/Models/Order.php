@@ -195,6 +195,57 @@ class Order extends Model
 		return $builder->get()->getRow();
 	}
 
+	function getFTPcredential()
+	{
+		$db = \Config\Database::connect();
+		$branch = session()->get('branch');
+		$ftp_credential = array();
+		
+		// get FTP credential based on branch
+		$result = $db->table('epos_ftp_4order_6branch')->where('branch' , $branch)->get()->getRow();
+		if (!empty($result->ftp_host)) 		{ $ftp_credential['ftp_host'	] = $result->ftp_host; 		}
+		if (!empty($result->ftp_path)) 		{ $ftp_credential['ftp_path'	] = $result->ftp_path; 		}
+		if (!empty($result->ftp_username)) 	{ $ftp_credential['ftp_username'] = $result->ftp_username; 	}
+		if (!empty($result->ftp_password)) 	{ $ftp_credential['ftp_password'] = $result->ftp_password; 	}
+
+		// get FTP credential from app config
+		$result = $db->table('epos_app_config')->where('key' , 'ftp_host')->get()->getRow();
+		if (empty($ftp_credential['ftp_host']) && !empty($result->value)) { 
+			$ftp_credential['ftp_host'] = $result->value; 		
+		}
+
+		$result = $db->table('epos_app_config')->where('key' , 'ftp_path')->get()->getRow();
+		if (empty($ftp_credential['ftp_path']) && !empty($result->value)) { 
+			$ftp_credential['ftp_path'] = $result->value; 		
+		}
+
+		$result = $db->table('epos_app_config')->where('key' , 'ftp_username')->get()->getRow();
+		if (empty($ftp_credential['ftp_username']) && !empty($result->value)) { 
+			$ftp_credential['ftp_username'] = $result->value; 		
+		}
+
+		$result = $db->table('epos_app_config')->where('key' , 'ftp_password')->get()->getRow();
+		if (empty($ftp_credential['ftp_password']) && !empty($result->value)) { 
+			$ftp_credential['ftp_password'] = $result->value; 		
+		}
+
+		// get FTP credential by default
+		if (empty($ftp_credential['ftp_host'])) { 
+			$ftp_credential['ftp_host'] = 'order2.uniteduk.co.uk'; 		
+		}
+		if (empty($ftp_credential['ftp_path'])) { 
+			$ftp_credential['ftp_path'] = 'tempftp'; 		
+		}
+		if (empty($ftp_credential['ftp_username'])) { 
+			$ftp_credential['ftp_username'] = 'yasir@order2.uniteduk.co.uk'; 		
+		}
+		if (empty($ftp_credential['ftp_password'])) { 
+			$ftp_credential['ftp_password'] = 'Yasir123$%^'; 		
+		}
+
+		return $ftp_credential;
+	}
+
 	function from_addr_mail()
 	{
 		$db = \Config\Database::connect();

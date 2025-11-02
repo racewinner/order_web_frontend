@@ -275,6 +275,7 @@ class Employees extends Secure_area
 		if(!empty($person_id)) {
 			$this->data['payment_methods'] = $Employee->get_payment_methods($person_id);
 			$this->data['payment_charges'] = $Employee->get_payment_charges($person_id);
+			$this->data['container_types'] = $Employee->get_container_types($person_id);
 		}
 
 		return view('v2/pages/employee/employee_edit', $this->data);
@@ -320,6 +321,9 @@ class Employees extends Secure_area
 
 		$payment_charges = request()->getPost('payment_charges');
 		$Employee->save_payment_charges($payment_charges, $employee_id, $new_employee_id);
+
+		$container_types = request()->getPost('container_types');
+		$Employee->save_container_types($container_types, $employee_id, $new_employee_id);
 
 		// Delivery Type
 		// $db = \Config\Database::connect();

@@ -111,11 +111,11 @@
         <div class="card-body">
             <div class="billing-item d-flex">
                 <div class="flex-fill"><label>Item Total</label></div>
-                <div><span class="value" id="cur_trolley_total_amount"></span></div>
+                <div><span class="value" id="cur_trolley_total_amount_for_recent"></span></div>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill"><label>VAT</label></div>
-                <div><span class="value" id="cur_trolley_total_vats"></span></div>
+                <div><span class="value" id="cur_trolley_total_vats_for_recent"></span></div>
             </div>
         </div>
 
@@ -126,11 +126,11 @@
                         <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
                         total is </label>
                 </div>
-                <div class="value" id="cur_trolley_total"></div>
+                <div class="value" id="cur_trolley_total_for_recent"></div>
             </div>
 
             <div class="mt-4">
-                <a href="/orders/checkout" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
+                <a href="/orders/checkout" id="nxt2complete" class="btn btn-danger w-100">Next</a>
             </div>
         </div>
     </div>

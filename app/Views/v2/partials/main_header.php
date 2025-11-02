@@ -68,6 +68,7 @@ if(!empty($category_id) && $category_id > 0) {
 	<div class="position-fixed top-0 start-0 end-0 d-flex justify-content-center d-none" id="ajax-call-indicator">
 		<div class="spinner-border text-primary spinner-border-sm">
 		</div>
+		<div style="background: #00000000; width: 100%; height: 100vh; z-index: 10; position: absolute; top: 40px; "></div>
 	</div>
 
 	<?= view("v2/partials/header_ribbon") ?>

@@ -147,7 +147,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100">Next to Complete</a>
+                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100">Next</a>
             </div>
         </div>
     </div>
@@ -157,7 +157,6 @@
 <?= $this->section('javascript') ?>
 <script>
      $(document).ready(function() {
-        debugger
         let el = $('.one-cart-type')
         if (el.length == 0) {
             return;
@@ -166,7 +165,6 @@
         }
     })
     $(document).on('click', '.one-cart-type', function(e) {
-        debugger
         let el_tab_id = e.currentTarget.id
         let cart_typename = el_tab_id.slice(4)
         

@@ -7,6 +7,11 @@ function add_loadingSpinner_to_button(target) {
 }
 function remove_loadingSpinner_from_button(target) {
     $(target).removeClass('disabled has-loading-spinner');
+    const el_working_btn = $(target).find(".disabled.has-loading-spinner");
+    if (el_working_btn) {
+        el_working_btn.removeClass('disabled');
+        el_working_btn.removeClass('has-loading-spinner');
+    }
     $(target).find("i.rotate-spinner").remove();
 }
 
@@ -200,6 +205,10 @@ function update_cart() {
                 /**
                  * set item&trolley total amount in checkout page's Billing details
                  */
+                $('#cur_trolley_total_amount_for_recent').text('£' + parseFloat(total_amount).toFixed(2));
+                $('#cur_trolley_total_for_recent').text('£' + (parseFloat(total_amount) + parseFloat(total_vats)).toFixed(2));
+                $('#cur_trolley_total_vats_for_recent').text('£' + parseFloat(total_vats).toFixed(2));
+
                 if ($('.one-cart-type.active').length > 0) {
                     const cart_active_typename = $('.one-cart-type.active').attr('id').slice(4);
                     const cur_trolley_cart_amount = data.cart_types[cart_active_typename].amount;
@@ -207,10 +216,6 @@ function update_cart() {
 
                     $('#cur_trolley_total_amount').text('£' + parseFloat(cur_trolley_cart_amount).toFixed(2));
                     $('#cur_trolley_total').text('£' + (parseFloat(cur_trolley_cart_amount) + parseFloat(cur_trolley_cart_vat)).toFixed(2));
-
-                    /**
-                     * set vat in checkout page's Billing details
-                     */
                     $('#cur_trolley_total_vats').text('£' + parseFloat(cur_trolley_cart_vat).toFixed(2));
                 }
                 
