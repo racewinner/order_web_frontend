@@ -15,6 +15,36 @@ function remove_loadingSpinner_from_button(target) {
     $(target).find("i.rotate-spinner").remove();
 }
 
+function alert_message(msg='Hello!', title='Alert') {
+    const container = document.getElementById('alert-msg-container');
+    container.innerHTML = `<div class="modal fade" id="alert_message_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered max-w-700">
+                                    <div class="modal-auto-width-content">
+                                        <div class="modal-header">
+                                            <div class="w-100 text-center">${title}</div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body px-100 py-5 d-flex flex-column align-items-center">
+                                            <div class="confirm-content-panel mt-0">
+                                                <div class="">
+                                                    ${msg}
+                                                </div>
+                                                <button class="btn btn-danger full-fill border mt-4" data-bs-dismiss="modal" >
+                                                    OK
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+    const alert_message_modal = $("#alert_message_dialog");
+    const modal = new bootstrap.Modal(alert_message_modal[0]);
+    debugger
+    modal.show();
+}
+
 function searchProductsByProdCodes(prod_codes) {
     let url  = '/products/index?';
         url += "&sort_key=0";

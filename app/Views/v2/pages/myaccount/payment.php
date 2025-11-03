@@ -60,7 +60,7 @@
             }
         }
         .payment-section {
-            margin-top: 30px;
+            margin-top: 20px;
             .one-pay-method {
                 border: 1px solid #eee;
                 border-radius: 10px;
@@ -123,7 +123,7 @@
     .delivery-container {
         border-radius: 10px;
         border: 1px solid #eee;
-        padding: 20px 20px 0px 20px;
+        padding: 20px 20px 20px 20px;
     }
     .one-collection-container {
         border: 1px solid #eee;
@@ -184,7 +184,7 @@
                 }
             }
             .payment-section {
-                margin-top: 30px;
+                margin-top: 20px;
                 .one-pay-method {
                     border: 1px solid #eee;
                     border-radius: 10px;
@@ -282,7 +282,7 @@
                     <?php if ($this->data['payment_charges'] && 
                              ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
                         <li class="one-delivery-method pickup-depot 
-                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active' : '' ?>"
+                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? /*'active' */'' : '' ?>"
                             data-bs-toggle="pill"
                             data-bs-target="#pane-pickup-depot" 
                             role="tab" 
@@ -295,7 +295,7 @@
                              ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
                         <li class="nav-link one-delivery-method via-delivery 
                             <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
-                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? 'active' : '' ?>"
+                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? /*'active' */'' : '' ?>"
                             data-bs-toggle="pill"
                             data-bs-target="#pane-via-delivery" 
                             role="tab" 
@@ -310,13 +310,13 @@
                 <div class="tab-content">
                     <?php if ($this->data['payment_charges'] && 
                              ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
-                        <div class="tab-pane fade mb-30 mt-0 
+                        <div class="tab-pane fade
                             <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active show' : '' ?>"
                             id="pane-pickup-depot"
                             role="tabpanel" 
                             aria-labelledby="tab-pickup-depot"
                         >
-                            <div class="payment-section mt-10 mb-20">
+                            <div class="payment-section d-none">
                                 <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
                                 <div class="comment mt-2 text-black ">
                                     We will do our best to have the order ready on time.
@@ -332,10 +332,14 @@
                                         <select id='delivery_date1' name='delivery_date1' class="form-select">
                                             <?php 
                                                 foreach($collection_delivery_dates as $index => $c_d_date) {
-                                                    $date_dt_value = $c_d_date->format('d/m/Y');
-                                                    $date_df_value = $c_d_date->format('l');
-                                                    $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
-                                                    echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                    if (!empty($c_d_date)) {
+                                                        $date_dt_value = $c_d_date->format('d/m/Y');
+                                                        $date_df_value = $c_d_date->format('l');
+                                                        $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                                        echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                    } else {
+                                                        echo '<option value=""'.( $index == 0 ? 'selected' : '') . '></option>';
+                                                    }
                                                 }
                                             ?>
                                         </select>
@@ -346,7 +350,7 @@
                                     Please select a collection container
                                 </div>
                                 <?php if ($this->data['container_types']->pallet) { ?>
-                                    <div class="one-collection-container pay-with-order d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
                                         <div class="flex-fill">Pallet</div>
                                         <div>
                                             <input class="form-check-input" type="radio" name="collection_container" 
@@ -359,7 +363,7 @@
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->data['container_types']->cage) { ?>
-                                    <div class="one-collection-container pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
                                         <div class="flex-fill">Cage</div>
                                         <div>
                                             <input class="form-check-input" type="radio" name="collection_container" 
@@ -372,7 +376,7 @@
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->data['container_types']->trolley) { ?>
-                                    <div class="one-collection-container pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
                                         <div class="flex-fill">Trolley</div>
                                         <div>
                                             <input class="form-check-input" type="radio" name="collection_container" 
@@ -385,7 +389,7 @@
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->data['container_types']->box) { ?>
-                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
+                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
                                         <div class="flex-fill">Box</div>
                                         <div>
                                             <input class="form-check-input" type="radio" name="collection_container" 
@@ -459,7 +463,7 @@
                             role="tabpanel" 
                             aria-labelledby="tab-via-delivery"
                         >
-                            <div class="payment-section mt-10 mb-20">
+                            <div class="payment-section d-none">
                                 <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
                                 <div class="comment mt-2 text-black ">
                                     We will do our best to have the order ready on time.
@@ -475,10 +479,14 @@
                                         <select id='delivery_date2' name='delivery_date2' class="form-select">
                                             <?php 
                                                 foreach($collection_delivery_dates as $index => $c_d_date) {
-                                                    $date_dt_value = $c_d_date->format('d/m/Y');
-                                                    $date_df_value = $c_d_date->format('l');
-                                                    $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
-                                                    echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                    if (!empty($c_d_date)) {
+                                                        $date_dt_value = $c_d_date->format('d/m/Y');
+                                                        $date_df_value = $c_d_date->format('l');
+                                                        $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                                        echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                                    } else {
+                                                        echo '<option value=""'.( $index == 0 ? 'selected' : '') . '></option>';
+                                                    }
                                                 }
                                             ?>
                                         </select>
@@ -603,7 +611,7 @@
                     <div class="flex-fill me-8 charge-value-on-mobile"><label>Item Total</label></div>
                     <div><span class="value" id="pay_total_amount">£<?= $total_amount ?></span></div>
                 </div>
-                <div class="billing-item d-flex delivery-charge-v-in-right-sidebar">
+                <div class="billing-item d-flex delivery-charge-v-in-right-sidebar d-none">
                     <div class="flex-fill me-8 charge-value-on-mobile" id="order_type_label">Delivery Charge</div>
                     <div>
                         <span id="charge" style="font-weight: bold; color: black;"></span>
@@ -734,12 +742,14 @@
     })
 
     $(document).on('click', '#send_orders', function(e) {
+        
         debugger
         let cart_typename = $('#cart_typename').val();
         var arr = cart_typename.split(',');
         // no trolley ----------
         if (arr.length == 0) {
-            showToast({type: "error", message: "There is not any product in any trolley"});
+            // showToast({type: "error", message: "There is not any product in any trolley"});
+            alert_message('There is not any product in current trolley');
             return;
         }
         
@@ -753,9 +763,27 @@
         let delivery_method         = $('.delivery-methods li.active').data('bs-target')
         // no delivery method ----------
         if(!delivery_method) {
-            showToast({type: "error", message: "None of the delivery method is selected"});
+            debugger
+            // showToast({type: "error", message: "None of the delivery method is selected"});
+            alert_message('Please select delivery or collection.')
             return;
         }
+
+        if(!delivery_date) {
+            alert_message('Please select a required for date.')
+            return;
+        }
+
+        if(delivery_method == '#pane-pickup-depot' && !collection_container) {
+            alert_message('Please select a container type.')
+            return;
+        }
+
+        if(!payment_method) {
+            alert_message('Please select a payment method.')
+            return;
+        }
+
 
         if (arr.length == 1) {
             let payload = {
@@ -792,6 +820,8 @@
     })
 
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
+        $('#pane-pickup-depot > div').removeClass('d-none');
+        $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
         debugger;
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
@@ -810,9 +840,9 @@
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
-        if ($('#delivery_date2').val()) {
+        // if ($('#delivery_date2').val()) {
             $('#delivery_date1').val($('#delivery_date2').val());
-        }
+        // }
         
         const data = {
             cart_typename:          $('#cart_typename').val(),
@@ -831,6 +861,8 @@
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
         debugger;
+        $('#pane-via-delivery > div').removeClass('d-none')
+        $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
 
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
@@ -849,9 +881,9 @@
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
-        if($('#delivery_date1').val()) {
+        // if($('#delivery_date1').val()) {
             $('#delivery_date2').val($('#delivery_date1').val());
-        }
+        // }
 
         const data = {
             cart_typename: $('#cart_typename').val(),
@@ -876,9 +908,9 @@
         const order_type            = params.get('order_type');
         const payment_method        = $(e.target).val();
           if (payment_method == 'pay_in_card') {
-            $('#confirm_order').text('Make Payment and Submit Order')
+            $('#send_orders').text('Make Payment and Submit Order')
           } else {
-            $('#confirm_order').text('Submit Order')
+            $('#send_orders').text('Submit Order')
           }
         const collection_container  = params.get('collection_container');
         const delivery_date         = params.get('delivery_date');
@@ -990,7 +1022,7 @@
                 $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
                 $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
             } else {
-                el[0].click();
+                // el[0].click();
 
                 let selected_el_bsTarget = $(el[0]).data('bs-target');
                 if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
@@ -999,6 +1031,19 @@
                 }
             }
         }
+
+        let pay_total_amount    = $('#pay_total_amount').text();
+        let pay_total_vats      = $('#pay_total_vats').text();
+
+        pay_total_amount = pay_total_amount.slice(1);
+        pay_total_vats = pay_total_vats.slice(1);
+
+        $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
+        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
+        $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+
     })
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {

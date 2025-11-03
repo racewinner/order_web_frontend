@@ -75,7 +75,7 @@ class Orders extends Secure_area implements iData_controller
 				$source_payment_methods = ['e_order', 'depot', 'echo_pay', 'bank_transfer', 'credit_account', 'debit_credit_card'];
 				$first_payment_method = $keys[0];
 				$index = array_search($first_payment_method, $source_payment_methods);
-				$this->data['payment_default_method'] = $source_payment_methods[$index];
+				// $this->data['payment_default_method'] = $source_payment_methods[$index];
 			}
 		}
 
@@ -105,7 +105,7 @@ class Orders extends Secure_area implements iData_controller
 				$source_container_types = ['pallet', 'cage', 'trolley', 'box'];
 				$first_payment_method = $keys[0];
 				$index = array_search($first_payment_method, $source_container_types);
-				$this->data['container_default_type'] = $source_container_types[$index];
+				// $this->data['container_default_type'] = $source_container_types[$index];
 			}
 		}
 
@@ -199,6 +199,7 @@ class Orders extends Secure_area implements iData_controller
 			$collection_delivery_date->modify('+2 days'); // add 2 days
 		}
 
+		$collection_delivery_dates[] = '';
 		$collection_delivery_dates[] = $collection_delivery_date;
 		for ($i = 1; $i < 5; $i++) {
 			$next_datetime = clone $collection_delivery_date;
