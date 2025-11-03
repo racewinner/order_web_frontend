@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\UnknownProduct;
 use App\Services\EmailService;
 use App\Models\PriceList;
+use Exception;
 
 class Orders extends Secure_area implements iData_controller
 {
@@ -631,7 +632,7 @@ class Orders extends Secure_area implements iData_controller
 		$delivery_date = $payload['delivery_date'];
 		$delivery_method = $payload['delivery_method'];
 		$delivery_charge = $payload['delivery_charge'];
-		$collection_container = $payload['collection_container'];
+		$collection_container = !empty($payload['collection_container']) ? $payload['collection_container'] :'';
 		$payment_method = $payload['payment_method'];
 
 		
@@ -733,53 +734,69 @@ class Orders extends Secure_area implements iData_controller
 		$mail_subject.= '[' . ucfirst($type) . '] ';
 		$mail_subject.= 'order id : ' . $origin . '-' . $order_id;
 		$customer_mail_addr = $user_info->email;
-		if($type == 'spresell') $mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
+		if($type == 'spresell') {
+			$mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
+		}
 
-		$this->do_send_email($addr_mail['email_addr'], $customer_mail_addr, $addr_mail['company_name'], $mail_subject, $send_message);
-		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
-		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
+		$ftp_credential = $Order->getFTPcredential();
+
+		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';//$addr_mail['email_addr']
+		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
+		$this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
+		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
+		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 
 		// EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
 		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
 		if($type != 'spresell') {
-			// ### FTP Start 
-			$ftp_credential = $Order->getFTPcredential();
+			try {
+				// ### FTP Start 
+				$ftp_credential = $Order->getFTPcredential();
 
-			$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
-			//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
-			if ($ftp_stream==false) {
-				echo 'Cannot connect to orders server'; 
-				return; 
-			}
-			
-			$login_stat = ftp_login($ftp_stream,$ftp_credential['username'], $ftp_credential['password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
-			//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
-			if ($login_stat==false) { 
-				echo 'Cannot log in to orders server'; ftp_close($ftp_stream); 
-				return; 
-			}
-			
-			//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
-			// echo FCPATH.'temp/'.$file_name;
-			// exit;
-			$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
-			if(write_file($file_path, $file_data))
-			{
-				// echo  FCPATH.'tempftp/'.$file_name;
+				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
+				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
+				if ($ftp_stream==false) {
+					echo 'Cannot connect to orders server'; 
+					return; 
+				}
+				
+				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
+				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
+				if ($login_stat==false) { 
+					echo 'Cannot log in to orders server'; ftp_close($ftp_stream); 
+					return; 
+				}
+				
+				//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
+				// echo FCPATH.'temp/'.$file_name;
 				// exit;
-				//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
+				$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
+				if(write_file($file_path, $file_data))
+				{
+					// echo  FCPATH.'tempftp/'.$file_name;
+					// exit;
+					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
+				}
+				
+				//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
+				// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
+				
+				ftp_close($ftp_stream);
+				// ### FTP End
+			} catch (Exception $e) {
+				ftp_close($ftp_stream); 
+				return response()->setJSON([
+					'success' => false,
+					'msg' => $e->getMessage()
+				]);
 			}
-			
-			//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
-			// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
-			
-			ftp_close($ftp_stream);
-			// ### FTP End
 		}
 		
-		echo "Send Order success.";
-        return;
+		// echo "Send Order success.";
+		return response()->setJSON([
+			'success' => true,
+		]);
     }
 	
 	////////////////////////////////////////////////
@@ -993,11 +1010,13 @@ class Orders extends Secure_area implements iData_controller
 
 	}
 
-	function do_send_email($from, $to, $senderCompany, $subject, $message)
+	function do_send_email($from, $to, $cc, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
-		$email->setCC($from);
+		if (!$cc) {
+			$email->setCC($cc);
+		}
 		$email->setReplyTo($from);
         $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
 		

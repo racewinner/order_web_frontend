@@ -202,7 +202,7 @@ class Order extends Model
 		$ftp_credential = array();
 		
 		// get FTP credential based on branch
-		$result = $db->table('epos_ftp_4order_6branch')->where('branch' , $branch)->get()->getRow();
+		$result = $db->table('epos_branches_ordering_config')->where('branch' , $branch)->get()->getRow();
 		if (!empty($result->ftp_host)) 		{ $ftp_credential['ftp_host'	] = $result->ftp_host; 		}
 		if (!empty($result->ftp_path)) 		{ $ftp_credential['ftp_path'	] = $result->ftp_path; 		}
 		if (!empty($result->ftp_username)) 	{ $ftp_credential['ftp_username'] = $result->ftp_username; 	}
@@ -573,7 +573,7 @@ class Order extends Model
 	
 		$delivery_date = $payload['delivery_date'];
 		$delivery_charge = $payload['delivery_charge'];
-		$collection_container = $payload['collection_container'];
+		$collection_container = !empty($payload['collection_container']) ? $payload['collection_container'] :'';
 		$payment_method = $payload['payment_method'];
 		$delivery_method = $payload['delivery_method'];
 		if ($delivery_method == '#pane-via-delivery') {

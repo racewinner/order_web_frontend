@@ -463,10 +463,13 @@ class Employee extends Model
 	*/
 	function get_info($employee_id)
 	{
-		$query = $this->select('*, b.site_name')
-			->where('person_id', $employee_id)
-			->join('epos_branches b', 'last_kiss_branch = b.id', 'left') // corrected join clause
-			->get();
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_employees AS emp')
+					->select('emp.*, b.site_name')
+					->where('emp.person_id', $employee_id)
+					->join('epos_branches b', 'emp.last_kiss_branch = b.id', 'left') // corrected join clause
+					->get();
 
 		if ($query->getNumRows() == 1) {
 			$userArr = json_decode(json_encode($query->getRow()), true);

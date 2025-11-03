@@ -60,6 +60,10 @@
         <div class="mb-4">
             <button id="btn-guest-login" class="btn mb-0 btn-outline-dark w-100" type="button">Guest Login</button>
         </div>
+        <div class="mb-4" style="margin-top: -10px; text-align: right;">
+            <a href="/customer-register" style="color: red; text-decoration: underline;">customer register</a>
+        </div>
+
 
         <p>
             If you don't have an account, please contact Telesales<br/>

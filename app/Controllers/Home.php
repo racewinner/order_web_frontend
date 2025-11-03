@@ -271,6 +271,11 @@ class Home extends BaseController
 		echo view('v2/pages/reinstall_password'); // after you stored the query results inside the $data array, send the array to the view 
 	}
 
+	function customer_register()
+	{
+		echo view('v2/pages/customer_register'); // after you stored the query results inside the $data array, send the array to the view 
+	}
+
 }
 
 ?>

@@ -623,10 +623,10 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="#" id="confirm_order" class="btn btn-danger w-100">Confirm</a>
+                    <a href="#" id="confirm_order" class="btn btn-danger w-100 d-none">Confirm</a>
                 </div>
                 <div class="">
-                    <a href="#" id="send_orders" class="btn btn-danger w-100 d-none">Next to Complete</a>
+                    <a href="#" id="send_orders" class="btn btn-danger w-100">Next</a>
                 </div>
             </div>
         </div>
@@ -638,6 +638,7 @@
 <?= $this->section('javascript') ?>
 <script>
     function make_order(type, payload, cb_success, cb_error) {
+        debugger
         return $.ajax({
             url: `/orders/send_order/${type}`,
             method:"POST",
@@ -645,9 +646,10 @@
             cache:false,
             processData:false,
         })
-        .then(function(d) {
+        .then(function(res) {
+            debugger
             if (cb_success) {
-                cb_success(d)
+                cb_success(res)
             } else {
                 return {success: true}
             }
@@ -732,6 +734,7 @@
     })
 
     $(document).on('click', '#send_orders', function(e) {
+        debugger
         let cart_typename = $('#cart_typename').val();
         var arr = cart_typename.split(',');
         // no trolley ----------
@@ -763,8 +766,23 @@
                 payment_method
             };
             let res = make_order(arr[0], payload, function(res) {
-                let url = `<?php echo base_url("");?>pastorders`;
-	            window.location.href = url;
+                const {success, msg} = res;
+                if (success) {
+                    showToast({
+                        type: 'success',
+                        message: "Product order has done successfully.",
+                    });
+                    let url = `<?php echo base_url("");?>pastorders`;
+	                window.location.href = url;
+                } else {
+                    debugger
+                    showToast({
+                        type: 'error',
+                        message: res.msg,
+                    });
+                    location.reload();
+                }
+                
             });
         } else {
             const confirm_order_trolley_modal = $("#confirm_order_trolley_dialog");
@@ -1009,8 +1027,22 @@
         let typename  = $('input[name="trolley_container"]:checked').val()
         if (typename != 'all') {
             let res = make_order(typename, payload, function(res) {
-                let url = `<?php echo base_url("");?>pastorders`;
-	            window.location.href = url;
+                const {success, msg} = res;
+                if (success) {
+                    showToast({
+                        type: 'success',
+                        message: "Product order has done successfully.",
+                    });
+                    let url = `<?php echo base_url("");?>pastorders`;
+	                window.location.href = url;
+                } else {
+                    debugger
+                    showToast({
+                        type: 'error',
+                        message: res.msg,
+                    });
+                    location.reload();
+                }
             });
         } else {
             let cart_typename = $('#cart_typename').val();

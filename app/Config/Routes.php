@@ -19,6 +19,7 @@ $routes->get('/forgot-password', 'Home::forgot_password');
 $routes->post('/reset-password', 'Login::reset_password');
 $routes->get('/reset-password', 'Home::reinstall_password');
 $routes->post('/reinstall-password', 'Login::upgrade_password');
+$routes->get('/customer-register', 'Home::customer_register');
 
 $routes->get('/myaccount/sel_allocated_branch', 'MyAccount::getAllocatedSelectBranch');
 $routes->get('/myaccount/sel_branch', 'MyAccount::getSelectBranch');

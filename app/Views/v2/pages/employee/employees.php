@@ -221,6 +221,7 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'table tbody tr i.employee-edit', function(e) {
+        debugger
         e.preventDefault();
         e.stopPropagation();
 
