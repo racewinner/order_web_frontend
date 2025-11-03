@@ -87,16 +87,16 @@ class Orders extends Secure_area implements iData_controller
 			$this->data['container_default_type'] = '';
 
 			$keys = array();
-			if ($container_types->pallet == "1" || $container_types->pallet == 1) {
+			if (!empty($container_types) && ($container_types->pallet == "1" || $container_types->pallet == 1)) {
 				$keys[] = "pallet";
 			} 
-			if ($container_types->cage == "1" || $container_types->cage == 1) {
+			if (!empty($container_types) && ($container_types->cage == "1" || $container_types->cage == 1)) {
 				$keys[] = "cage";
 			} 
-			if ($container_types->trolley == "1" || $container_types->trolley == 1) {
+			if (!empty($container_types) && ($container_types->trolley == "1" || $container_types->trolley == 1)) {
 				$keys[] = "trolley";
 			} 
-			if ($container_types->box == "1" || $container_types->box == 1) {
+			if (!empty($container_types) && ($container_types->box == "1" || $container_types->box == 1)) {
 				$keys[] = "box";
 			} 
 

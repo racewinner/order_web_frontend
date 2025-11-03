@@ -397,6 +397,24 @@
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <?php if (empty($this->data['container_types']->pallet )&& 
+                                          empty($this->data['container_types']->cage   )&&
+                                          empty($this->data['container_types']->trolley)&&
+                                          empty($this->data['container_types']->box    )) { ?>
+                                    <div style="padding: 1rem;
+                                                font-size: 80%;
+                                                border: 1px solid red;
+                                                border-radius: 10px;
+                                                color: red;
+                                                margin-top: 10px;">
+                                        <div><i class="bi bi-exclamation-triangle-fill" style="margin-right: 5px"></i>Error</div>
+                                        <div>Please ask to have the correct container types set for your account.</div>    
+                                        <div>You cannot check out until this has been done.</div>
+                                    </div>
+                                <?php } ?>
+                                
+
+
                                 
 
 
@@ -756,6 +774,7 @@
     })
 
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
+        debugger;
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -773,7 +792,10 @@
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
-        $('#delivery_date1').val($('#delivery_date2').val());
+        if ($('#delivery_date2').val()) {
+            $('#delivery_date1').val($('#delivery_date2').val());
+        }
+        
         const data = {
             cart_typename:          $('#cart_typename').val(),
             order_type:             'collection',
@@ -790,6 +812,8 @@
     })
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
+        debugger;
+
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -807,7 +831,10 @@
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
-        $('#delivery_date2').val($('#delivery_date1').val());
+        if($('#delivery_date1').val()) {
+            $('#delivery_date2').val($('#delivery_date1').val());
+        }
+
         const data = {
             cart_typename: $('#cart_typename').val(),
             order_type: 'delivery',
@@ -824,12 +851,13 @@
     })
 
     $(document).on('click', '[name="payment_method"]', function(e) {
+        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
         const order_type            = params.get('order_type');
         const payment_method        = $(e.target).val();
-          if (payment_method == 'pay_with_order') {
+          if (payment_method == 'pay_in_card') {
             $('#confirm_order').text('Make Payment and Submit Order')
           } else {
             $('#confirm_order').text('Submit Order')
@@ -900,6 +928,7 @@
     })
 
     $(document).ready(function() {
+        debugger
         const params                = new URLSearchParams(window.location.search);
 
         const order_type            = params.get('order_type');
@@ -909,7 +938,9 @@
 
         if (payment_method) {
             $(`#${payment_method}`).click();
-        } 
+        } else {
+            $('input[name="payment_method"]:checked').click();
+        }
         if (collection_container) {
             $(`#${collection_container}`).click();
         }
