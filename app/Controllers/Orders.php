@@ -624,6 +624,8 @@ class Orders extends Secure_area implements iData_controller
 	function send_order($type='general')
 	{
 		$db = \Config\Database::connect();
+    	$db->transStart();
+
 		$Employee = new Employee();
 		$Order = new Order();
 		$branch = session()->get('branch');
@@ -632,26 +634,25 @@ class Orders extends Secure_area implements iData_controller
 		$payload = $this->request->getJSON(true);
 		$delivery_date = $payload['delivery_date'];
 		$delivery_method = $payload['delivery_method'];
-		$delivery_charge = $payload['delivery_charge'];
-		$collection_container = !empty($payload['collection_container']) ? $payload['collection_container'] :'';
-		$payment_method = $payload['payment_method'];
-
 		
 		$user_info = $Employee->get_logged_in_employee_info();
 		$presell = $type == 'spresell' ? 1 : 0;
 		if ($Order->get_count_cart_products($user_info->person_id, $presell) == 0) {
-			echo 100;
-			return;
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'There is not any product to order.'
+			]);
 		}
 		
-		$res = $Order->save_for_later($user_info->person_id , 1, $type, $presell, "", $payload);
-		if ($res != true)
-		{
-			echo "Failed: ".$res;
-			return;
+		$res = $Order->save_for_later($user_info->person_id , 1, $type, $presell, "", $payload, $db);
+		if ($res != true) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: save_for_later().'
+			]);
 		}
-
-		
 
         $datetime=date('dmY_His',time());
   		$q = $db->table('epos_orders');
@@ -662,10 +663,6 @@ class Orders extends Secure_area implements iData_controller
 		$q->where('branch', $branch);
 		$q->where('organization_id', $organization_id);
 		$q->orderBy('order_id','desc');
-
-
-
-
 		$q->limit(1);
 		$row = $q->get()->getRow();
 		$order_id = $row->order_id;
@@ -683,48 +680,134 @@ class Orders extends Secure_area implements iData_controller
                     }
         $file_name .='_'.ucfirst($type) . ($type=='spresell' ? '.pre' : '.ord');
 		$first_line = $Order->get_order_file_data($user_info->person_id , 1, $type);
-		if($first_line < 0)
-		{
-			echo $first_line;
-			return;
+		if($first_line < 0) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: get_order_file_data1().'
+			]);
 		}
 		$file_data = $Order->get_order_file_data($user_info->person_id , 2, $type);
         $vv=substr($file_data,-3);
         $file_data = substr($file_data,0,strlen($file_data)-3);
-        if($file_data < 0)
-		{
-			echo $file_data;
-			return;
+        if($file_data < 0) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: get_order_file_data2().'
+			]);
 		}
 		$file_data = $first_line.$file_data;
 		//$file_path = "/home/uws003/public_html/temp/".$file_name;
 		$file_path = FCPATH . 'temp/' . $file_name;
 		
 		//$file_path = "/home/staging/public_html/temp/".$file_name; // --- SWAP
-		if(!write_file($file_path, $file_data))
-		{
-			echo -103;
-			//echo getcwd();
-			return;
+		if(!write_file($file_path, $file_data)) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: write_file().'
+			]);
 		}
-        if (!$db->query("UPDATE epos_orders 
-							  SET filename='{$file_name}', type='{$type}'"
-							  	.", order_date='".date('Ymd',time())."'"
-								.", order_time='".substr($datetime,-6).
-							"' WHERE order_id={$order_id}"))
+        if (!$db->query("UPDATE epos_orders ".
+							 "SET filename='{$file_name}', type='{$type}', ".
+							 "    order_date='".date('Ymd',time())."', ".
+							 "    order_time='".substr($datetime,-6)."' ".
+							 "WHERE order_id={$order_id}"))
         {
-            echo -104;
-            return;
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: update_orders().'
+			]);
         }
-		if(!$Order->close_and_complete_order($user_info->person_id, $type))
-		{
-			echo -105;
-			return;
+		if(!$Order->close_and_complete_order($user_info->person_id, $type)) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, there is something wrong in ordering, error code: close_and_complete_order().'
+			]);
 		}
 
         $db->query("DELETE FROM epos_orders 
 						 WHERE opened=1 AND type='{$type}'   AND person_id={$user_info->person_id} 
 						 				AND branch={$branch} AND organization_id={$organization_id}");
+
+
+		$ftp_credential = $Order->getFTPcredential();
+
+		
+		if($type != 'spresell') {
+			
+			// ### FTP Start 
+			$ftp_credential = $Order->getFTPcredential();
+
+			try {
+				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
+				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
+				if ($ftp_stream==false) {
+					$db->transRollback();
+					return response()->setJSON([
+						'success' => false,
+						'msg' => 'Unable to connect to order server.'
+					]);
+				}
+			} catch (Exception $e) {
+				$db->transRollback();
+				return response()->setJSON([
+					'success' => false,
+					'msg' => 'Unable to connect to order server.'
+				]);
+			}
+				
+			try {	
+				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
+				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
+				if ($login_stat==false) { 
+					$db->transRollback();
+					return response()->setJSON([
+						'success' => false,
+						'msg' => 'Unable to login to order server.'
+					]);
+				}
+			} catch (Exception $e) {
+				$db->transRollback();
+				return response()->setJSON([
+					'success' => false,
+					'msg' => 'Unable to login to order server.'
+				]);
+			}
+				
+			try {
+				//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
+				// echo FCPATH.'temp/'.$file_name;
+				// exit;
+				$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
+				if(!write_file($file_path, $file_data))
+				{
+					// echo  FCPATH.'tempftp/'.$file_name;
+					// exit;
+					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
+					$db->transRollback();
+					return response()->setJSON([
+						'success' => false,
+						'msg' => 'Sorry, issue with creating order file.'
+					]);
+				}
+			} catch (Exception $e) {
+				$db->transRollback();
+				return response()->setJSON([
+					'success' => false,
+					'msg' => 'Sorry, issue with creating order file.'
+				]);
+			}
+				
+			//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
+			// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
+			
+			ftp_close($ftp_stream);
+			// ### FTP End
+		}
 
 		$addr_mail = $Order->from_addr_mail();
 		$send_message = $Order->from_message_mail($user_info->person_id, $order_id, $type, $delivery_method, $delivery_date, 0, $type=='spresell');
@@ -739,60 +822,25 @@ class Orders extends Secure_area implements iData_controller
 			$mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
 		}
 
-		$ftp_credential = $Order->getFTPcredential();
+		
 
 		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';//$addr_mail['email_addr']
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
-		$this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
+		$res = $this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
+		if (!$res) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, issue sending email.'
+			]);
+
+		}
 		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 
 		// EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
 		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
-		if($type != 'spresell') {
-			try {
-				// ### FTP Start 
-				$ftp_credential = $Order->getFTPcredential();
-
-				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
-				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
-				if ($ftp_stream==false) {
-					echo 'Cannot connect to orders server'; 
-					return; 
-				}
-				
-				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
-				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
-				if ($login_stat==false) { 
-					echo 'Cannot log in to orders server'; ftp_close($ftp_stream); 
-					return; 
-				}
-				
-				//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
-				// echo FCPATH.'temp/'.$file_name;
-				// exit;
-				$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
-				if(write_file($file_path, $file_data))
-				{
-					// echo  FCPATH.'tempftp/'.$file_name;
-					// exit;
-					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
-				}
-				
-				//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
-				// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
-				
-				ftp_close($ftp_stream);
-				// ### FTP End
-			} catch (Exception $e) {
-				ftp_close($ftp_stream); 
-				return response()->setJSON([
-					'success' => false,
-					'msg' => $e->getMessage()
-				]);
-			}
-		}
 		
 		// echo "Send Order success.";
 		return response()->setJSON([

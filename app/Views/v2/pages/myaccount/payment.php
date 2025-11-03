@@ -742,14 +742,18 @@
     })
 
     $(document).on('click', '#send_orders', function(e) {
-        
         debugger
+        let pay_total_amount    = $('#pay_total_amount').text();
+        pay_total_amount = pay_total_amount.slice(1);
+        if (parseFloat(pay_total_amount) == 0) {
+            alert_message('There is not any product to order.')
+            return;
+        }
+
         let cart_typename = $('#cart_typename').val();
         var arr = cart_typename.split(',');
-        // no trolley ----------
         if (arr.length == 0) {
-            // showToast({type: "error", message: "There is not any product in any trolley"});
-            alert_message('There is not any product in current trolley');
+            alert_message('Please select trolley to order.');
             return;
         }
         
@@ -761,29 +765,22 @@
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
         let delivery_method         = $('.delivery-methods li.active').data('bs-target')
-        // no delivery method ----------
         if(!delivery_method) {
-            debugger
-            // showToast({type: "error", message: "None of the delivery method is selected"});
             alert_message('Please select delivery or collection.')
             return;
         }
-
         if(!delivery_date) {
             alert_message('Please select a required for date.')
             return;
         }
-
         if(delivery_method == '#pane-pickup-depot' && !collection_container) {
             alert_message('Please select a container type.')
             return;
         }
-
         if(!payment_method) {
             alert_message('Please select a payment method.')
             return;
         }
-
 
         if (arr.length == 1) {
             let payload = {
@@ -793,6 +790,8 @@
                 collection_container,
                 payment_method
             };
+
+           
             let res = make_order(arr[0], payload, function(res) {
                 const {success, msg} = res;
                 if (success) {
@@ -804,13 +803,13 @@
 	                window.location.href = url;
                 } else {
                     debugger
-                    showToast({
+                    /*showToast({
                         type: 'error',
                         message: res.msg,
                     });
-                    location.reload();
+                    location.reload();*/
+                    alert_message(res.msg)
                 }
-                
             });
         } else {
             const confirm_order_trolley_modal = $("#confirm_order_trolley_dialog");

@@ -562,12 +562,17 @@ class Order extends Model
 		];
 	}
 	
-	function save_for_later($person_id , $opened, $type='general', $presell = 0, $ref = "", $payload = [])
+	function save_for_later($person_id ,$opened, $type='general', $presell = 0, $ref = "", $payload = [], $passed_db)
 	{
+		if ($passed_db) {
+			$db = $passed_db;
+		} else {
+			$db = \Config\Database::connect();
+		}
+
 		$Hom = new Hom();
 		$Employee = new Employee();
 		$u = $Employee->get_info($person_id);	
-		$db = \Config\Database::connect();
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
 	
