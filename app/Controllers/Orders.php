@@ -833,7 +833,6 @@ class Orders extends Secure_area implements iData_controller
 				'success' => false,
 				'msg' => 'Sorry, issue sending email.'
 			]);
-
 		}
 		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);

@@ -275,235 +275,173 @@
         <div class="delivery-section">
             <h6>Order Type</h6>
             <div class="delivery-container mb-30">
-                <?php if ($this->data['payment_charges'] &&  
-                         ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' || 
-                          $this->data['payment_charges']->delivery    == 1 || $this->data['payment_charges']->delivery   == '1' )) { ?>
-                <ul class="d-inline-flex delivery-methods mt-10 mb-10" role="tablist" aria-label="Delivery Methods">
-                    <?php if ($this->data['payment_charges'] && 
-                             ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
-                        <li class="one-delivery-method pickup-depot 
-                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? /*'active' */'' : '' ?>"
-                            data-bs-toggle="pill"
-                            data-bs-target="#pane-pickup-depot" 
-                            role="tab" 
-                            aria-controls="pane-pickup-depot" 
-                        >
-                            Collection
-                        </li>
+                <div class="">
+                    <?php if ($this->data['payment_charges'] &&  
+                            ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' || 
+                            $this->data['payment_charges']->delivery    == 1 || $this->data['payment_charges']->delivery   == '1' )) { ?>
+                    <ul class="d-inline-flex delivery-methods mt-10 mb-10" role="tablist" aria-label="Delivery Methods">
+                        <?php if ($this->data['payment_charges'] && 
+                                ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
+                            <li class="one-delivery-method pickup-depot 
+                                <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? /*'active' */'' : '' ?>"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pane-pickup-depot" 
+                                role="tab" 
+                                aria-controls="pane-pickup-depot" 
+                            >
+                                Collection
+                            </li>
+                        <?php } ?>
+                        <?php if ($this->data['payment_charges'] && 
+                                ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
+                            <li class="nav-link one-delivery-method via-delivery 
+                                <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
+                                ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? /*'active' */'' : '' ?>"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pane-via-delivery" 
+                                role="tab" 
+                                aria-controls="pane-via-delivery" 
+                            >
+                                Delivery
+                            </li>
+                        <?php } ?>
+                    </ul>
                     <?php } ?>
-                    <?php if ($this->data['payment_charges'] && 
-                             ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
-                        <li class="nav-link one-delivery-method via-delivery 
-                            <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
-                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? /*'active' */'' : '' ?>"
-                            data-bs-toggle="pill"
-                            data-bs-target="#pane-via-delivery" 
-                            role="tab" 
-                            aria-controls="pane-via-delivery" 
-                        >
-                            Delivery
-                        </li>
+
+                    <div class="tab-content">
+                        <?php if ($this->data['payment_charges'] && 
+                                ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
+                            <div class="tab-pane fade
+                                <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active show' : '' ?>"
+                                id="pane-pickup-depot"
+                                role="tabpanel" 
+                                aria-labelledby="tab-pickup-depot"
+                            > 
+                            </div>
+                        <?php } ?>
+                        <?php if ($this->data['payment_charges'] && 
+                                ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
+                            <div class="tab-pane fade  
+                                <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
+                                ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? 'active show' : '' ?>"
+                                id="pane-via-delivery"
+                                role="tabpanel" 
+                                aria-labelledby="tab-via-delivery"
+                            >
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <?php if (!$this->data['payment_charges'] ||  
+                            ( $this->data['payment_charges']->collection  != 1 && $this->data['payment_charges']->collection != '1' && 
+                            $this->data['payment_charges']->delivery    != 1 && $this->data['payment_charges']->delivery   != '1' )) { ?>
+                        <div style="color: red; padding-bottom: 20px">There is not any order type.</div>
                     <?php } ?>
-                </ul>
-                <?php } ?>
-
-                <div class="tab-content">
-                    <?php if ($this->data['payment_charges'] && 
-                             ($this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1')) { ?>
-                        <div class="tab-pane fade
-                            <?= $this->data['payment_charges']->collection  == 1 || $this->data['payment_charges']->collection == '1' ? 'active show' : '' ?>"
-                            id="pane-pickup-depot"
-                            role="tabpanel" 
-                            aria-labelledby="tab-pickup-depot"
-                        >
-                            <div class="payment-section d-none">
-                                <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
-                                <div class="comment mt-2 text-black ">
-                                    We will do our best to have the order ready on time.
-                                </div>
-                                <div class="comment">
-                                    <span class="pickup-date">
-                                        (We will notify you when your order is ready for collection.)
-                                    </span>
-                                </div>
-
-                                <div class="branch-select mx-auto">
-                                    <div class="mt-2">
-                                        <select id='delivery_date1' name='delivery_date1' class="form-select">
-                                            <?php 
-                                                foreach($collection_delivery_dates as $index => $c_d_date) {
-                                                    if (!empty($c_d_date)) {
-                                                        $date_dt_value = $c_d_date->format('d/m/Y');
-                                                        $date_df_value = $c_d_date->format('l');
-                                                        $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
-                                                        echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
-                                                    } else {
-                                                        echo '<option value=""'.( $index == 0 ? 'selected' : '') . '></option>';
-                                                    }
-                                                }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
-                                    Please select a collection container
-                                </div>
-                                <?php if ($this->data['container_types']->pallet) { ?>
-                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
-                                        <div class="flex-fill">Pallet</div>
-                                        <div>
-                                            <input class="form-check-input" type="radio" name="collection_container" 
-                                                id="pallet" value="pallet" 
-                                                <?php if ($this->data["container_default_type"] == "pallet") { ?>
-                                                    checked
-                                                <?php } ?>
-                                            >
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <?php if ($this->data['container_types']->cage) { ?>
-                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
-                                        <div class="flex-fill">Cage</div>
-                                        <div>
-                                            <input class="form-check-input" type="radio" name="collection_container" 
-                                                id="cage" value="cage" 
-                                                <?php if ($this->data["container_default_type"] == "cage") { ?>
-                                                    checked
-                                                <?php } ?>
-                                            >
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <?php if ($this->data['container_types']->trolley) { ?>
-                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
-                                        <div class="flex-fill">Trolley</div>
-                                        <div>
-                                            <input class="form-check-input" type="radio" name="collection_container" 
-                                                id="trolley" value="trolley" 
-                                                <?php if ($this->data["container_default_type"] == "trolley") { ?>
-                                                    checked
-                                                <?php } ?>
-                                            >
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <?php if ($this->data['container_types']->box) { ?>
-                                    <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
-                                        <div class="flex-fill">Box</div>
-                                        <div>
-                                            <input class="form-check-input" type="radio" name="collection_container" 
-                                                id="box" value="box" 
-                                                <?php if ($this->data["container_default_type"] == "box") { ?>
-                                                    checked
-                                                <?php } ?>
-                                            >
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <?php if (empty($this->data['container_types']->pallet )&& 
-                                          empty($this->data['container_types']->cage   )&&
-                                          empty($this->data['container_types']->trolley)&&
-                                          empty($this->data['container_types']->box    )) { ?>
-                                    <div style="padding: 1rem;
-                                                font-size: 80%;
-                                                border: 1px solid red;
-                                                border-radius: 10px;
-                                                color: red;
-                                                margin-top: 10px;">
-                                        <div><i class="bi bi-exclamation-triangle-fill" style="margin-right: 5px"></i>Error</div>
-                                        <div>Please ask to have the correct container types set for your account.</div>    
-                                        <div>You cannot check out until this has been done.</div>
-                                    </div>
-                                <?php } ?>
-                                
+                </div>
 
 
-                                
 
 
-                                <!-- <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                    <div class="flex-fill">Pallet</div>
-                                    <div>
-                                        <input class="form-check-input" type="radio" name="collection_container" 
-                                            id="pallet" value="pallet" checked>
-                                    </div>
-                                </div>
-                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                    <div class="flex-fill">Cage</div>
-                                    <div>
-                                        <input class="form-check-input" type="radio" name="collection_container" 
-                                            id="cage" value="cage" >
-                                    </div>
-                                </div>
-                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                    <div class="flex-fill">Trolley</div>
-                                    <div>
-                                        <input class="form-check-input" type="radio" name="collection_container" 
-                                            id="trolley" value="trolley" >
-                                    </div>
-                                </div>
-                                <div class="one-collection-container d-flex align-items-center p-2 px-4 mb-2">
-                                    <div class="flex-fill">Box</div>
-                                    <div>
-                                        <input class="form-check-input" type="radio" name="collection_container" 
-                                            id="box" value="box" >
-                                    </div>
-                                </div> -->
-                                
+                <div class="payment-section">
+                    <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
+                    <div class="comment mt-2 text-black ">
+                        We will do our best to have the order ready on time.
+                    </div>
+                    <div class="comment">
+                        <span class="pickup-date">
+                            (We will notify you when your order is ready for collection.)
+                        </span>
+                    </div>
+
+                    <div class="branch-select mx-auto">
+                        <div class="mt-2">
+                            <select id='delivery_date' name='delivery_date' class="form-select">
+                                <?php 
+                                    foreach($collection_delivery_dates as $index => $c_d_date) {
+                                        if (!empty($c_d_date)) {
+                                            $date_dt_value = $c_d_date->format('d/m/Y');
+                                            $date_df_value = $c_d_date->format('l');
+                                            $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
+                                            echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
+                                        } else {
+                                            echo '<option value=""'.( $index == 0 ? 'selected' : '') . '></option>';
+                                        }
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
+                        Please select a collection container
+                    </div>
+                    <?php if ($this->data['container_types']->pallet) { ?>
+                        <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
+                            <div class="flex-fill">Pallet</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="pallet" value="pallet" 
+                                    <?php if ($this->data["container_default_type"] == "pallet") { ?>
+                                        checked
+                                    <?php } ?>
+                                >
                             </div>
                         </div>
                     <?php } ?>
-                    <?php if ($this->data['payment_charges'] && 
-                             ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery == '1' )) { ?>
-                        <div class="tab-pane fade  
-                            <?= $this->data['payment_charges']->collection != 1 && $this->data['payment_charges']->collection != '1' && 
-                               ($this->data['payment_charges']->delivery  == 1 || $this->data['payment_charges']->delivery  == '1') ? 'active show' : '' ?>"
-                            id="pane-via-delivery"
-                            role="tabpanel" 
-                            aria-labelledby="tab-via-delivery"
-                        >
-                            <div class="payment-section d-none">
-                                <div style="color: black; font-size: 17px; font-weight: bold;">Choose a date</div>
-                                <div class="comment mt-2 text-black ">
-                                    We will do our best to have the order ready on time.
-                                </div>
-                                <div class="comment">
-                                    <span class="pickup-date">
-                                        (We will notify you when your order is ready for delivery.)
-                                    </span>
-                                </div>
-
-                                <div class="branch-select mx-auto">
-                                    <div class="mt-2">
-                                        <select id='delivery_date2' name='delivery_date2' class="form-select">
-                                            <?php 
-                                                foreach($collection_delivery_dates as $index => $c_d_date) {
-                                                    if (!empty($c_d_date)) {
-                                                        $date_dt_value = $c_d_date->format('d/m/Y');
-                                                        $date_df_value = $c_d_date->format('l');
-                                                        $date_tz_value = $c_d_date->getTimezone(); // DateTimeZone object
-                                                        echo '<option value="' . $date_dt_value . '" '.( $index == 0 ? 'selected' : '') . '>' . $date_df_value . ' ' . $date_dt_value . '</option>';
-                                                    } else {
-                                                        echo '<option value=""'.( $index == 0 ? 'selected' : '') . '></option>';
-                                                    }
-                                                }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- <div class="mt-20" style="color: black; font-size: 17px; font-weight: bold;">
-                                    Delivery Charge
-                                </div> -->
+                    <?php if ($this->data['container_types']->cage) { ?>
+                        <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
+                            <div class="flex-fill">Cage</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="cage" value="cage" 
+                                    <?php if ($this->data["container_default_type"] == "cage") { ?>
+                                        checked
+                                    <?php } ?>
+                                >
                             </div>
+                        </div>
+                    <?php } ?>
+                    <?php if ($this->data['container_types']->trolley) { ?>
+                        <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
+                            <div class="flex-fill">Trolley</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="trolley" value="trolley" 
+                                    <?php if ($this->data["container_default_type"] == "trolley") { ?>
+                                        checked
+                                    <?php } ?>
+                                >
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <?php if ($this->data['container_types']->box) { ?>
+                        <div class="one-collection-container d-flex align-items-center p-2 px-4 mt-2">
+                            <div class="flex-fill">Box</div>
+                            <div>
+                                <input class="form-check-input" type="radio" name="collection_container" 
+                                    id="box" value="box" 
+                                    <?php if ($this->data["container_default_type"] == "box") { ?>
+                                        checked
+                                    <?php } ?>
+                                >
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <?php if (empty($this->data['container_types']->pallet )&& 
+                                empty($this->data['container_types']->cage   )&&
+                                empty($this->data['container_types']->trolley)&&
+                                empty($this->data['container_types']->box    )) { ?>
+                        <div style="padding: 1rem;
+                                    font-size: 80%;
+                                    border: 1px solid red;
+                                    border-radius: 10px;
+                                    color: red;
+                                    margin-top: 10px;">
+                            <div><i class="bi bi-exclamation-triangle-fill" style="margin-right: 5px"></i>Error</div>
+                            <div>Please ask to have the correct container types set for your account.</div>    
+                            <div>You cannot check out until this has been done.</div>
                         </div>
                     <?php } ?>
                 </div>
-                <?php if (!$this->data['payment_charges'] ||  
-                         ( $this->data['payment_charges']->collection  != 1 && $this->data['payment_charges']->collection != '1' && 
-                           $this->data['payment_charges']->delivery    != 1 && $this->data['payment_charges']->delivery   != '1' )) { ?>
-                    <div style="color: red; padding-bottom: 20px">There is not any order type.</div>
-                 <?php } ?>
             </div>
         </div>
 
@@ -646,7 +584,6 @@
 <?= $this->section('javascript') ?>
 <script>
     function make_order(type, payload, cb_success, cb_error) {
-        debugger
         return $.ajax({
             url: `/orders/send_order/${type}`,
             method:"POST",
@@ -655,7 +592,6 @@
             processData:false,
         })
         .then(function(res) {
-            debugger
             if (cb_success) {
                 cb_success(res)
             } else {
@@ -663,7 +599,6 @@
             }
         })
         .catch(function(error) {
-            debugger;
             alert('payment error');
             if (cb_error) {
                 cb_error(error)
@@ -675,12 +610,6 @@
 
     $(document).on('click', '#confirm_order', function(e) {
         e.preventDefault();
-        // debugger
-        // const confirm_order_modal = $("#confirm_order_dialog");
-        // const modal = new bootstrap.Modal(confirm_order_modal[0]);
-        // debugger
-        // modal.show();
-        // return;
         $.ajax({
             type : "GET"
             , async : true
@@ -695,7 +624,6 @@
                     console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }}
             , success : function(response, status, request) {
-                debugger
                 const confirm_order_modal = $("#confirm_order_dialog");
                 const modal = new bootstrap.Modal(confirm_order_modal[0]);
                 modal.show();
@@ -705,7 +633,6 @@
 
     $(document).on('submit', '#confirm_order_form', function(e) {
         event.preventDefault();
-
 		$.ajax({
 			url:"<?php echo base_url(); ?>orders/check_order_number",
 			method:"POST",
@@ -722,8 +649,7 @@
 				} else {
 					console.log("An error occured: " + xhr.status + " " + xhr.statusText);
 				}},
-			success:function(res)
-			{
+			success:function(res) {
                 if (res.success) {
                     $('#send_orders').click();
                 } else {
@@ -742,7 +668,6 @@
     })
 
     $(document).on('click', '#send_orders', function(e) {
-        debugger
         let pay_total_amount    = $('#pay_total_amount').text();
         pay_total_amount = pay_total_amount.slice(1);
         if (parseFloat(pay_total_amount) == 0) {
@@ -757,10 +682,7 @@
             return;
         }
         
-        let delivery_date           = $('#delivery_date1').val()
-        if ($('.one-delivery-method.via-delivery').hasClass('active')) {
-            delivery_date           = $('#delivery_date2').val()
-        }
+        let delivery_date           = $('#delivery_date').val()
         let delivery_charge         = $('#delivery_charge_v').text()
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
@@ -790,7 +712,6 @@
                 collection_container,
                 payment_method
             };
-
            
             let res = make_order(arr[0], payload, function(res) {
                 const {success, msg} = res;
@@ -802,12 +723,6 @@
                     let url = `<?php echo base_url("");?>pastorders`;
 	                window.location.href = url;
                 } else {
-                    debugger
-                    /*showToast({
-                        type: 'error',
-                        message: res.msg,
-                    });
-                    location.reload();*/
                     alert_message(res.msg)
                 }
             });
@@ -821,7 +736,6 @@
     $(document).on('click', '.one-delivery-method.pickup-depot', function(e) {
         $('#pane-pickup-depot > div').removeClass('d-none');
         $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
-        debugger;
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -838,31 +752,24 @@
 
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-
-        // if ($('#delivery_date2').val()) {
-            $('#delivery_date1').val($('#delivery_date2').val());
-        // }
         
         const data = {
             cart_typename:          $('#cart_typename').val(),
             order_type:             'collection',
             payment_method:         $('[name="payment_method"]:checked').val(),
             collection_container:   $('[name="collection_container"]:checked').val(),
-            delivery_date:          $('#delivery_date1').val(),
+            delivery_date:          $('#delivery_date').val(),
         }
        
         const queryParams = new URLSearchParams(data);
 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
-        // window.location.href = url;
     })
 
     $(document).on('click', '.one-delivery-method.via-delivery', function(e) {
-        debugger;
         $('#pane-via-delivery > div').removeClass('d-none')
         $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
-
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
@@ -880,27 +787,21 @@
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
-        // if($('#delivery_date1').val()) {
-            $('#delivery_date2').val($('#delivery_date1').val());
-        // }
-
         const data = {
             cart_typename: $('#cart_typename').val(),
             order_type: 'delivery',
             payment_method: $('[name="payment_method"]:checked').val(),
             collection_container: $('[name="collection_container"]:checked').val(),
-            delivery_date: $('#delivery_date2').val(),
+            delivery_date: $('#delivery_date').val(),
         }
         
         const queryParams = new URLSearchParams(data);
 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
-        // window.location.href = url;
     })
 
     $(document).on('click', '[name="payment_method"]', function(e) {
-        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -952,8 +853,7 @@
         history.replaceState(null, '', url)
     })
 
-    
-    $(document).on('click', '#delivery_date1, #delivery_date2', function(e) {
+    $(document).on('click', '#delivery_date', function(e) {
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -977,7 +877,6 @@
     })
 
     $(document).ready(function() {
-        debugger
         const params                = new URLSearchParams(window.location.search);
 
         const order_type            = params.get('order_type');
@@ -994,8 +893,7 @@
             $(`#${collection_container}`).click();
         }
         if (delivery_date) {
-            $(`#delivery_date1`).val(delivery_date);
-            $(`#delivery_date2`).val(delivery_date);
+            $(`#delivery_date`).val(delivery_date);
         }
 
         const charge = $('#charge').text();
@@ -1021,8 +919,6 @@
                 $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
                 $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
             } else {
-                // el[0].click();
-
                 let selected_el_bsTarget = $(el[0]).data('bs-target');
                 if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
                     (order_type == 'delivery' && selected_el_bsTarget != '#pane-via-delivery')) {
@@ -1042,14 +938,10 @@
 
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-
     })
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
-        let delivery_date           = $('#delivery_date1').val()
-        if ($('.one-delivery-method.via-delivery').hasClass('active')) {
-            delivery_date           = $('#delivery_date2').val()
-        }
+        let delivery_date           = $('#delivery_date').val()
         let delivery_charge         = $('#delivery_charge_v').text()
         let collection_container    = $('input[name="collection_container"]:checked').val()
         let payment_method          = $('input[name="payment_method"]:checked').val()
@@ -1080,7 +972,6 @@
                     let url = `<?php echo base_url("");?>pastorders`;
 	                window.location.href = url;
                 } else {
-                    debugger
                     showToast({
                         type: 'error',
                         message: res.msg,
@@ -1096,7 +987,6 @@
                 return make_order(type, payload)
             }))
             .then(function(responses) {
-                debugger
                 let failed_res = responses.filter(itm => !itm.success)
                 if (failed_res.length > 0) {
                     showToast({type: "error", message: "Sorry, some issues occured during send orders."});

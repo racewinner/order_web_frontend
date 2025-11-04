@@ -459,6 +459,7 @@ $(document).ready(function () {
     })
 
     $(document).on('submit', 'form', function (e) {
+        debugger
         $submit = $(e.target).find("button[type='submit']");
         add_loadingSpinner_to_button($submit);
     })

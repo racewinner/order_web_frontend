@@ -7506,21 +7506,20 @@ textarea.form-control-lg {
 }
 
 
-.d-flex {
-    display: flex !important;
-}
-.d-flex2 {
-    display: flex !important;
-}
+.d-flex  { display: flex !important; }
+.d-flex2 { display: flex !important; }
 @media (max-width: 992px) {
   .d-flex2 {
     flex-direction: column;
-    gap: 10px;
+    gap: 10px !important;
     align-items: center;
   }
   .full-width-on-mobile {
     width: 100%;
   }
+}
+.flex-grow {
+  flex-grow: 1;
 }
 
 .d-inline-flex {
