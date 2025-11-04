@@ -61,7 +61,7 @@
             <button id="btn-guest-login" class="btn mb-0 btn-outline-dark w-100" type="button">Guest Login</button>
         </div>
         <div class="mb-4" style="margin-top: -10px; text-align: right;">
-            <button id="btn-customer-register" class="btn mb-0 btn-outline-dark w-100" type="button">Customer Register</button>
+            <button id="btn-customer-register" class="btn mb-0 btn-outline-dark w-100" type="button">Apply for an account</button>
         </div>
 
         <p>

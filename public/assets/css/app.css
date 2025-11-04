@@ -1118,3 +1118,11 @@ html {
 #alert_message_dialog .modal-footer {
     justify-content: center !important;
 }
+
+/*
+ * label multiple break lines
+ */
+.break-over-word {
+    white-space: normal;
+    word-break: break-word;
+}

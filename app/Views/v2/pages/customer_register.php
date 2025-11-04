@@ -11,11 +11,11 @@
             padding: 0;
         }
     }
-    .user-login-info {
+    .customer-reg-info {
         .card-body {
-            font-size: 80%;
+            font-size: 100%;
             input, select {
-                font-size: 90%;
+                font-size: 100%;
             }
         }
     }
@@ -86,7 +86,7 @@
         <input type="hidden" id="sell_taxes" name="sell_taxes" value="" />
 
         <div class="d-flex2 justify-content-between" style="gap: 10px">
-            <div class="user-login-info card full-width-on-mobile" style="flex: 2">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 2">
                 <div class="card-header p-2">
                     <div class='m-0'>Business</div>
                 </div>
@@ -103,18 +103,18 @@
                                 />
                             </div>
                             <div class="mb-3">
-                                <label class="required">Business Start Date:</label>
+                                <label class="required">Business Trading Name:</label>
                                 <input type="text" class="form-control" 
-                                    id="busi_start_dt" name="busi_start_dt" 
+                                    id="busi_trad_nm" name="busi_trad_nm" 
                                     placeholder="" 
                                     value="" 
                                     required 
                                 />
                             </div>
                             <div class="mb-3">
-                                <label class="required">Business Trading Name:</label>
+                                <label class="required">Business Start Date:</label>
                                 <input type="text" class="form-control" 
-                                    id="busi_trad_nm" name="busi_trad_nm" 
+                                    id="busi_start_dt" name="busi_start_dt" 
                                     placeholder="" 
                                     value="" 
                                     required 
@@ -173,7 +173,7 @@
             
         </div>
         <div class="d-flex2 justify-content-between" style="gap: 10px">
-            <div class="user-login-info card full-width-on-mobile" style="flex: 1">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
                 <div class="card-header p-2">
                     <div class='m-0'>Contact</div>
                 </div>
@@ -217,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            <div class="user-login-info card full-width-on-mobile" style="flex: 1">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
                 <div class="card-header p-2">
                     <div class='m-0'>Company</div>
                 </div>
@@ -239,7 +239,7 @@
                         />
                     </div>
                     <div class="mb-3">
-                        <label class="required">For how many years has the business been trading?</label>
+                        <label class="required break-over-word">For how many years has the business been trading?</label>
                         <input type="text" class="form-control" 
                             id="busi_trad_years" name="busi_trad_years" 
                             placeholder="" 
@@ -249,11 +249,11 @@
                     </div>
                 </div>
             </div>
-            <div class="user-pricelist card full-width-on-mobile" style="flex: 1">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
                 <div class="card-header p-2">
                     <div class='m-0'>Sell</div>
                 </div>
-                <div class="card-body p-3 fs-80">
+                <div class="card-body p-3">
                     <ul>
                         <li class="form-check form-switch form-check mb-3">
                             <input class="form-check-input sell-tax" type="checkbox" id="alcohol" value="alcohol" />
@@ -272,7 +272,7 @@
             </div>
         </div>
         <div class="d-flex2 justify-content-between" style="gap: 10px">
-            <div class="user-login-info card full-width-on-mobile" style="flex: 1">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
                 <div class="card-header p-2">
                     <div class='m-0'>Store</div>
                 </div>
@@ -295,47 +295,47 @@
                             required 
                         />
                     </div>
+                    <div class="form-check form-switch mb-3 d-flex">
+                        <input class="form-check-input self-service" type="checkbox" id="self_service" />
+                        <label class="form-check-label ps-2 break-over-word" for="self_service">I will visit the store to purchase goods</label>
+                    </div>
+                    <div class="form-check form-switch mb-3 d-flex">
+                        <input class="form-check-input click-and-collect" type="checkbox" id="click_and_collect" />
+                        <label class="form-check-label ps-2 break-over-word" for="click_and_collect">I will order online then come in to collect goods</label>
+                    </div>
+                    <div class="form-check form-switch mb-3 d-flex">
+                        <input class="form-check-input delivered" type="checkbox" id="delivered" />
+                        <label class="form-check-label ps-2 break-over-word" for="delivered">I will order onlne and require a delivery of goods</label>
+                    </div>
+                    <div class="form-check form-switch mb-3 d-flex">
+                        <input class="form-check-input offers-and-info" type="checkbox" id="offers_and_info" />
+                        <label class="form-check-label ps-2 break-over-word" for="offers_and_info">Do you wish to receive marketing offers and info?</label>
+                    </div>
                 </div>
             </div>
-            <div class="user-branches card full-width-on-mobile" style="flex: 1">
+            <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
                 <div class="card-header p-2">
                     <div class='m-0'>Payment & Offer</div>
                 </div>
                 <div class="card-body p-3">
-                    <div class="form-check form-switch mb-3 fs-80">
-                        <input class="form-check-input credit-acc-facility" type="checkbox" id="credit_acc_facility" />
-                        <label class="form-check-label ps-2" for="credit_acc_facility">Do you require a credit account facility?</label>
-                    </div>
                     <div class="mb-3">
-                        <label class="fs-80">What is your prefered payment method? </label>
-                        <select class="form-select fs-80" name="pref_payment_method" id="pref_payment_method">
+                        <label class="">What is your prefered payment method? </label>
+                        <select class="form-select" name="pref_payment_method" id="pref_payment_method">
                                 <option value=""></option>
-                                <option value="dropdown_cash">dropdown Cash</option>
+                                <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="echo_pay">EchoPay</option>
                                 <option value="card">Card</option>
                                 <option value="credit_facility">Credit Facility</option>
                         </select>
                     </div>
-                    <div class="form-check form-switch mb-3 fs-80">
-                        <input class="form-check-input offers-and-info" type="checkbox" id="offers_and_info" />
-                        <label class="form-check-label ps-2" for="offers_and_info">Do you wish to receive marketing offers and info?</label>
+                    <div class="form-check form-switch mb-3 d-flex">
+                        <input class="form-check-input credit-acc-facility" type="checkbox" id="credit_acc_facility" />
+                        <label class="form-check-label ps-2 break-over-word" for="credit_acc_facility">Do you require a credit account facility?</label>
                     </div>
 
-                    <div class="form-check form-switch mb-3 fs-80">
-                        <input class="form-check-input self-service" type="checkbox" id="self_service" />
-                        <label class="form-check-label ps-2" for="self_service">I will visit the store to purchase goods</label>
-                    </div>
+                    
 
-                    <div class="form-check form-switch mb-3 fs-80">
-                        <input class="form-check-input click-and-collect" type="checkbox" id="click_and_collect" />
-                        <label class="form-check-label ps-2" for="click_and_collect">I will order online then come in to collect goods</label>
-                    </div>
-
-                    <div class="form-check form-switch mb-3 fs-80">
-                        <input class="form-check-input delivered" type="checkbox" id="delivered" />
-                        <label class="form-check-label ps-2" for="delivered">I will order onlne and require a delivery of goods</label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -356,6 +356,7 @@
         $('#busi_start_dt').datepicker({
             uiLibrary: 'bootstrap5',
             iconsLibrary: 'fontawesome',
+            format: 'dd/mm/yyyy'
         })
         $(document).on('click', '#btn-go-back', function(e) {
             debugger
