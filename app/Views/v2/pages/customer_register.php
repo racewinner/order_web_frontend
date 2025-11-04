@@ -191,20 +191,26 @@
                     </div>
                     <div class="mb-3">
                         <label class="">Contact Telephone Landline:</label>
-                        <input type="text" class="form-control" 
+                        <input type="number" step="0.01" class="form-control" 
                             id="contact_phone_ll" name="contact_phone_ll" 
                             placeholder="" 
                             value="" 
                         />
+                        <div class="invalid-feedback">
+                            Please provide a number type.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="required">Contact Telephone Mobile:</label>
-                        <input type="text" class="form-control" 
+                        <input type="number" step="0.01" class="form-control" 
                             id="contact_phone_mb" name="contact_phone_mb" 
                             placeholder="" 
                             value="" 
                             required 
                         />
+                        <div class="invalid-feedback">
+                            Please provide a number type.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="required">Contact email adresss:</label>
@@ -232,11 +238,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="">VAT Number:</label>
-                        <input type="text" class="form-control" 
+                        <input type="number" step="0.01" class="form-control" 
                             id="vat_number" name="vat_number" 
                             placeholder="" 
                             value="" 
                         />
+                        <div class="invalid-feedback">
+                            Please provide a number type.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="required break-over-word">For how many years has the business been trading?</label>
@@ -279,21 +288,27 @@
                 <div class="card-body p-3">
                     <div class="mb-3">
                         <label class="required">Store size in square feet?</label>
-                        <input type="text" class="form-control" 
+                        <input type="number" step="0.01" class="form-control" 
                             id="store_sz" name="store_sz" 
                             placeholder="" 
                             value="" 
                             required 
                         />
+                        <div class="invalid-feedback">
+                            Please provide a number type.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="required">Store average turnover weekly?</label>
-                        <input type="text" class="form-control" 
+                        <input type="number" step="0.01" class="form-control" 
                             id="store_avg" name="store_avg" 
                             placeholder="" 
                             value="" 
                             required 
                         />
+                        <div class="invalid-feedback">
+                            Please provide a number type.
+                        </div>
                     </div>
                     <div class="form-check form-switch mb-3 d-flex">
                         <input class="form-check-input self-service" type="checkbox" id="self_service" />
