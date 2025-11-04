@@ -113,6 +113,10 @@
 	</template>
 	<!-- toast end -->
 
+	<!-- alert message container start -->
+	<div id="alert-msg-container"></div>
+	<!-- alert message container end -->
+
     <?= view('v2/partials/main_footer') ?>
 
     <!-- Bootstrap JS -->
@@ -129,6 +133,9 @@
     <script src="/assets/js/functions.js"></script>
 	<script src="/assets/js/app.js?v=<?= env('app.asset.version') ?>"></script>
     <script src="/assets/js/pagination.js?v=<?= env('app.asset.version') ?>"></script>
+
+	<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
 	<?= $this->renderSection('javascript') ?>
 </body>

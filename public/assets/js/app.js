@@ -30,10 +30,14 @@ function alert_message(msg='Hello!', title='Alert') {
                                                 <div class="">
                                                     ${msg}
                                                 </div>
-                                                <button class="btn btn-danger full-fill border mt-4" data-bs-dismiss="modal" >
-                                                    OK
-                                                </button>
+                                                
                                             </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button class="btn btn-danger full-fill border mt-4" style="width: 150px" data-bs-dismiss="modal" >
+                                                    OK
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -459,7 +463,6 @@ $(document).ready(function () {
     })
 
     $(document).on('submit', 'form', function (e) {
-        debugger
         $submit = $(e.target).find("button[type='submit']");
         add_loadingSpinner_to_button($submit);
     })

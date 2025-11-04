@@ -1077,3 +1077,44 @@ html {
   color: darkgray;
   padding: 20px 20px 20px 45px;
 }
+
+/**
+ * Date time picker
+ */
+.gj-picker-bootstrap table tr td.disabled div, .gj-picker-bootstrap table tr td.other-month div {
+    opacity: 0.2 !important;
+}
+.gj-picker-bootstrap table tr td.today div {
+    color: white !important;
+    background: #ed1b26 !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+}
+.gj-datepicker-bootstrap > button {
+    padding: 0.2rem;
+    border-color: var(--bs-border-color);
+}
+
+/*
+ * alert message 
+ */
+.modal-auto-width-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+    color: var(--bs-modal-color);
+    pointer-events: auto;
+    background-color: var(--bs-modal-bg);
+    background-clip: padding-box;
+    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+    border-radius: var(--bs-modal-border-radius);
+    border-top-left-radius: 0.313rem;
+    border-top-right-radius: 0.313rem;
+    border-bottom-right-radius: 0.313rem;
+    border-bottom-left-radius: 0.313rem;
+    outline: 0;
+}
+#alert_message_dialog .modal-footer {
+    justify-content: center !important;
+}

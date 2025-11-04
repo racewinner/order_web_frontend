@@ -118,7 +118,6 @@
 	<div id="alert-msg-container"></div>
 	<!-- alert message container end -->
 
-
     <?= view('v2/partials/main_footer') ?>
 
 	<?php if(!empty($user_info)) { ?>

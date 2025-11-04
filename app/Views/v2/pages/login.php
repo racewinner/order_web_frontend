@@ -61,9 +61,8 @@
             <button id="btn-guest-login" class="btn mb-0 btn-outline-dark w-100" type="button">Guest Login</button>
         </div>
         <div class="mb-4" style="margin-top: -10px; text-align: right;">
-            <a href="/customer-register" style="color: red; text-decoration: underline;">customer register</a>
+            <button id="btn-customer-register" class="btn mb-0 btn-outline-dark w-100" type="button">Customer Register</button>
         </div>
-
 
         <p>
             If you don't have an account, please contact Telesales<br/>
@@ -78,6 +77,9 @@
     $(document).ready(function(e) {
         $(document).on('click', '#btn-guest-login', function(e) {
             window.location = 'login/guest_login';
+        })
+        $(document).on('click', '#btn-customer-register', function(e) {
+            window.location = 'customer-register';
         })
     })
 </script>

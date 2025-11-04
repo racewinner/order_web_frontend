@@ -16,31 +16,11 @@
     .mt-20 {
         margin-top: 20px;
     }
-    .modal-auto-width-content {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        /* width: 100%; */
-        color: var(--bs-modal-color);
-        pointer-events: auto;
-        background-color: var(--bs-modal-bg);
-        background-clip: padding-box;
-        border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
-        border-radius: var(--bs-modal-border-radius);
-        border-top-left-radius: 0.313rem;
-        border-top-right-radius: 0.313rem;
-        border-bottom-right-radius: 0.313rem;
-        border-bottom-left-radius: 0.313rem;
-        outline: 0;
-    }
     .px-40 {
         padding-left: 40px;
         padding-right: 40px;
     }
-    .px-100 {
-        padding-left: 100px;
-        padding-right: 100px;
-    }
+    
 </style>
 <?= $this->endSection() ?>
 <div class="modal fade" id="confirm_order_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

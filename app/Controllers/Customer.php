@@ -46,7 +46,7 @@ class Customer extends BaseController
 		$busi_trad_nm  = request()->getPost("busi_trad_nm");	
 		$addr_line1  = request()->getPost("addr_line1");	
 		$addr_line2   = request()->getPost("addr_line2");	
-		$country  = request()->getPost("country");	
+		$county  = request()->getPost("county");	
 		$city  = request()->getPost("city");	
 		$post_code  = request()->getPost("post_code");	
 		$contact_nm  = request()->getPost("contact_nm");	
@@ -62,8 +62,11 @@ class Customer extends BaseController
 		$sell_taxes    = request()->getPost("sell_taxes");	
 		$credit_acc_facility    = request()->getPost("credit_acc_facility");	
 		$offers_and_info    = request()->getPost("offers_and_info");	
+		$self_service    = request()->getPost("self_service");	
+		$click_and_collect    = request()->getPost("click_and_collect");	
+		$delivered    = request()->getPost("delivered");	
 
-		// $query = $db->table('epos_customer')
+		// $query = $db->table('epos_customer_registration')
 		// 			->where('email', $email)
 		// 			->where('username', $username)
 		// 			->orderBy('id','desc')	
@@ -82,7 +85,7 @@ class Customer extends BaseController
 			'busi_trad_nm'     => $busi_trad_nm,
 			'addr_line1'     => $addr_line1,
 			'addr_line2'     => $addr_line2,
-			'country'     => $country,
+			'county'     => $county,
 			'city'     => $city,
 			'post_code'     => $post_code,
 			'contact_nm'     => $contact_nm,
@@ -98,10 +101,12 @@ class Customer extends BaseController
 			'sell_taxes' => $sell_taxes,
 			'credit_acc_facility' => $credit_acc_facility,
 			'offers_and_info' => $offers_and_info,
-
+			'self_service' => $self_service,
+			'click_and_collect' => $click_and_collect,
+			'delivered' => $delivered,
 		);		
 
-		$db->table('epos_customer')->insert($customer_data_to_save);
+		$db->table('epos_customer_registration')->insert($customer_data_to_save);
 	}
 
 }
