@@ -1094,6 +1094,15 @@ html {
     padding: 0.2rem;
     border-color: var(--bs-border-color);
 }
+.was-validated .form-control:valid + button {
+    border-color: #3dc99f;
+    color: #198754;
+}
+.was-validated .form-control:invalid + button {
+    border-color: #ea949e;
+    color: #dc3545;
+    border-width: 1px 1px 1px 0px;
+}
 
 /*
  * alert message 

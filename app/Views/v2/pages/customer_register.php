@@ -82,7 +82,7 @@
 <div class="customer-register-panel mx-auto">
 <h4 class="text-center mb-4 pt-4-5">Customer Register</h4>
 <div class="employee-edit">
-    <form id="customer_register_form" class="" style="display: flex; flex-direction: column; gap: 10px;">
+    <form id="customer_register_form" class="needs-validation" novalidate style="display: flex; flex-direction: column; gap: 10px;">
         <input type="hidden" id="sell_taxes" name="sell_taxes" value="" />
 
         <div class="d-flex2 justify-content-between" style="gap: 10px">
@@ -352,6 +352,26 @@
 
 <?= $this->section('javascript') ?>
 <script>
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+
     $(document).ready(function(e) {
         $('#busi_start_dt').datepicker({
             uiLibrary: 'bootstrap5',

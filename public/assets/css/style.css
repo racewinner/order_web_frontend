@@ -2349,7 +2349,7 @@ progress {
   background-color: var(--bs-body-bg);
   border-color: rgba(var(--bs-dark-rgb), 0.1);
   outline: 0;
-  box-shadow: 0 4px 10px 3px rgba(32, 33, 36, 0.1);
+  box-shadow: 0 5px 5px 0px rgba(32, 33, 36, 0.1);
 }
 .form-control::-webkit-date-and-time-value {
   min-width: 85px;
@@ -2961,7 +2961,7 @@ textarea.form-control-lg {
 }
 .was-validated .form-control:valid:focus, .form-control.is-valid:focus {
   border-color: var(--bs-form-valid-border-color);
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25); */
 }
 
 .was-validated textarea.form-control:valid, textarea.form-control.is-valid {
@@ -2980,7 +2980,7 @@ textarea.form-control-lg {
 }
 .was-validated .form-select:valid:focus, .form-select.is-valid:focus {
   border-color: var(--bs-form-valid-border-color);
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25); */
 }
 
 .was-validated .form-control-color:valid, .form-control-color.is-valid {
@@ -2994,7 +2994,7 @@ textarea.form-control-lg {
   background-color: var(--bs-form-valid-color);
 }
 .was-validated .form-check-input:valid:focus, .form-check-input.is-valid:focus {
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-success-rgb), 0.25); */
 }
 .was-validated .form-check-input:valid ~ .form-check-label, .form-check-input.is-valid ~ .form-check-label {
   color: var(--bs-form-valid-color);
@@ -3051,7 +3051,7 @@ textarea.form-control-lg {
 }
 .was-validated .form-control:invalid:focus, .form-control.is-invalid:focus {
   border-color: var(--bs-form-invalid-border-color);
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25); */
 }
 
 .was-validated textarea.form-control:invalid, textarea.form-control.is-invalid {
