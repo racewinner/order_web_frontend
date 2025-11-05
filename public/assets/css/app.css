@@ -1093,6 +1093,7 @@ html {
 .gj-datepicker-bootstrap > button {
     padding: 0.2rem;
     border-color: var(--bs-border-color);
+    border-radius: 0px 5px 5px 0px !important;
 }
 .was-validated .form-control:valid + button {
     border-color: #3dc99f;
@@ -1103,6 +1104,7 @@ html {
     color: #dc3545;
     border-width: 1px 1px 1px 0px;
 }
+
 
 /*
  * alert message 
