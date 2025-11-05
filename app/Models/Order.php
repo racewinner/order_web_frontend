@@ -385,18 +385,18 @@ class Order extends Model
 	function to_cart_quantity($prod_code , $mode , $person_id , $quantity = 1, $type='general')
 	{
 		$db = \Config\Database::connect();
-    $branch = session()->get('branch');
-    $organization_id = session()->get('organization_id');
+    	$branch = session()->get('branch');
+    	$organization_id = session()->get('organization_id');
 
 		if($mode == 3)
 		{
-			$query =  " DELETE FROM epos_cart WHERE person_id={$person_id}" . 
-                " AND branch={$branch}";
-      if (!empty($organization_id)) {
-      $query .= " AND organization_id={$organization_id} ";
-      }
-      $query .= " AND prod_code='{$prod_code}' AND presell=0 ";
-      $query .= " AND group_type='{$type}'";
+			$query = "DELETE FROM epos_cart WHERE person_id={$person_id} " . 
+                	 "AND branch={$branch} ";
+			if (!empty($organization_id)) {
+				$query.= "AND organization_id={$organization_id} ";
+			}
+			$query.= "AND prod_code='{$prod_code}' AND presell=0 ";
+			$query.= "AND group_type='{$type}' ";
 
 			$db->transStart();
 			$db->query($query);
@@ -408,25 +408,22 @@ class Order extends Model
 				return true;
 		}
 
-		$query =  " SELECT * FROM epos_cart WHERE prod_code='" . $prod_code."' AND person_id=" . $person_id . 
-              " AND branch={$branch} ";
-    if (!empty($organization_id)) {
-    $query .= " AND organization_id={$organization_id} ";
-    }
-    $query .= " AND presell=0 ";
-    $query .= " AND group_type='{$type}'";
+		$query = "SELECT * FROM epos_cart WHERE prod_code='" . $prod_code."' AND person_id=" . $person_id . " " .
+              	 "AND branch={$branch} ";
+		if (!empty($organization_id)) {
+			$query.= "AND organization_id={$organization_id} ";
+		}
+		$query.= "AND presell=0 ";
+		$query.= "AND group_type='{$type}' ";
 
 		$res = $db->query($query);
-
-		if($res->getNumRows() == 0)
-		{
-			if($mode == 1 || $mode == 4)
-			{
+		if($res->getNumRows() == 0) {
+			if ($mode == 1 || $mode == 4) {
 				$cart_data = array(
 					'prod_code'=>$prod_code,
 					'quantity'=>$quantity ,
 					'person_id'=>$person_id,
-          'branch'=>$branch,
+          			'branch'=>$branch,
 				);
 
 				$db->transStart();
@@ -437,46 +434,43 @@ class Order extends Model
 				else
 					return 1;
 			}
-			else if($mode == 2)
+			else if ($mode == 2)
 				return 0;
 			else
 				return -1;
 		}
-		else if($res->getNumRows() == 1)
+		else if ($res->getNumRows() == 1)
 		{
 			$res_row = $res->getRow();
 			$quantity1 = $res_row->quantity;
 			if($mode == 1)
 				$quantity1 = $quantity1 + 1;
-			else if($mode == 2)
-			{
-				if($quantity1 > 0) $quantity1 = $quantity1 - 1;
+			else if ($mode == 2) {
+				 if ($quantity1 > 0) {
+					$quantity1 = $quantity1 - 1;
+				 }
 			}
-			else if($mode == 4)
-			{
+			else if($mode == 4) {
 				$quantity1 = $quantity;
 			}
 
-			if($quantity1 == 0)
-			{
+			if($quantity1 == 0) {
 				$db->transStart();
-        $query =  " DELETE FROM epos_cart WHERE prod_code='{$prod_code}' AND person_id={$person_id}" . 
-                    " AND branch={$branch}";
-        if (!empty($organization_id)) {
-        $query .= " AND organization_id={$organization_id} ";
-        }
-        $query .= " AND presell=0 ";
-        $query .= " AND group_type='{$type}'";
+				$query = "DELETE FROM epos_cart WHERE prod_code='{$prod_code}' AND person_id={$person_id} " . 
+						 "AND branch={$branch} ";
+				if (!empty($organization_id)) {
+					$query.= "AND organization_id={$organization_id} ";
+				}
+				$query.= "AND presell=0 ";
+				$query.= "AND group_type='{$type}' ";
 
 				$db->query($query);
-        $db->transComplete();
+				$db->transComplete();
 				if ($db->transStatus() === FALSE)
 					return -1;
 				else
 					return true;
-			}
-			else
-			{
+			} else {
 				$cart_data = array('quantity'=>$quantity1);
 				$db->transStart();
 				$q = $db->table('epos_cart');
@@ -485,10 +479,11 @@ class Order extends Model
 				$q->where('presell' , '0');
 				$q->where('group_type', $type);
 				$q->where('branch', $branch);
-        if (!empty($organization_id)) {
-        $q->where('organization_id', $organization_id);
-        }
-        $q->update($cart_data);
+
+				if (!empty($organization_id)) {
+					$q->where('organization_id', $organization_id);
+				}
+				$q->update($cart_data);
 				$db->transComplete();
 				if ($db->transStatus() === FALSE)
 					return -1;
@@ -499,6 +494,7 @@ class Order extends Model
 		else
 			return -1;
 	}
+	
 	public static function get_cart_info($person_id)
 	{
 		$db = \Config\Database::connect();

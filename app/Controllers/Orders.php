@@ -85,7 +85,6 @@ class Orders extends Secure_area implements iData_controller
 		if(!empty($pid)) {
 			$container_types = $Employee->get_container_types($pid);
 			$this->data['container_types'] = $container_types;
-			$this->data['container_default_type'] = '';
 
 			$keys = array();
 			if (!empty($container_types) && ($container_types->pallet == "1" || $container_types->pallet == 1)) {
@@ -105,7 +104,6 @@ class Orders extends Secure_area implements iData_controller
 				$source_container_types = ['pallet', 'cage', 'trolley', 'box'];
 				$first_payment_method = $keys[0];
 				$index = array_search($first_payment_method, $source_container_types);
-				// $this->data['container_default_type'] = $source_container_types[$index];
 			}
 		}
 

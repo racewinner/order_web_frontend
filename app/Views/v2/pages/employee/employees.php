@@ -338,12 +338,28 @@ $(document).ready(function(e) {
 
         debugger
         // container_types
-        let container_types = [];
-        $container_type_chkboxes = $form.find("input.container-types:checked");
-        for(let i=0; i<$container_type_chkboxes.length; i++) {
-            container_types.push($container_type_chkboxes[i].value);
+        // let container_types = [];
+        // $container_type_chkboxes = $form.find("input.container-types:checked");
+        // for(let i=0; i<$container_type_chkboxes.length; i++) {
+        //     container_types.push($container_type_chkboxes[i].value);
+        // }
+        // $form.find("input#container_types").val(container_types);
+
+        //  delivery-container_types
+        let delivery_container_types = [];
+        $delivery_container_type_chkboxes = $form.find("input.delivery-container-types:checked");
+        for(let i=0; i<$delivery_container_type_chkboxes.length; i++) {
+            delivery_container_types.push($delivery_container_type_chkboxes[i].value);
         }
-        $form.find("input#container_types").val(container_types);
+        $form.find("input#delivery_container_types").val(delivery_container_types);
+
+        //  collect-container_types
+        let collect_container_types = [];
+        $collect_container_type_chkboxes = $form.find("input.collect-container-types:checked");
+        for(let i=0; i<$collect_container_type_chkboxes.length; i++) {
+            collect_container_types.push($collect_container_type_chkboxes[i].value);
+        }
+        $form.find("input#collect_container_types").val(collect_container_types);
 
         /**
          * payment_charges
@@ -390,6 +406,9 @@ $(document).ready(function(e) {
         let dv_mpi   = $('.user-order-types [name="dv_mpi"]'  ).is(':checked') ? 1: 0;
         let cc_mpi   = $('.user-order-types [name="cc_mpi"]'  ).is(':checked') ? 1: 0;
 
+        let dv_container_types =  $form.find("input#delivery_container_types").val();
+        let cc_container_types =  $form.find("input#collect_container_types" ).val();
+
         // set charges
         let payment_charges = {
             delivery,
@@ -397,12 +416,14 @@ $(document).ready(function(e) {
             dv_per_item,
             dv_max_charge,
             dv_mpi,
+            dv_container_types,
 
             collection: collect,
             cc_min_charge,
             cc_per_item,
             cc_max_charge,
-            cc_mpi
+            cc_mpi,
+            cc_container_types
         };
         $form.find("input#payment_charges").val(JSON.stringify(payment_charges));
 

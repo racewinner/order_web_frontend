@@ -275,7 +275,6 @@ class Employees extends Secure_area
 		if(!empty($person_id)) {
 			$this->data['payment_methods'] = $Employee->get_payment_methods($person_id);
 			$this->data['payment_charges'] = $Employee->get_payment_charges($person_id);
-			$this->data['container_types'] = $Employee->get_container_types($person_id);
 		}
 
 		return view('v2/pages/employee/employee_edit', $this->data);

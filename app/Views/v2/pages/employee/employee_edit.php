@@ -4,7 +4,10 @@
         <input type="hidden" id="branches" name="branches" value="" />
         <input type="hidden" id="payment_methods" name="payment_methods" value="" />
         <input type="hidden" id="payment_charges" name="payment_charges" value="" />
-        <input type="hidden" id="container_types" name="container_types" value="" />
+        <!-- <input type="hidden" id="container_types" name="container_types" value="" /> -->
+                <input type="hidden" id="delivery_container_types" name="delivery_container_types" value="" />
+                <input type="hidden" id="collect_container_types" name="collect_container_types" value="" />
+
         <input type="hidden" id="username_email_available" value="0" />
 
         <div class="d-flex2 justify-content-between" style="gap: 10px">
@@ -134,9 +137,9 @@
         <div class="d-flex2 justify-content-between" style="gap: 10px">
             <div class="user-order-types card mt-2 justify-content-center full-width-on-mobile" style="flex-grow: 1">
                 <div class="card-header p-2">
-                    <div class='m-0'>Order Types</div>      
+                    <div class='m-0'>Delivery Settings</div>      
                 </div>
-                <div class="card-body p-3 d-flex2 align-items-center justify-content-around">
+                <div class="card-body p-3">
                     <div class="delivery align-items-center px-2">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="delivery" 
@@ -164,8 +167,43 @@
                                 <input class="form-check-input ms-0" type="checkbox" name="dv_mpi" 
                                     <?= (!empty($employee) && !empty($payment_charges) && $payment_charges->dv_mpi == '1') ? 'checked' : '' ?> />
                             </div>
+
+                            <p class="comment mb-1 mt-3">- Container Types -</p>
+                            <ul style="padding-left: 119px">
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input delivery-container-types" type="checkbox" value="pallet" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->dv_container_types) && 
+                                            in_array('pallet', $payment_charges->dv_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Pallet</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input delivery-container-types" type="checkbox" value="cage" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->dv_container_types) && 
+                                            in_array('cage', $payment_charges->dv_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Cage</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input delivery-container-types" type="checkbox" value="trolley" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->dv_container_types) && 
+                                            in_array('trolley', $payment_charges->dv_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Trolley</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input delivery-container-types" type="checkbox" value="box" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->dv_container_types) && 
+                                            in_array('box', $payment_charges->dv_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Box</label>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="user-order-types card mt-2 justify-content-center full-width-on-mobile" style="flex-grow: 1">
+                <div class="card-header p-2">
+                    <div class='m-0'>Click & Collect Settings</div>      
+                </div>
+                <div class="card-body p-3">
                     <div class="align-items-center px-2">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="collect" 
@@ -193,44 +231,39 @@
                                 <input class="form-check-input ms-0" type="checkbox" name="cc_mpi" 
                                     <?= (!empty($employee) && !empty($payment_charges) && $payment_charges->cc_mpi == '1') ? 'checked' : '' ?> />
                             </div>
+
+                            <p class="comment mb-1 mt-3">- Container Types -</p>
+                            <ul style="padding-left: 119px">
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input collect-container-types" type="checkbox" value="pallet" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->cc_container_types) && 
+                                            in_array('pallet', $payment_charges->cc_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Pallet</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input collect-container-types" type="checkbox" value="cage" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->cc_container_types) && 
+                                            in_array('cage', $payment_charges->cc_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Cage</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input collect-container-types" type="checkbox" value="trolley" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->cc_container_types) && 
+                                            in_array('trolley', $payment_charges->cc_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Trolley</label>
+                                </li>
+                                <li class="form-check mb-2">
+                                    <input class="form-check-input collect-container-types" type="checkbox" value="box" 
+                                        <?= (!empty($employee) && !empty($payment_charges) && !empty($payment_charges->cc_container_types) && 
+                                            in_array('box', $payment_charges->cc_container_types)) ? 'checked' : '' ?> />
+                                    <label class="form-check-label">Box</label>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <!-- <div class="d-flex align-items-center ms-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="pay" value="1" 
-                            < ?= ($employee?->pay == '1') ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pay</label>
-                        </div>
-                    </div> -->
-                </div>
-            </div>
-            <div class="user-order-types card mt-2 justify-content-center full-width-on-mobile">
-                <div class="card-header p-2">
-                    <div class='m-0'>Container Types</div>      
-                </div>
-                <div class="card-body p-3">
-                    <ul>
-                        <li class="form-check mb-2">
-                            <input class="form-check-input container-types" type="checkbox" value="pallet" <?= (!empty($employee) && !empty($container_types) && $container_types?->pallet) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Pallet</label>
-                        </li>
-                        <li class="form-check mb-2">
-                            <input class="form-check-input container-types" type="checkbox" value="cage" <?= (!empty($employee) && !empty($container_types) && $container_types?->cage) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Cage</label>
-                        </li>
-                        <li class="form-check mb-2">
-                            <input class="form-check-input container-types" type="checkbox" value="trolley" <?= (!empty($employee) && !empty($container_types) && $container_types?->trolley) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Trolley</label>
-                        </li>
-                        <li class="form-check mb-2">
-                            <input class="form-check-input container-types" type="checkbox" value="box" <?= (!empty($employee) && !empty($container_types) && $container_types?->box) ? 'checked' : '' ?> />
-                            <label class="form-check-label">Box</label>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
-        
 
         <div class="user-api-key card mt-2 full-width-on-mobile">
             <div class="card-header p-2">

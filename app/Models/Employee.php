@@ -442,7 +442,18 @@ class Employee extends Model
 		if ($query->getNumRows() == 0) {
 			return [];
 		}
-		return $query->getResult()[0];
+
+		$row = $query->getResult()[0];
+		$dv_container_types = !empty($row->dv_container_types) ? $row->dv_container_types : '';
+		$cc_container_types = !empty($row->cc_container_types) ? $row->cc_container_types : '';	
+
+		$array = explode(',', $dv_container_types);
+		$row->dv_container_types = !empty($array) ? $array : [];
+
+		$array = explode(',', $cc_container_types);
+		$row->cc_container_types = !empty($array) ? $array : [];
+
+		return $row;
 	}
 	function get_container_types($employee_id)
 	{
