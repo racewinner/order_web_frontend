@@ -77,7 +77,7 @@ if($view_mode == 'grid') {
                 <div>
                     <label>Code: </label>
                     <span class="ms-2 prop-value prod_code_2do" 
-                          data-trolley-type="<?= $product->type ?>"
+                          data-trolley-type="<?= !empty($product->type) ? $product->type : 'not-sure' ?>"
                           data-can-reorder="yes"><?= $product->prod_code ?></span>
                 </div>
 

@@ -695,7 +695,7 @@
             }
         })
         .catch(function(error) {
-            alert('payment error');
+            console.log(`make order error: ${error}`)
             if (cb_error) {
                 cb_error(error)
             } else {
@@ -764,7 +764,6 @@
     })
 
     $(document).on('click', '#send_orders', function(e) {
-        debugger
         let pay_total_amount    = $('#pay_total_amount').text();
         pay_total_amount = pay_total_amount.slice(1);
         if (parseFloat(pay_total_amount) == 0) {
@@ -823,13 +822,14 @@
             };
            
             let res = make_order(arr[0], payload, function(res) {
+                debugger
                 const {success, msg} = res;
                 if (success) {
                     showToast({
                         type: 'success',
                         message: "Product order has done successfully.",
                     });
-                    let url = `<?php echo base_url("");?>pastorders`;
+                    let url = `<?php echo base_url("");?>myaccount/order_history`;
 	                window.location.href = url;
                 } else {
                     alert_message(res.msg)
@@ -843,7 +843,6 @@
     })
 
     $(document).on('click', '.one-order-method.pickup-depot', function(e) {
-        debugger
         $('#pane-pickup-depot').removeClass('d-none');
         $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
         $('#order_type_label').text('Click & Collect');
@@ -879,7 +878,6 @@
     })
 
     $(document).on('click', '.one-order-method.via-delivery', function(e) {
-        debugger
         $('#pane-via-delivery').removeClass('d-none');
         $('.delivery-charge-v-in-right-sidebar').removeClass('d-none');
         $('#order_type_label').text('Delivery Charge');
@@ -947,7 +945,6 @@
     })
 
     $(document).on('click', '[name="collection_container"]', function(e) {
-        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -973,7 +970,6 @@
     })
 
     $(document).on('click', '[name="delivery_container"]', function(e) {
-        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -999,7 +995,6 @@
     })
 
     $(document).on('click', '#collection_date', function(e) {
-        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -1027,7 +1022,6 @@
     })
 
     $(document).on('click', '#delivery_date', function(e) {
-        debugger
         const params = new URLSearchParams(window.location.search);
 
         const cart_typename         = params.get('cart_typename');
@@ -1055,7 +1049,6 @@
     })
 
     $(document).ready(function() {
-        debugger
         const params                = new URLSearchParams(window.location.search);
 
         const order_type            = params.get('order_type');

@@ -186,14 +186,14 @@ defined('API_USER_ACTIVATION') || define('API_USER_ACTIVATION', '6t3rhfskhd');
 
 defined('LOGON_USER_MENUES') || define('LOGON_USER_MENUES', [
   'my_account' => ["label" => "My Balance", "icon" => "/assets/images/icons/png/pound-coin-outline.png", "url" => "/myaccount/credit_account/balance"],
-  'my_orders' => ["label" => "My Orders", "icon" => "/assets/images/icons/png/rules.png", "url" => "/pastorders"],
+  // 'my_orders' => ["label" => "My Orders", "icon" => "/assets/images/icons/png/rules.png", "url" => "/pastorders"],
   'my_order_history' => ["label" => "My Order History", "icon" => "/assets/images/icons/png/rules.png", "url" => "/myaccount/order_history"],
   'my_invoice_history' => ["label" => "My Invoice History", "icon" => "/assets/images/icons/png/invoice_history.png", "url" => "/myaccount/invoice_history"],
   'credit_ledger' => ["label" => "Credit Ledger Details", "icon" => "/assets/images/icons/png/note-book.png", "url" => "/myaccount/ledger"],
   'ulp' => ["label" => "United Loyalty Program", "icon" => "/assets/images/icons/png/ulp.png", "url" => "https://loyalty.uniteduk.com/"],
   'help' => ["label" => "Help & Support", "icon" => "/assets/images/icons/png/question-mark-circle-outline.png", "url" => ""],
   'switch_account' => ["label" => "Switch Account", "icon" => "/assets/images/icons/png/arrow-goes-left-right.png", "url" => "/home/logout"],
-  'add_employee' => ["label" => "Add Employee Access", "icon" => "/assets/images/icons/png/lock-open-line.png", "url" => ""],
+  // 'add_employee' => ["label" => "Add Employee Access", "icon" => "/assets/images/icons/png/lock-open-line.png", "url" => ""],
   'log_out' => ["label" => "Log Out", "icon" => "/assets/images/icons/png/logout.png", "url" => "/home/logout"],
 ]);
 

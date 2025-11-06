@@ -32,7 +32,7 @@ if(empty($user_info)) {
 	$logon_user_menues = LOGON_USER_MENUES;
 	if(empty($credit_account)) {
 		unset($logon_user_menues['my_account']);
-		unset($logon_user_menues['my_orders']);
+		// unset($logon_user_menues['my_orders']);
 		unset($logon_user_menues['my_order_history']);
 		unset($logon_user_menues['my_invoice_history']);
 		unset($logon_user_menues['credit_ledger']);
