@@ -76,7 +76,9 @@ if($view_mode == 'grid') {
 
                 <div>
                     <label>Code: </label>
-                    <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                    <span class="ms-2 prop-value prod_code_2do" 
+                          data-trolley-type="<?= $product->type ?>"
+                          data-can-reorder="yes"><?= $product->prod_code ?></span>
                 </div>
 
                 <div>
@@ -200,7 +202,9 @@ if($view_mode == 'grid') {
 
                         <div class="prod-spec">
                             <label>Code: </label>
-                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                            <span class="ms-2 prop-value prod_code_2do" 
+                                  data-trolley-type="<?= $product->type ?>"
+                                  data-can-reorder="yes"><?= $product->prod_code ?></span>
                         </div>
 
                         <div>
@@ -329,7 +333,9 @@ if($view_mode == 'grid') {
                     <div class="prod-spec">
                         <span>
                             <label>Code: </label>
-                            <span class="ms-2 prop-value"><?= $product->prod_code ?></span>
+                            <span class="ms-2 prop-value prod_code_2do" 
+                                  data-trolley-type="<?= $product->type ?>"
+                                  data-can-reorder="yes"><?= $product->prod_code ?></span>
                         </span>
                     </div>
 

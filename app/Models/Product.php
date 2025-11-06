@@ -1369,7 +1369,7 @@ class Product extends Model
 		$db = \Config\Database::connect();
 
 		$query = "SELECT 
-						p.*, 
+						p.*, type, 
 						(CASE WHEN (prod_rrp * prod_uos > 0) 
 							THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
 							ELSE 0   
@@ -1381,9 +1381,10 @@ class Product extends Model
           		  FROM epos_product as p ";
 		$query.= "LEFT JOIN epos_product_images as pi on CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code ";
     	$query.= "LEFT JOIN epos_vat as vat on vat.code=p.vat_code ";
+		$query.= "LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ";
 		$query.= "WHERE p.branch={$branch} ";
     	if (!empty($organization_id)) {
-    		$query.= "AND organization_id={$organization_id} ";
+    		$query.= "AND p.organization_id={$organization_id} ";
 		}
 		$query.= "AND p.prod_code={$prod_code} ";
 		$query.= $spresell ? 

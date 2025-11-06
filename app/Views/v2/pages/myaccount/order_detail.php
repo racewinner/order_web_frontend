@@ -34,6 +34,7 @@ table {
                 <th>Price</th>
                 <th>Qty</th>
                 <th>Total</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -52,15 +53,24 @@ table {
                         <?php } else { ?>
                             <div class="px-4">
                                 <h6 class="fw-bold"><?= $t['description'] ?></h6>
-                                <div><label class="me-1">Code:</label> <span><?=$t['item']?></span></div>
+                                <div>
+                                    <label class="me-1">Code:</label> 
+                                    <span class="prod_code_2do" data-trolley-type="<?= $product->type ?>" data-can-reorder="no"><?=$t['item']?></span>
+                                </div>
                                 <div><label class="me-1">Pack:</label> <span><?=$t['pack_description']?></span></div>
                                 <div><label class="me-1">RRP:</label> <span>£<?=$t['rrp']?></span></div>
                             </div>
                         <?php } ?>
                     </td>
                     <td>£<?= $t['price'] ?></td>
-                    <td><?= $qty ?></td>
+                    <td><div class="prod_qty_2do"><?= $qty ?></div></td>
                     <td>£<?= $t['total_value'] ?></td>
+                    <?php if(!empty($t['product'])) { ?>
+                        <td><i class="bi bi-cart3 reorder-product cursor-pointer" style="font-size:20px; color: #ff6c00;"></i></td>
+                    <?php } else { ?>
+                        <td><i class="bi bi-cart3 reorder-product cursor-pointer disabled" style="font-size:20px; color: #ff6c00;"></i></td>
+                    <?php } ?>
+
                 </tr>
             <?php } } else { ?>
                 <tr><td colspan="4" class="text-center">No Items</td></tr>
@@ -80,7 +90,7 @@ table {
                         </div>
                     </div>
                     <div class="">
-                        <a href="#" class="btn btn-danger">Repeat Order</a>
+                        <button id="add-to-cart-by-bulk" class="btn btn-danger">Repeat Order</button>
                     </div>
                 </div>
             </td></tr>
@@ -91,4 +101,127 @@ table {
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
+<script>
+$(document).ready(function(e) {
+    $(document).on('click', '.bi-cart3.reorder-product', function(e) {
+        const params        = new URLSearchParams(window.location.search);
+        const on            = params.get('on');
+        const branch        = params.get('branch');
+        const dt            = params.get('dt');
+
+        tbl_row = e.target.closest('tr');
+
+        prod_code = $(tbl_row).find('.prod_code_2do').text();
+        prod_type = $(tbl_row).find('.prod_code_2do').data('trolley-type');
+        prod_qty  = $(tbl_row).find('.prod_qty_2do' ).text();
+        products  = [{prod_code, prod_type, prod_qty}];
+
+        payload = {
+            on,
+            branch,
+            dt,
+            products: JSON.stringify(products)
+        }
+        console.log(payload);
+
+        $.ajax({
+            type: "POST"
+            , async: true
+            , url: "/orders/add_to_cart/by_bulk"
+            , dataType: "json"
+            , timeout: 30000
+            , cache: false
+            , data: payload
+            , error: function (xhr, status, error) {
+                debugger
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+                }}
+            , success: function (response, status, request) {
+                debugger
+                if (response.success) {
+                    update_cart();
+                    alert_message('Your request to register has been sent.', 'Info');
+                    return;
+                } else {
+                    alert_message('Sorry, there was something wrong in reordering.', 'Error');
+                    return;
+                }
+            }
+            , complete: function() {
+                debugger
+                remove_loadingSpinner_from_button(e.target);
+            }
+        });
+    })
+    $(document).on('click', 'button#add-to-cart-by-bulk', function(e) {
+
+        debugger
+        const params        = new URLSearchParams(window.location.search);
+        const on            = params.get('on');
+        const branch        = params.get('branch');
+        const dt            = params.get('dt');
+
+        // get products in order list
+        let products        = [];
+        let table           = $('.order-primary-table')
+        let tbody           = table.find('tbody')
+        let tbl_rows        = tbody.find('tr')
+
+        for(let i=0; i<tbl_rows.length; i++) {
+            tbl_row   = tbl_rows.eq(i);
+            let can_reorder = tbl_row.find('.prod_code_2do').data('can-reorder');
+            if (can_reorder == 'no') 
+                continue;
+            prod_code = tbl_row.find('.prod_code_2do').text();
+            prod_type = tbl_row.find('.prod_code_2do').data('trolley-type');
+            prod_qty  = tbl_row.find('.prod_qty_2do' ).text();
+            products  = [...products, {prod_code, prod_type, prod_qty}];
+        }
+        products.reverse();
+
+        payload = {
+            on,
+            branch,
+            dt,
+            products: JSON.stringify(products)
+        }
+        console.log(payload);
+
+        $.ajax({
+            type: "POST"
+            , async: true
+            , url: "/orders/add_to_cart/by_bulk"
+            , dataType: "json"
+            , timeout: 30000
+            , cache: false
+            , data: payload
+            , error: function (xhr, status, error) {
+                debugger
+                if (xhr.status == 401) {
+                    window.location.href = '/login'; return;
+                } else {
+                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+                }}
+            , success: function (response, status, request) {
+                debugger
+                if (response.success) {
+                    update_cart();
+                    alert_message('Your request to register has been sent.', 'Info');
+                    return;
+                } else {
+                    alert_message('Sorry, there was something wrong in reordering.', 'Error');
+                    return;
+                }
+            }
+            , complete: function() {
+                debugger
+                remove_loadingSpinner_from_button(e.target);
+            }
+        });
+    })
+})
+</script>
 <?= $this->endSection() ?>

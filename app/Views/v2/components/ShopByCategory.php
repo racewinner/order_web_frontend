@@ -51,6 +51,6 @@
                 <img src="<?= $img_src ?>" class="category-logo" />
                 <div class="category-name mt-2" style="color:<?= $data['data']['label']['txt_color'] ?? '#333' ?>;"><?= $category['alias'] ?></div>
             </div>
-        <?php }  ?>
+        <?php } ?>
     </div>
 </div>

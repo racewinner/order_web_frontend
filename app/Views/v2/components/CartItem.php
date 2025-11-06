@@ -48,7 +48,9 @@
                         <span class="prod-spec">
                             <label class="mx-1">|</label>
                             <label>Code: </label>
-                            <span class="ms-1 ms-sm-2 prop-value"><?= $product->prod_code ?></span>
+                            <span class="ms-1 ms-sm-2 prop-value prod_code_2do" 
+                                  data-trolley-type="<?= $product->type ?>"
+                                  data-can-reorder="yes"><?= $product->prod_code ?></span>
                         </span>
                     </span>
                 </div>
@@ -64,7 +66,9 @@
 
                     <span class="prod-spec">
                         <label>Code: </label>
-                        <span class="ms-1 ms-sm-2 prop-value"><?= $product->prod_code ?></span>
+                        <span class="ms-1 ms-sm-2 prop-value prod_code_2do" 
+                              data-trolley-type="<?= $product->type ?>"
+                              data-can-reorder="yes"><?= $product->prod_code ?></span>
                     </span>
                 </div>
 

@@ -61,19 +61,20 @@ $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->post('/presells_import/load_data', 'Presells_import::load_data');
     $routes->post('/presells_import/load_ref', 'Presells_import::load_ref');
 
-    $routes->get('/orders/cartinfo', 'Orders::cartinfo');
-    $routes->get('/orders/orders/(:segment)', 'Orders::index/$1');
-    $routes->post('/orders/to_cart_quantity', 'Orders::to_cart_quantity');
-    $routes->post('/orders/send_order/(:segment)', 'Orders::send_order/$1');
-    $routes->post('/orders/save_for_later/(:segment)', 'Orders::save_for_later/$1');
-    $routes->post('/orders/resend_orders/(:segment)', 'Orders::resend_orders/$1');
-    $routes->get('/orders/checkout', 'Orders::checkout');
-    $routes->get('/orders/payment', 'Orders::payment');
-    $routes->get('/orders/mini_cart', 'Orders::mini_cart');
-    $routes->get('/orders/recent', 'Orders::recent');
-    $routes->get('/orders/confirm_order', 'Orders::confirm_order');
-    $routes->post('/orders/check_order_number', 'Orders::check_order_number');
-    $routes->get('/orders', 'Orders::index');
+    $routes->get ('/orders/cartinfo',                   'Orders::cartinfo');
+    $routes->get ('/orders/orders/(:segment)',          'Orders::index/$1');
+    $routes->post('/orders/to_cart_quantity',           'Orders::to_cart_quantity');
+    $routes->post('/orders/send_order/(:segment)',      'Orders::send_order/$1');
+    $routes->post('/orders/save_for_later/(:segment)',  'Orders::save_for_later/$1');
+    $routes->post('/orders/resend_orders/(:segment)',   'Orders::resend_orders/$1');
+    $routes->get ('/orders/checkout',                   'Orders::checkout');
+    $routes->get ('/orders/payment',                    'Orders::payment');
+    $routes->get ('/orders/mini_cart',                  'Orders::mini_cart');
+    $routes->get ('/orders/recent',                     'Orders::recent');
+    $routes->get ('/orders/confirm_order',              'Orders::confirm_order');
+    $routes->post('/orders/check_order_number',         'Orders::check_order_number');
+    $routes->post('/orders/add_to_cart/by_bulk',        'Orders::add_to_cart_by_bulk');
+    $routes->get ('/orders',                            'Orders::index');
 
     $routes->post('/home/check_both_promos', 'Home::check_both_promos');
     $routes->post('/home/get_total_items_cart', 'Home::get_total_items_cart');

@@ -1,5 +1,6 @@
 <?php
 namespace App\Models;
+use CodeIgniter\Database\RawSql;
 use CodeIgniter\Model;
 class Order extends Model
 {
@@ -193,6 +194,102 @@ class Order extends Model
 					->join('epos_product_images pi', 'CAST(SUBSTRING(p.prod_code, 2, 6) AS UNSIGNED)=pi.prod_code', 'left')
 					->where('prod_id' , $prod_id);
 		return $builder->get()->getRow();
+	}
+
+	function get_products_by_order($db, $order_id)
+	{
+		$db = $db ? $db : \Config\Database::connect();
+
+		$select = "*";
+        $q = $db->table('epos_orders_products')
+				->select($select)
+				->where('order_id' , $order_id)
+				->get();
+		return $q->getRow();
+	}
+
+	function available_product($db, $prod_code, $branch, $org_id) 
+	{
+		$db = $db ? $db : \Config\Database::connect();
+
+		$select = "*";
+        $q = $db->table('epos_product')
+				->select($select)
+				->where('prod_code', $prod_code)
+				->where('branch', $branch)
+				->where('organization_id', $org_id)
+				->where('is_disabled', 'N')
+				->where(new RawSql("(availability IS NULL OR availability != 'N')"))
+				->get();
+		return $q->getNumRows() > 0;	
+	}
+
+	function exist_in_cart_by_item($db, $person_id, $prod_code, $prod_type, $branch, $org_id)
+	{
+		$db = $db ? $db : \Config\Database::connect();
+
+		$select = "*";
+        $q = $db->table('epos_cart')
+				->select($select)
+				->where('prod_code', 		$prod_code)
+				->where('group_type', 		$prod_type)
+				->where('person_id', 		$person_id)
+				->where('branch', 			$branch)
+				->where('organization_id', 	$org_id)
+				->get();
+		return $q->getNumRows() > 0;	
+	}
+	function add_to_cart_by_item($db, $person_id, $prod_code, $prod_type, $branch, $org_id, $qty)
+	{
+		$db = $db ? $db : \Config\Database::connect();
+
+		$exist_item_in_cart = $this->exist_in_cart_by_item($db, $person_id, $prod_code, $prod_type, $branch, $org_id);
+
+		$db->transStart();
+		if ($exist_item_in_cart)
+		{
+			$db->query( "UPDATE epos_cart ".
+						"SET quantity='{$qty}'".
+						"WHERE prod_code={$prod_code} AND group_type={$prod_type} AND person_id={$person_id} AND branch='{$branch}' AND organization_id='{$org_id}'" );
+		} else {
+			// get item type like general, tobacco, ...
+			$type = $prod_type;
+			// $query = "SELECT ct.type FROM epos_product as p LEFT JOIN epos_categories as ct on p.group_desc = ct.filter_desc ".
+            //          "WHERE p.prod_code={$prod_code} AND p.branch='{$branch}' AND p.organization_id='{$org_id}' ".
+			// 		 "AND p.is_disabled='N' AND (p.availability IS NULL OR p.availability != 'N') AND ct.display=1 ";
+			// $result = $db->query($query);
+			// if ($result->getNumRows() > 0) {
+			// 	$type = $result->getResult()[0]->type;
+			// }
+
+			// get line_position for sort of product in cart
+			$line_position = 0;
+        	$query = $db->table('epos_cart')
+						->select('line_position')
+						->orderBy('line_position','desc')
+						->get();
+			if ($query->getNumRows() > 0) {
+				$line_position = $query->getResult()[0]->line_position;
+			}
+			$line_position = (int)$line_position + 1;
+
+			// ADD TO CART
+			$cart_data = array(
+				'prod_code'			=> $prod_code,
+				'quantity'			=> $qty,
+				'group_type'		=> $type,
+				'line_position'		=> $line_position,
+				'person_id'			=> $person_id,
+				'branch'			=> $branch,
+				'organization_id'	=> $org_id
+			);
+			$db->table('epos_cart')->insert($cart_data);
+		}
+		$db->transComplete();
+		if ($db->transStatus() === FALSE)
+			return false;
+		else
+			return true;
 	}
 
 	function getFTPcredential()

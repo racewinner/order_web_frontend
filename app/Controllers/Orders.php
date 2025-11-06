@@ -324,6 +324,56 @@ class Orders extends Secure_area implements iData_controller
 		]);
 	}
 
+	function add_to_cart_by_bulk()
+	{
+		// get params from post request
+		$products 	= request()->getPost("products");
+		$person_id 	= session()->get("person_id");
+		$branch 	= session()->get("branch");
+		$org_id  	= session()->get("organization_id");
+
+		// start db transaction
+		$db = \Config\Database::connect();
+    	$db->transStart();
+
+		// get products of given order
+		$Order = new Order();
+		// $products_of_order = $Order->get_products_by_order($db, $on); ???
+		$products_of_order = [];
+		if(!empty($products)) {
+			$products_of_order = json_decode($products, true);
+		} 
+		
+		$db_wop_complete = true;
+		foreach($products_of_order as $product)
+		{
+			// if (!$Order->available_product($db, $product['prod_code'], $branch, $org_id)) 
+			// 	continue;
+			if (!$Order->add_to_cart_by_item($db, $person_id, $product['prod_code'], $product['prod_type'], $branch, $org_id, $product['prod_qty'])) {
+				$db_wop_complete = false;
+				break;
+			}
+		}
+		if (!$db_wop_complete) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => 0,
+			]);
+		}
+
+		$db->transComplete();
+		if ($db->transStatus() === FALSE) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => 0,
+			]);
+		} else {
+			return response()->setJSON([
+				'success' => 1,
+			]);
+		}
+	}
+
 	function check_order_number() {
 		$pin_very_number 	= request()->getPost("pin_verify_number");
 

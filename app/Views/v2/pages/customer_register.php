@@ -120,6 +120,10 @@
                                         required 
                                     />
                                 </div>
+                                <div class="form-check form-switch form-check mb-3">
+                                    <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" />
+                                    <label class="form-check-label ps-2" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
+                                </div>
                             </div>
                             <div class="full-fill">
                                 <div class="mb-3">
@@ -338,7 +342,7 @@
                     <div class="card-body p-3">
                         <div class="mb-3">
                             <label class="">What is your prefered payment method? </label>
-                            <select class="form-select" name="pref_payment_method" id="pref_payment_method">
+                            <select class="form-select" name="pref_payment_method" id="pref_payment_method" required>
                                     <option value=""></option>
                                     <option value="cash">Cash</option>
                                     <option value="bank_transfer">Bank Transfer</option>
@@ -346,6 +350,9 @@
                                     <option value="card">Card</option>
                                     <option value="credit_facility">Credit Facility</option>
                             </select>
+                            <div class="invalid-feedback">
+                                Please provide at least one item.
+                            </div>
                         </div>
                         <div class="form-check form-switch mb-3 d-flex">
                             <input class="form-check-input credit-acc-facility" type="checkbox" id="credit_acc_facility" />
@@ -446,18 +453,25 @@
                 delivered = 1
             }
 
+            //  confirm legal owner or director
+            let confirm_legal_owner_director = "";
+            if ($form.find("input.confirm_legal_owner_director:checked").length > 0) {
+                confirm_legal_owner_director = 1
+            }
+
             debugger
             const dt = $("#customer_register_form").serialize();
             const params = new URLSearchParams(dt);
             let payload = Object.fromEntries(params.entries());
             payload = {
                 ...payload,
-                sell_taxes: $('input#sell_taxes').val(),
-                credit_acc_facility: credit_acc_facility,
-                offers_and_info: offers_and_info,
-                self_service: self_service,
-                click_and_collect: click_and_collect,
-                delivered: delivered,
+                sell_taxes:                     $('input#sell_taxes').val(),
+                credit_acc_facility:            credit_acc_facility,
+                offers_and_info:                offers_and_info,
+                self_service:                   self_service,
+                click_and_collect:              click_and_collect,
+                delivered:                      delivered,
+                confirm_legal_owner_director:   confirm_legal_owner_director
             }
             console.log(payload);
 

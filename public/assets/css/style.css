@@ -3070,7 +3070,7 @@ textarea.form-control-lg {
 }
 .was-validated .form-select:invalid:focus, .form-select.is-invalid:focus {
   border-color: var(--bs-form-invalid-border-color);
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25); */
 }
 
 .was-validated .form-control-color:invalid, .form-control-color.is-invalid {
