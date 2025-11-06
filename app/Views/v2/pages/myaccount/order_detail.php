@@ -55,7 +55,7 @@ table {
                                 <h6 class="fw-bold"><?= $t['description'] ?></h6>
                                 <div>
                                     <label class="me-1">Code:</label> 
-                                    <span class="prod_code_2do" data-trolley-type="<?= $product->type ?>" data-can-reorder="no"><?=$t['item']?></span>
+                                    <span class="prod_code_2do" data-can-reorder="no"><?=$t['item']?></span>
                                 </div>
                                 <div><label class="me-1">Pack:</label> <span><?=$t['pack_description']?></span></div>
                                 <div><label class="me-1">RRP:</label> <span>£<?=$t['rrp']?></span></div>
@@ -140,13 +140,18 @@ $(document).ready(function(e) {
                     console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                 }}
             , success: function (response, status, request) {
-                debugger
                 if (response.success) {
                     update_cart();
-                    alert_message('Your request to register has been sent.', 'Info');
+                    showToast({
+                        type: 'success',
+                        message: "Your request to reorder has been sent",
+                    });
                     return;
                 } else {
-                    alert_message('Sorry, there was something wrong in reordering.', 'Error');
+                    showToast({
+                        type: 'error',
+                        message: "Sorry, there was something wrong in reordering",
+                    });
                     return;
                 }
             }
@@ -209,10 +214,16 @@ $(document).ready(function(e) {
                 debugger
                 if (response.success) {
                     update_cart();
-                    alert_message('Your request to register has been sent.', 'Info');
+                    showToast({
+                        type: 'success',
+                        message: "Your request to reorder has been sent",
+                    });
                     return;
                 } else {
-                    alert_message('Sorry, there was something wrong in reordering.', 'Error');
+                    showToast({
+                        type: 'error',
+                        message: "Sorry, there was something wrong in reordering",
+                    });
                     return;
                 }
             }

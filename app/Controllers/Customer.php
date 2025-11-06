@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\PriceList;
 use App\Models\Branch;
 use App\Models\Cms;
+use DateTime;
 
 class Customer extends BaseController
 {
@@ -79,6 +80,8 @@ class Customer extends BaseController
 		// 	]);
 		// }
 
+		$dt = new DateTime(); // current date/time
+		$date_created  = $dt->format('Y-m-d H:i:s'); // 2025-11-05 12:34:56
 		$customer_data_to_save = array(
 			'business_legal_name'     		=> $busi_legal_nm,
 			'business_start_date'     		=> $busi_start_dt,
@@ -104,7 +107,8 @@ class Customer extends BaseController
 			'self_service' 					=> $self_service,
 			'click_and_collect' 			=> $click_and_collect,
 			'delivered' 					=> $delivered,
-			'confirm_legal_owner_director'	=> $confirm_legal_owner_director
+			'confirm_legal_owner_director'	=> $confirm_legal_owner_director,
+			'date_created' 					=> $date_created
 		);		
 
 		$db->table('epos_customer_registration')->insert($customer_data_to_save);

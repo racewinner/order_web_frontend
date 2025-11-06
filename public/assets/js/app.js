@@ -15,9 +15,9 @@ function remove_loadingSpinner_from_button(target) {
     $(target).find("i.rotate-spinner").remove();
 }
 
-function alert_message(msg='Hello!', title='Alert') {
+function alert_message(msg='Hello!', title='Alert', cls='', hiddenCallback=f=>f) {
     const container = document.getElementById('alert-msg-container');
-    container.innerHTML = `<div class="modal fade" id="alert_message_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    container.innerHTML = `<div class="modal fade ${cls}" id="alert_message_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered max-w-700">
                                     <div class="modal-auto-width-content">
                                         <div class="modal-header">
@@ -30,7 +30,6 @@ function alert_message(msg='Hello!', title='Alert') {
                                                 <div class="">
                                                     ${msg}
                                                 </div>
-                                                
                                             </div>
                                         </div>
 
@@ -47,6 +46,12 @@ function alert_message(msg='Hello!', title='Alert') {
     const modal = new bootstrap.Modal(alert_message_modal[0]);
     debugger
     modal.show();
+
+    $(`.${cls}`).off('hidden.bs.modal');
+    $(`.${cls}`).on ('hidden.bs.modal', function (e) {
+        // do something...
+        hiddenCallback();
+    })
 }
 
 function searchProductsByProdCodes(prod_codes) {

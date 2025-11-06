@@ -249,8 +249,9 @@ class Order extends Model
 		if ($exist_item_in_cart)
 		{
 			$db->query( "UPDATE epos_cart ".
-						"SET quantity='{$qty}'".
-						"WHERE prod_code={$prod_code} AND group_type={$prod_type} AND person_id={$person_id} AND branch='{$branch}' AND organization_id='{$org_id}'" );
+						"SET quantity={$qty} ".
+						"WHERE prod_code={$prod_code} AND group_type='{$prod_type}' AND person_id={$person_id} ".
+						"AND branch='{$branch}' AND organization_id='{$org_id}'" );
 		} else {
 			// get item type like general, tobacco, ...
 			$type = $prod_type;

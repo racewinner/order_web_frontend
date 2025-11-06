@@ -363,7 +363,7 @@
             </div>
             <div class="d-flex justify-content-center mt-4 gap-10px">
                 <button type="submit" class="btn btn-info" id="btn_customer_save" style="min-width: 120px">Submit request</button>
-                <button class="btn btn-danger" id="btn-go-back" style="min-width: 120px">Go Back</button>
+                <button type="button" class="btn btn-danger" id="btn-go-back" style="min-width: 120px">Go Back</button>
             </div>
         </form>
     </div>
@@ -406,7 +406,6 @@
         $('.gj-datepicker-bootstrap').append($extra); // jQuery handles all matched elements
 
         $(document).on('click', '#btn-go-back', function(e) {
-            debugger
             window.location.href = '/login';
         })
 
@@ -490,14 +489,16 @@
                         console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                     }}
                 , success: function (response, status, request) {
-                    alert_message('Your request to register has been sent.', 'Info');
+                    alert_message('Your request to register has been sent.', 'Info', 'customer-register-form-modal', function(e){
+                        location.reload();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
                     return;
                 }
                 , complete: function() {
                     remove_loadingSpinner_from_button(e.target);
                 }
             });
-
         })
     })
 

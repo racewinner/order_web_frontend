@@ -6,6 +6,9 @@ body.auth-layout {
         border-bottom: 2px solid #eee;
     }
 }
+button {
+    cursor: pointer;
+}
 
 .search-input {
     button.btn-search {
