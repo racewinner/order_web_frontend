@@ -186,6 +186,9 @@ $(document).ready(function(e) {
             products  = [...products, {prod_code, prod_type, prod_qty}];
         }
         products.reverse();
+        if (products.length == 0) {
+            return;
+        }
 
         payload = {
             on,
