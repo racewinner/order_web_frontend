@@ -3084,7 +3084,7 @@ textarea.form-control-lg {
   background-color: var(--bs-form-invalid-color);
 }
 .was-validated .form-check-input:invalid:focus, .form-check-input.is-invalid:focus {
-  box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25);
+  /* box-shadow: 0 7px 15px 3px rgba(var(--bs-danger-rgb), 0.25); */
 }
 .was-validated .form-check-input:invalid ~ .form-check-label, .form-check-input.is-invalid ~ .form-check-label {
   color: var(--bs-form-invalid-color);

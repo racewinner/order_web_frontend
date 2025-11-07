@@ -121,9 +121,11 @@
                                     />
                                 </div>
                                 <div class="form-check form-switch form-check mb-3">
-                                    <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" />
+                                    <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" required/>
                                     <label class="form-check-label ps-2" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
+                                    <div class="invalid-feedback">You must agree to this option setting.</div>
                                 </div>
+                                
                             </div>
                             <div class="full-fill">
                                 <div class="mb-3">
@@ -372,6 +374,8 @@
 
 <?= $this->section('javascript') ?>
 <script>
+    const emailRegex = /^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
+
     (function () {
         'use strict'
 
@@ -382,12 +386,31 @@
         Array.prototype.slice.call(forms)
             .forEach(function (form) {
                 form.addEventListener('submit', function (event) {
+                     {  // email special validator including tld or ccld
+
+                        // If the form is valid according to browser's built-in validation,
+                        // then apply custom regex validation for email.
+                        const emailInput = document.getElementById('contact_email');
+
+                        if(!emailRegex.test(emailInput.value)) {
+                            emailInput.classList.add('is-invalid');
+                            emailInput.setCustomValidity('Please provide a email type.'); // marks as invalid
+                            // emailInput.reportValidity(); // triggers UI and updates :invalid
+
+                            event.preventDefault();
+                            // event.stopPropagation();
+                        } else {
+                            emailInput.classList.remove('is-invalid');
+                            emailInput.setCustomValidity(''); // marks as valid
+                        }
+                    }
                     if (!form.checkValidity()) {
                         event.preventDefault()
                         event.stopPropagation()
-                    }
+                    } 
 
-                    form.classList.add('was-validated')
+                    form.classList.add('was-validated');
+                    
                 }, false)
             })
     })()
@@ -404,6 +427,20 @@
                             Please provide a date type of 'dd/mm/yyyy'.
                         </div>`);
         $('.gj-datepicker-bootstrap').append($extra); // jQuery handles all matched elements
+
+        $(document).on('keyup', '#contact_email', function(e) {
+            if(!$('form#customer_register_form').hasClass('was-validated'))
+                return;
+            if (emailRegex.test(e.target.value)) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+                this.setCustomValidity(''); // marks as invalid
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+                this.setCustomValidity('Please provide a email type.'); // marks as invalid
+            }
+        })
 
         $(document).on('click', '#btn-go-back', function(e) {
             window.location.href = '/login';
