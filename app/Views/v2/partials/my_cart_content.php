@@ -2,18 +2,18 @@
   $extra_cls = "p-4 my-cart-body " . $cls;
 ?>
 <div class="<?= $extra_cls ?>">
-    <ul class="d-inline-flex cart-type-select must-hide" role="tablist" aria-label="Cart sections">
-        <?php foreach($types as $index => $type) { ?>
-            <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
+    <!-- <ul class="d-inline-flex cart-type-select must-hide" role="tablist" aria-label="Cart sections">
+        <php foreach($types as $index => $type) { ?>
+            <li class="nav-link one-cart-type <= $type['id'] ?> <= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
                 id="mini-tab-general" 
                 data-bs-toggle="pill" 
-                data-bs-target="#mini-pane-<?= $type['id'] ?>" 
+                data-bs-target="#mini-pane-<= $type['id'] ?>" 
                 role="tab" 
-                aria-controls="mini-pane-<?= $type['id'] ?>" 
+                aria-controls="mini-pane-<= $type['id'] ?>" 
                 aria-selected="true"
-            ><?= $type['label'] ?></li>
-        <?php } ?>
-    </ul>
+            ><= $type['label'] ?></li>
+        <php } ?>
+    </ul> -->
 
     <div class="tab-content mt-3">
         <?php foreach($types as $index => $type) { ?>

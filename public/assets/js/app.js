@@ -250,8 +250,10 @@ function update_cart() {
 
                 if ($('.one-cart-type.active').length > 0) {
                     const cart_active_typename = $('.one-cart-type.active').attr('id').slice(4);
-                    const cur_trolley_cart_amount = data.cart_types[cart_active_typename].amount;
-                    const cur_trolley_cart_vat    = data.cart_types[cart_active_typename].vat;
+                    const cur_trolley_cart_amount = data.cart_types && data.cart_types[cart_active_typename] && data.cart_types[cart_active_typename].amount ? 
+                                                    data.cart_types[cart_active_typename].amount : 0;
+                    const cur_trolley_cart_vat    = data.cart_types && data.cart_types[cart_active_typename] && data.cart_types[cart_active_typename].vat ? 
+                                                    data.cart_types[cart_active_typename].vat : 0;
 
                     $('#cur_trolley_total_amount').text('£' + parseFloat(cur_trolley_cart_amount).toFixed(2));
                     $('#cur_trolley_total').text('£' + (parseFloat(cur_trolley_cart_amount) + parseFloat(cur_trolley_cart_vat)).toFixed(2));
@@ -562,7 +564,7 @@ $(document).ready(function () {
         $(e.target).removeClass('bi-trash');
         $(e.target).addClass('bi-arrow-repeat rotate-spinner disabled');
 
-        cart_action(4, prod_id, prod_code, prod_desc, order_type, 0, function() {
+        cart_action(4, prod_id, prod_code, prod_desc, 0, order_type, 0, function() {
             $(productEl).remove();
         });
     });
