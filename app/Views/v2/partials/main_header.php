@@ -20,23 +20,46 @@ if(empty($user_info)) {
 		return $module['module_id'];
 	}, $allowed_modules);
 
-	if(in_array('home', $allowed_module_ids)) $top_menus[] = ['id'=>'home', 'icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home', 'active'=>$uri_segments[0] == 'home'];
-	if(in_array('products', $allowed_module_ids)) $top_menus[] = ['id'=>'products', 'icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products', 'active'=>$uri_segments[0] == 'products'];
-	if(in_array('seasonal_presell', haystack: $allowed_module_ids)) $top_menus[] = ['id'=>'presell', 'icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1', 'active'=>$uri_segments[0]=='seasonal_presell'];
-	if(in_array('promos', $allowed_module_ids)) $top_menus[] = ['id'=>'promos', 'icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/du', 'active'=>$uri_segments[0] == 'promos'];
-	if(in_array('favorites', $allowed_module_ids)) $top_menus[] = ['id'=>'my_favorite', 'icon' => 'bi-heart', 'label' => 'Favourite', 'url' => '/favorites', 'active'=>$uri_segments[0] == 'favorites'];
-	if(in_array('orders', $allowed_module_ids)) $top_menus[] = ['id'=>'my_cart', 'icon' => 'bi-cart3', 'label' => 'Empty', 'label_class'=>'cart-amount', 'active'=>$uri_segments[0] == 'orders'];
-	if(in_array('employees', $allowed_module_ids)) $top_menus[] = ['id'=>'employees', 'icon'=>'bi-person-fill', 'label'=>'Users', 'url'=>'/employees', 'active' => $uri_segments[0] == 'employees'];
-	if(in_array('branch', $allowed_module_ids)) $top_menus[] = ['id'=>'branch', 'icon'=>'bi-geo-alt-fill', 'label'=>empty($branchName) ? 'Select Branch' : $branchName, 'url'=>'/myaccount/sel_allocated_branch', 'active' => count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'];
+	if(in_array('home', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'home', 'icon' => 'bi-house-fill', 'label' => 'Home', 'url' => '/home', 'active'=>$uri_segments[0] == 'home'];
+	if(in_array('products', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'products', 'icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products', 'active'=>$uri_segments[0] == 'products'];
+	if(in_array('seasonal_presell', haystack: $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'presell', 'icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1', 'active'=>$uri_segments[0]=='seasonal_presell'];
+	if(in_array('promos', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'promos', 'icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/du', 'active'=>$uri_segments[0] == 'promos'];
+	if(in_array('favorites', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'my_favorite', 'icon' => 'bi-heart', 'label' => 'Favourite', 'url' => '/favorites', 'active'=>$uri_segments[0] == 'favorites'];
+	if(in_array('orders', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'my_cart', 'icon' => 'bi-cart3', 'label' => 'Empty', 'label_class'=>'cart-amount', 'active'=>$uri_segments[0] == 'orders'];
+	if(in_array('employees', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'employees', 'icon'=>'bi-person-fill', 'label'=>'Users', 'url'=>'/employees', 'active' => $uri_segments[0] == 'employees'];
+	if(in_array('branch', $allowed_module_ids)) 
+		$top_menus[] = ['id'=>'branch', 'icon'=>'bi-geo-alt-fill', 'label'=>empty($branchName) ? 'Select Branch' : $branchName, 'url'=>'/myaccount/sel_allocated_branch', 'active' => count($uri_segments) > 1 && $uri_segments[1] == 'sel_branch'];
 
 	$logon_user_menues = LOGON_USER_MENUES;
-	if(empty($credit_account)) {
-		unset($logon_user_menues['my_account']);
-		// unset($logon_user_menues['my_orders']);
-		unset($logon_user_menues['my_order_history']);
-		unset($logon_user_menues['my_invoice_history']);
-		unset($logon_user_menues['credit_ledger']);
+	// if(empty($credit_account)) {
+	// 	unset($logon_user_menues['my_account']); //1
+	// }
+	// if(!in_array('orders', $allowed_module_ids)) {
+	// 	unset($logon_user_menues['my_orders']); //2
+	// }
+	// if(empty($credit_account)) {
+	// 	unset($logon_user_menues['my_order_history']);//3
+	// }
+	// if(empty($credit_account)) {
+	// 	unset($logon_user_menues['my_invoice_history']);//4
+	// }
+	// if(empty($credit_account)) {
+	// 	unset($logon_user_menues['credit_ledger']);//5
+	// }
+	if(!in_array('pastorders', $allowed_module_ids)) {
+		unset($logon_user_menues['my_orders']); //2
 	}
+	if(!in_array('employees', $allowed_module_ids)) {
+		unset($logon_user_menues['add_employee']); //2
+	}
+	
 }
 
 $active_categories = [];

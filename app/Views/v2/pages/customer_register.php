@@ -386,7 +386,7 @@
         Array.prototype.slice.call(forms)
             .forEach(function (form) {
                 form.addEventListener('submit', function (event) {
-                     {  // email special validator including tld or ccld
+                    {// email special validator including tld or ccld
 
                         // If the form is valid according to browser's built-in validation,
                         // then apply custom regex validation for email.
@@ -404,13 +404,36 @@
                             emailInput.setCustomValidity(''); // marks as valid
                         }
                     }
+                    {// datepicker special validator including the date is valid
+
+                        // If the form is valid according to browser's built-in validation,
+                        // then apply valid date for datepicker.
+                        const dateInput = document.getElementById('busi_start_dt');
+
+                        const parts = dateInput.value.split('/');
+                        const day   = parseInt(parts[0], 10);
+                        const month = parseInt(parts[1], 10);
+                        const year  = parseInt(parts[2], 10);
+
+                        const date = new Date(year, month - 1, day); // Month is 0-indexed
+                        if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                            dateInput.classList.add('is-invalid');
+                            dateInput.setCustomValidity('Please provide a email type.'); // marks as invalid
+                            // emailInput.reportValidity(); // triggers UI and updates :invalid
+
+                            event.preventDefault();
+                        } else {
+                            dateInput.classList.remove('is-invalid');
+                            dateInput.setCustomValidity(''); // marks as valid
+                        }
+                    }
                     if (!form.checkValidity()) {
                         event.preventDefault()
                         event.stopPropagation()
                     } 
 
                     form.classList.add('was-validated');
-                    
+
                 }, false)
             })
     })()
@@ -439,6 +462,29 @@
                 this.classList.remove('is-valid');
                 this.classList.add('is-invalid');
                 this.setCustomValidity('Please provide a email type.'); // marks as invalid
+            }
+        })
+
+        $(document).on('keyup', '#busi_start_dt', function(e) {
+            if(!$('form#customer_register_form').hasClass('was-validated'))
+                return;
+            const dateInput = document.getElementById('busi_start_dt');
+
+            const parts = dateInput.value.split('/');
+            const day   = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year  = parseInt(parts[2], 10);
+
+            const date = new Date(year, month - 1, day); // Month is 0-indexed
+            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                dateInput.classList.add('is-invalid');
+                dateInput.setCustomValidity('Please provide a email type.'); // marks as invalid
+                // emailInput.reportValidity(); // triggers UI and updates :invalid
+
+                event.preventDefault();
+            } else {
+                dateInput.classList.remove('is-invalid');
+                dateInput.setCustomValidity(''); // marks as valid
             }
         })
 

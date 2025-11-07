@@ -76,7 +76,8 @@
 <script>
     $(document).ready(function(e) {
         $(document).on('click', '#btn-guest-login', function(e) {
-            window.location = 'login/guest_login';
+            debugger
+            window.location = '/login/guest_login';
         })
         $(document).on('click', '#btn-customer-register', function(e) {
             window.location = 'customer-register';

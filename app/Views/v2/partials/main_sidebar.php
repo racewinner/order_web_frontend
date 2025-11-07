@@ -11,6 +11,31 @@
           return $module['module_id'];
         }, $allowed_modules);
     
+        $logon_user_menues = LOGON_USER_MENUES;
+        // if(empty($credit_account)) {
+        // 	unset($logon_user_menues['my_account']); //1
+        // }
+        // if(!in_array('orders', $allowed_module_ids)) {
+        // 	unset($logon_user_menues['my_orders']); //2
+        // }
+        // if(empty($credit_account)) {
+        // 	unset($logon_user_menues['my_order_history']);//3
+        // }
+        // if(empty($credit_account)) {
+        // 	unset($logon_user_menues['my_invoice_history']);//4
+        // }
+        // if(empty($credit_account)) {
+        // 	unset($logon_user_menues['credit_ledger']);//5
+        // }
+        if(!in_array('pastorders', $allowed_module_ids)) {
+		    unset($logon_user_menues['my_orders']); //2
+	    }
+        if(!in_array('employees', $allowed_module_ids)) {
+            unset($logon_user_menues['add_employee']); //2
+        }
+        unset($logon_user_menues['log_out']); //2
+        
+
         $menus = [
             'home' => ['icon' => 'bi-house', 'label' => 'Home', 'url' => '/home'],
             'products' => ['icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products'],
@@ -28,7 +53,7 @@
             $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'];
         }
 
-        $menus['myaccount'] = ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => LOGON_USER_MENUES];
+        $menus['myaccount'] = ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => $logon_user_menues];
         $menus['separator2'] = ['label' => 'separator'];
         $menus['logout'] = ['icon' => 'bi-box-arrow-left', 'label' => 'Log Out', 'url' => '/home/logout'];
     }

@@ -39,6 +39,18 @@ class Opayo extends BaseController
         $orderId = request()->getPost("order_id");
         $customerEmail = request()->getPost("customer_email");
         $description = "This is test order.";
+
+        $payload = request()->getBody();
+        $payload_decoded = json_decode($payload, true);
+        if (empty($amount)) {
+            $amount = $payload_decoded["amount"];
+        }
+        if (empty($orderId)) {
+            $orderId = $payload_decoded["order_id"];
+        }
+        if (empty($customerEmail)) {
+            $customerEmail = $payload_decoded["customer_email"];
+        }
         
         // Save payment record
         $paymentData = [

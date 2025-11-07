@@ -127,7 +127,8 @@ class Orders extends Secure_area implements iData_controller
 
 			$sum_item_total = 0;
 			$sum_vat = 0;
-			$sum_charge = 0;
+			$sum_charge_cc = 0;
+			$sum_charge_dv = 0;
 
 			$orders = $Order->get_all_cart($pid, $type['id'])->getResult();
 			foreach($orders as $order) {
@@ -138,10 +139,10 @@ class Orders extends Secure_area implements iData_controller
 				$sum_item_total += $order->quantity * $order->product->prod_sell;
 				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
 				if ($payment_charges && $payment_charges->collection == 1) {
-					$sum_charge += $order->quantity * $payment_charges->cc_per_item;
+					$sum_charge_cc += $order->quantity * $payment_charges->cc_per_item;
 				} 
 				if ($payment_charges && $payment_charges->delivery == 1) {
-					$sum_charge += $order->quantity * $payment_charges->dv_per_item;
+					$sum_charge_dv += $order->quantity * $payment_charges->dv_per_item;
 				}
 			}
 			$type['item_total'] = $sum_item_total;
@@ -149,13 +150,13 @@ class Orders extends Secure_area implements iData_controller
 			
 			if ($sum_item_total != 0 && !empty($payment_charges) && $payment_charges->collection == 1) {
 				if ($payment_charges->cc_mpi == 1) {
-					$type['cc_charge'] = $sum_charge + $payment_charges->cc_min_charge;
+					$type['cc_charge'] = $sum_charge_cc + $payment_charges->cc_min_charge;
 				} else {
-				    $type['cc_charge'] = $sum_charge;
-					if ($sum_charge < $payment_charges->cc_min_charge) {
+				    $type['cc_charge'] = $sum_charge_cc;
+					if ($sum_charge_cc < $payment_charges->cc_min_charge) {
 						$type['cc_charge'] = $payment_charges->cc_min_charge;
 					} 
-					if ($sum_charge > $payment_charges->cc_max_charge) {
+					if ($sum_charge_cc > $payment_charges->cc_max_charge) {
 						$type['cc_charge'] = $payment_charges->cc_max_charge;
 					} 
 				}
@@ -166,13 +167,13 @@ class Orders extends Secure_area implements iData_controller
 			
 			if ($sum_item_total != 0 && !empty($payment_charges) && $payment_charges->delivery == 1) {
 				if ($payment_charges->dv_mpi == 1) {
-					$type['dv_charge'] = $sum_charge + $payment_charges->dv_min_charge;
+					$type['dv_charge'] = $sum_charge_dv + $payment_charges->dv_min_charge;
 				} else {
-				    $type['dv_charge'] = $sum_charge;
-					if ($sum_charge < $payment_charges->dv_min_charge) {
+				    $type['dv_charge'] = $sum_charge_dv;
+					if ($sum_charge_dv < $payment_charges->dv_min_charge) {
 						$type['dv_charge'] = $payment_charges->dv_min_charge;
 					}
-					if ($sum_charge > $payment_charges->dv_max_charge) {
+					if ($sum_charge_dv > $payment_charges->dv_max_charge) {
 						$type['dv_charge'] = $payment_charges->dv_max_charge;
 					}					
 				}
@@ -781,9 +782,7 @@ class Orders extends Secure_area implements iData_controller
 						 WHERE opened=1 AND type='{$type}'   AND person_id={$user_info->person_id} 
 						 				AND branch={$branch} AND organization_id={$organization_id}");
 
-
 		$ftp_credential = $Order->getFTPcredential();
-
 		
 		if($type != 'spresell') {
 			
@@ -794,36 +793,40 @@ class Orders extends Secure_area implements iData_controller
 				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
 				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
 				if ($ftp_stream==false) {
+					/*
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Unable to connect to order server.'
-					]);
+					]);*/
 				}
 			} catch (Exception $e) {
+				/*
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Unable to connect to order server.'
-				]);
+				]);*/
 			}
 				
 			try {	
 				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
 				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
-				if ($login_stat==false) { 
+				if ($login_stat==false) {
+					/*
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Unable to login to order server.'
-					]);
+					]);*/
 				}
 			} catch (Exception $e) {
+				/*
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Unable to login to order server.'
-				]);
+				]);*/
 			}
 				
 			try {
@@ -836,18 +839,20 @@ class Orders extends Secure_area implements iData_controller
 					// echo  FCPATH.'tempftp/'.$file_name;
 					// exit;
 					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
+					/*
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Sorry, issue with creating order file.'
-					]);
+					]);*/
 				}
 			} catch (Exception $e) {
+				/*
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Sorry, issue with creating order file.'
-				]);
+				]);*/
 			}
 				
 			//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
@@ -870,17 +875,16 @@ class Orders extends Secure_area implements iData_controller
 			$mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
 		}
 
-		
-
 		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';//$addr_mail['email_addr']
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
 		$res = $this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
 		if (!$res) {
+			/*
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,
 				'msg' => 'Sorry, issue sending email.'
-			]);
+			]);*/
 		}
 		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
@@ -888,11 +892,23 @@ class Orders extends Secure_area implements iData_controller
 		// EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
 		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
 
-		
 		// echo "Send Order success.";
-		return response()->setJSON([
-			'success' => true,
-		]);
+		$db->transComplete();
+		if ($db->transStatus() === FALSE) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => false,
+				'msg' => 'Sorry, send order failed.'
+			]);
+		} else {
+			return response()->setJSON([
+				'success' => true,
+				'data' => [
+					'order_id' => $order_id,
+					'customer_email' => $customer_mail_addr,
+				]
+			]);
+		}
     }
 	
 	////////////////////////////////////////////////

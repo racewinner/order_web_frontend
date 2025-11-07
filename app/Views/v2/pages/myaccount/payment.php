@@ -10,6 +10,7 @@
         }
         /* width: 600px; */
         /* max-width: 95vw; */
+        min-width: 400px;
         padding: 20px;
         input[type='radio'] {
             width: 25px;
@@ -134,6 +135,7 @@
         .delivery-payment {
             /* width: 600px; */
             /* max-width: 95vw; */
+            min-width: auto !important;
             padding: 0px;
             input[type='radio'] {
                 width: 25px;
@@ -679,6 +681,36 @@
 
 <?= $this->section('javascript') ?>
 <script>
+    function make_payment(order_id, customer_email, amount) {
+        let payload = {
+            order_id,
+            customer_email,
+            amount
+        }
+        return $.ajax({
+            url: `/opayo/initiate`,
+            method:"POST",
+            data: JSON.stringify(payload),
+            cache:false,
+            processData:false,
+        })
+        .then(function(res) {
+            if (cb_success) {
+                cb_success(res)
+            } else {
+                console.log(res);
+                alert('opayo testing...........')
+            }
+        })
+        .catch(function(error) {
+            console.log(`make order error: ${error}`)
+            if (cb_error) {
+                cb_error(error)
+            } else {
+                showToast({type: "error", message: d.error});
+            }
+        })
+    }
     function make_order(type, payload, cb_success, cb_error) {
         return $.ajax({
             url: `/orders/send_order/${type}`,
@@ -823,14 +855,29 @@
            
             let res = make_order(arr[0], payload, function(res) {
                 debugger
-                const {success, msg} = res;
+                const {success, msg, data} = res;
                 if (success) {
-                    showToast({
-                        type: 'success',
-                        message: "Product order has done successfully.",
-                    });
-                    let url = `<?php echo base_url("");?>myaccount/order_history`;
-	                window.location.href = url;
+                    if (payment_method == 'pay_in_card') {
+                        const {order_id, customer_email} = data;
+
+                        let pay_total_amount    = $('#pay_total_amount').text();
+                        let pay_total_vats      = $('#pay_total_vats').text();
+                        let pay_charge          = $('#cc_charge').val();
+
+                        pay_total_amount = pay_total_amount.slice(1);
+                        pay_total_vats = pay_total_vats.slice(1);
+
+                        const amount = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
+                        // if the customer want to pay immediately,
+                        make_payment(order_id, customer_email, amount);
+                    } else {
+                        showToast({
+                            type: 'success',
+                            message: "Product order has done successfully.",
+                        });
+                        let url = `<?php echo base_url("");?>myaccount/order_history`;
+                        window.location.href = url;
+                    }
                 } else {
                     alert_message(res.msg)
                 }
@@ -1061,10 +1108,10 @@
             $(`#${payment_method}`).click();
         } 
         if (collection_container) {
-            $(`#${collection_container}`).click();
+            $(`[name='collection_container']#${collection_container}`).click();
         }
         if (delivery_container) {
-            $(`#${delivery_container}`).click();
+            $(`[name='delivery_container']#${delivery_container}`).click();
         }
         if (order_date) {
             $(`#collection_date`).val(order_date);
