@@ -112,6 +112,7 @@ $(document).ready(function(e) {
         tbl_row = e.target.closest('tr');
 
         prod_code = $(tbl_row).find('.prod_code_2do').text();
+        prod_desc = $(tbl_row).find('.prod-desc').text();
         prod_type = $(tbl_row).find('.prod_code_2do').data('trolley-type');
         prod_qty  = $(tbl_row).find('.prod_qty_2do' ).text();
         products  = [{prod_code, prod_type, prod_qty}];
@@ -144,7 +145,7 @@ $(document).ready(function(e) {
                     update_cart();
                     showToast({
                         type: 'success',
-                        message: "Your request to reorder has been sent",
+                        message: `You now have ${prod_qty} of ${prod_desc}`,
                     });
                     return;
                 } else {
