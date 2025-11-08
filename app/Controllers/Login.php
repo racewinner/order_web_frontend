@@ -180,7 +180,7 @@ class Login extends BaseController
 
 		if ($nearest_branch_id > 0) {
 			session()->set('branch', $nearest_branch_id);
-			return redirect()->to(base_url('home'));
+			return redirect()->to(base_url('home/guest'));
 		}
 
 		return redirect()->to(base_url('login'));

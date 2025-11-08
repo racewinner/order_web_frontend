@@ -53,7 +53,7 @@ if(empty($user_info)) {
 	// if(empty($credit_account)) {
 	// 	unset($logon_user_menues['credit_ledger']);//5
 	// }
-	if(!in_array('pastorders', $allowed_module_ids)) {
+	if(!in_array('employees', $allowed_module_ids)) {
 		unset($logon_user_menues['my_orders']); //2
 	}
 	if(!in_array('employees', $allowed_module_ids)) {

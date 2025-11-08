@@ -42,6 +42,34 @@ class Orders extends Secure_area implements iData_controller
 
 		$img_host = $Admin->get_plink('img_host');
 		$this->data['img_host'] = $img_host;
+
+		/**
+		 * get vat table data
+		 */
+		$vat_tbl_dt = ['A' => 0, 'C' => 0, 'X' => 0, 'Z' => 0];
+		$db = \Config\Database::connect();
+		$q = $db->table('epos_vat')
+				->get();
+
+		if ($q->getNumRows() > 0) {
+			$q_rows= $q->getResult();
+			foreach ($q_rows as $q_row) {
+				if ($q_row->code == 'A') {
+					$vat_tbl_dt['A'] = $q_row->rate;
+				}
+				if ($q_row->code == 'C') {
+					$vat_tbl_dt['C'] = $q_row->rate;
+				}
+				if ($q_row->code == 'X') {
+					$vat_tbl_dt['X'] = $q_row->rate;
+				}
+				if ($q_row->code == 'Z') {
+					$vat_tbl_dt['Z'] = $q_row->rate;
+				}
+
+			}
+		}
+
 		
 		/**
 		 * generate payment method list
@@ -138,6 +166,7 @@ class Orders extends Secure_area implements iData_controller
 				}
 				$sum_item_total += $order->quantity * $order->product->prod_sell;
 				$sum_vat += ($order->quantity * $order->product->prod_sell * $order->product->vat_rate) / 100;
+
 				if ($payment_charges && $payment_charges->collection == 1) {
 					$sum_charge_cc += $order->quantity * $payment_charges->cc_per_item;
 				} 
@@ -180,6 +209,12 @@ class Orders extends Secure_area implements iData_controller
 			} else {
 				$type['dv_charge'] = 0;
 			}
+
+			$type['cc_vat'] = $type['cc_charge'] * $vat_tbl_dt['A'] / 100;
+			$type['dv_vat'] = $type['dv_charge'] * $vat_tbl_dt['A'] / 100;
+
+
+
 		}
 		$this->data["types"] = $types;
 
@@ -239,6 +274,10 @@ class Orders extends Secure_area implements iData_controller
 		// $this->data['total_epoints']    = $cart['total_epoints'];
 		$this->data['cc_charge']  		= $trolledType['cc_charge'];
 		$this->data['dv_charge']  		= $trolledType['dv_charge'];
+
+		$this->data['cc_vat']  			= $trolledType['cc_vat'];
+		$this->data['dv_vat']  			= $trolledType['dv_vat'];
+
 		$this->data['total_vats']       = $trolledType['vat'];
 
 

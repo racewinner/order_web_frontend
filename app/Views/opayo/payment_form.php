@@ -68,9 +68,9 @@
         }
         
         // Auto-submit after 3 seconds
-        setTimeout(function() {
-            submitForm();
-        }, 3000);
+        // setTimeout(function() {
+        //     submitForm();
+        // }, 3000);
     </script>
 </body>
 </html>

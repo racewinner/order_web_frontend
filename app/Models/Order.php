@@ -656,7 +656,7 @@ class Order extends Model
 		];
 	}
 	
-	function save_for_later($person_id ,$opened, $type='general', $presell = 0, $ref = "", $payload = [], $passed_db)
+	function save_for_later($person_id ,$opened, $type='general', $presell = 0, $ref = "", $payload = [], $passed_db = null)
 	{
 		if ($passed_db) {
 			$db = $passed_db;

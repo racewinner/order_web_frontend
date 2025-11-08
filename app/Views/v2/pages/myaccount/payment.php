@@ -264,8 +264,13 @@
 
 <?= $this->section('content') ?>
 <input type="hidden" name="cart_typename" id="cart_typename" value="<?php echo $cart_typename;?>">
-<input type="hidden" name="cc_charge" id="cc_charge" value="<?php echo $cc_charge;?>">
-<input type="hidden" name="dv_charge" id="dv_charge" value="<?php echo $dv_charge;?>">
+<input type="hidden" name="total_amount"  id="total_amount"  value="<?php echo $total_amount;?>">
+
+<input type="hidden" name="cc_charge"     id="cc_charge"     value="<?php echo $cc_charge;?>">
+<input type="hidden" name="dv_charge"     id="dv_charge"     value="<?php echo $dv_charge;?>">
+<input type="hidden" name="cc_vat"        id="cc_vat"        value="<?php echo $cc_vat;?>">
+<input type="hidden" name="dv_vat"        id="dv_vat"        value="<?php echo $dv_vat;?>">
+<input type="hidden" name="total_vats"    id="total_vats"    value="<?php echo $total_vats;?>">
 
 <div class="d-flex flex-column flex-lg-row mx-auto main-content-pad-on-mobile">
     <div class="delivery-payment">
@@ -677,11 +682,13 @@
     </div>
 </div>
 <?= view("v2/partials/confirm_order_modal"); ?>
+<?= view("opayo/checkout"); ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
 <script>
     function make_payment(order_id, customer_email, amount) {
+        debugger
         let payload = {
             order_id,
             customer_email,
@@ -695,6 +702,7 @@
             processData:false,
         })
         .then(function(res) {
+            debugger
             if (cb_success) {
                 cb_success(res)
             } else {
@@ -703,6 +711,7 @@
             }
         })
         .catch(function(error) {
+            debugger
             console.log(`make order error: ${error}`)
             if (cb_error) {
                 cb_error(error)
@@ -869,6 +878,7 @@
 
                         const amount = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
                         // if the customer want to pay immediately,
+                        debugger
                         make_payment(order_id, customer_email, amount);
                     } else {
                         showToast({
@@ -895,18 +905,20 @@
         $('#order_type_label').text('Click & Collect');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
-        let pay_total_amount    = $('#pay_total_amount').text();
-        let pay_total_vats      = $('#pay_total_vats').text();
+        debugger
+        let pay_total_amount    = $('#total_amount').val();
+        let pay_total_vats      = $('#total_vats').val();
         let pay_charge          = $('#cc_charge').val();
+        let pay_charge_vat      = $('#cc_vat').val();
 
-        pay_total_amount = pay_total_amount.slice(1);
-        pay_total_vats = pay_total_vats.slice(1);
+        // pay_total_amount = pay_total_amount.slice(1);
+        // pay_total_vats = pay_total_vats.slice(1);
 
         $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
-        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        $('#pay_total_vats').text('£'+(parseFloat(pay_total_vats) + parseFloat(pay_charge_vat)).toFixed(2));
         $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
 
-        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats) + parseFloat(pay_charge_vat);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
         
         const data = {
@@ -930,18 +942,19 @@
         $('#order_type_label').text('Delivery Charge');
         $('.delivery-charge-v-in-right-sidebar').removeClass('must-hide');
 
-        let pay_total_amount    = $('#pay_total_amount').text();
-        let pay_total_vats      = $('#pay_total_vats').text();
+        let pay_total_amount    = $('#total_amount').val();
+        let pay_total_vats      = $('#total_vats').val();
         let pay_charge          = $('#dv_charge').val();
+        let pay_charge_vat      = $('#dv_vat').val();
 
-        pay_total_amount = pay_total_amount.slice(1);
-        pay_total_vats = pay_total_vats.slice(1);
+        // pay_total_amount = pay_total_amount.slice(1);
+        // pay_total_vats = pay_total_vats.slice(1);
 
         $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
-        $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        $('#pay_total_vats').text('£'+(parseFloat(pay_total_vats) + parseFloat(pay_charge_vat)).toFixed(2));
         $('#charge').text('£'+parseFloat(pay_charge).toFixed(2));
 
-        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
+        let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats) + parseFloat(pay_charge_vat);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
         const data = {
