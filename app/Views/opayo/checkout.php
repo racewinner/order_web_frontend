@@ -5,7 +5,7 @@
                 <h4>Checkout</h4>
             </div>
             <div class="card-content">
-                <form method="POST" action="<?= base_url('opayo/initiate') ?>">
+                <form method="GET" action="<?= base_url('sagepayment/initiate') ?>">
                     <?= csrf_field() ?>
                     
                     <div class="mb-4 text-left">

@@ -66,6 +66,7 @@
                 border: 1px solid #eee;
                 border-radius: 10px;
                 padding: 20px;
+                cursor: pointer;
                 &.pay-in-card {
                     input.expire-date, input.cvv {
                         width: 150px;
@@ -112,6 +113,15 @@
                 font-size: 150%;
             }
         }
+    }
+    label.pay-method-label {
+        cursor: pointer;
+        display: block;
+    }
+    label.pay-method-click-area {
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 0;
     }
     .mt-0  { margin-top: 0px !important;     }
     .mt-10 { margin-top: 10px !important;    }
@@ -552,7 +562,7 @@
             <h6>Payment Method</h6>
             <?php if ($this->data['payment_methods']->e_order) { ?>
                 <div class="one-pay-method pay-with-order d-flex align-items-center p-2 px-4 mb-2">
-                    <div class="flex-fill">with Order</div>
+                    <label class="flex-fill pay-method-label" for="pay_with_order">with Order</label>
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_with_order" value="pay_with_order" 
@@ -565,7 +575,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->depot) { ?>
                 <div class="one-pay-method pay-in-depot d-flex align-items-center p-2 px-4 mb-2">
-                    <div class="flex-fill">at Depot</div>
+                    <label class="flex-fill pay-method-label" for="pay_in_depot">at Depot</label>
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_in_depot" value="pay_in_depot" 
@@ -578,7 +588,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->echo_pay) { ?>
                 <div class="one-pay-method pay_by_echopay d-flex align-items-center p-2 px-4 mb-2">
-                    <div class="flex-fill">EchoPay</div>
+                    <label class="flex-fill pay-method-label" for="pay_by_echopay">EchoPay</label>
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_echopay" value="pay_by_echopay" 
@@ -591,7 +601,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->bank_transfer) { ?>
                 <div class="one-pay-method pay_by_bank_transfer d-flex align-items-center p-2 px-4 mb-2">
-                    <div class="flex-fill">Bank Transfer</div>
+                    <label class="flex-fill pay-method-label" for="pay_by_bank_transfer">Bank Transfer</label>
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_bank_transfer" value="pay_by_bank_transfer" 
@@ -604,7 +614,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->credit_account) { ?>
                 <div class="one-pay-method pay_by_credit_account d-flex align-items-center p-2 px-4 mb-2">
-                    <div class="flex-fill">Credit Account</div>
+                    <label class="flex-fill pay-method-label" for="pay_by_credit_account">Credit Account</label>
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_credit_account" value="pay_by_credit_account" 
@@ -617,7 +627,7 @@
             <?php } ?>
             <?php if ($this->data['payment_methods']->debit_credit_card) { ?>
             <div class="one-pay-method pay-in-card p-2 px-4">
-                <div class="d-flex align-items-center">
+                <label class="d-flex align-items-center pay-method-click-area">
                     <div class="flex-fill">
                         <div>Debit / Credit Card</div>
                         <ul class="card-types d-flex">
@@ -634,8 +644,7 @@
                             <?php } ?>
                         >
                     </div>
-                </div>
-               
+                </label>
             </div>
             <?php } ?>
         </div>
@@ -723,6 +732,94 @@
     function make_order(type, payload, cb_success, cb_error) {
         return $.ajax({
             url: `/orders/send_order/${type}`,
+            method:"POST",
+            data: JSON.stringify(payload),
+            cache:false,
+            processData:false,
+        })
+        .then(function(res) {
+            if (cb_success) {
+                cb_success(res)
+            } else {
+                return {success: true}
+            }
+        })
+        .catch(function(error) {
+            console.log(`make order error: ${error}`)
+            if (cb_error) {
+                cb_error(error)
+            } else {
+                showToast({type: "error", message: d.error});
+            }
+        })
+    }
+
+    function sanitizeParamValue(value) {
+        if (value === undefined || value === null) {
+            return null;
+        }
+        const trimmed = (typeof value === 'string') ? value.trim() : value;
+        if (trimmed === '' || trimmed === 'undefined' || trimmed === 'null') {
+            return null;
+        }
+        return trimmed;
+    }
+
+    function sanitizeParamsObject(obj) {
+        Object.keys(obj).forEach((key) => {
+            const clean = sanitizeParamValue(obj[key]);
+            if (clean === null) {
+                delete obj[key];
+            } else {
+                obj[key] = clean;
+            }
+        });
+        return obj;
+    }
+
+    function updatePaymentMethodSelection(payment_method) {
+        const $sendOrdersBtn = $('#send_orders');
+        if (!$sendOrdersBtn.data('default-text')) {
+            $sendOrdersBtn.data('default-text', $sendOrdersBtn.text());
+        }
+
+        const defaultText = $sendOrdersBtn.data('default-text');
+
+        if (payment_method === 'pay_in_card') {
+            $sendOrdersBtn.text('Make Payment and Submit Order');
+        } else if (payment_method) {
+            $sendOrdersBtn.text('Submit Order');
+        } else {
+            $sendOrdersBtn.text(defaultText);
+        }
+
+        const params = new URLSearchParams(window.location.search);
+ 
+        const data = sanitizeParamsObject({
+            cart_typename: $('#cart_typename').val() || params.get('cart_typename'),
+            order_type: params.get('order_type'),
+            collection_container: params.get('collection_container'),
+            delivery_container: params.get('delivery_container'),
+            order_date: params.get('order_date'),
+        });
+
+        const queryParams = new URLSearchParams(data);
+
+        const cleanPaymentMethod = sanitizeParamValue(payment_method);
+        if (cleanPaymentMethod) {
+            queryParams.set('payment_method', cleanPaymentMethod);
+        } else {
+            queryParams.delete('payment_method');
+        }
+
+        const queryString = queryParams.toString();
+        const url = queryString ? `/orders/payment?${queryString}` : '/orders/payment';
+        history.replaceState(null, '', url);
+    }
+
+    function make_order_by_opayo_payment(type, payload, cb_success, cb_error) {
+        return $.ajax({
+            url: `/ordered-products/payment/${type}`,
             method:"POST",
             data: JSON.stringify(payload),
             cache:false,
@@ -929,8 +1026,8 @@
             delivery_container:     $('[name="delivery_container"]:checked').val(),
             order_date:             $('#collection_date').val(),
         }
-       
-        const queryParams = new URLSearchParams(data);
+        
+        const queryParams = new URLSearchParams(sanitizeParamsObject(data));
 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
@@ -947,8 +1044,6 @@
         let pay_charge          = $('#dv_charge').val();
         let pay_charge_vat      = $('#dv_vat').val();
 
-        // pay_total_amount = pay_total_amount.slice(1);
-        // pay_total_vats = pay_total_vats.slice(1);
 
         $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
         $('#pay_total_vats').text('£'+(parseFloat(pay_total_vats) + parseFloat(pay_charge_vat)).toFixed(2));
@@ -965,89 +1060,78 @@
             delivery_container:     $('[name="delivery_container"]:checked').val(),
             order_date:             $('#delivery_date').val(),
         }
-        
-        const queryParams = new URLSearchParams(data);
+
+        const queryParams = new URLSearchParams(sanitizeParamsObject(data));
 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
+    })
+
+    $(document).on('click', '.one-pay-method', function(e) {
+         const $target = $(e.target);
+         if ($target.closest('input, label, a, button, select, textarea').length) {
+             return;
+         }
+ 
+         const $radio = $(this).find("input[type='radio']");
+        if (!$radio.length) {
+            return;
+        }
+
+        $radio.prop('checked', true).trigger('change');
+        updatePaymentMethodSelection($radio.val());
     })
 
     $(document).on('click', '[name="payment_method"]', function(e) {
-        const params = new URLSearchParams(window.location.search);
-
-        const cart_typename         = params.get('cart_typename');
-        const order_type            = params.get('order_type');
-        const payment_method        = $(e.target).val();
-        const collection_container  = params.get('collection_container');
-        const delivery_container    = params.get('delivery_container');
-        const order_date            = params.get('order_date');
-
-        if (payment_method == 'pay_in_card') {
-            $('#send_orders').text('Make Payment and Submit Order')
-        } else {
-            $('#send_orders').text('Submit Order')
-        }
-
-        const data = {
-            cart_typename:          cart_typename,
-            order_type:             order_type,
-            payment_method:         payment_method,
-            collection_container:   collection_container,
-            delivery_container:     delivery_container,
-            order_date:             order_date,
-        }
-        
-        const queryParams = new URLSearchParams(data);
-
-        let url = `/orders/payment?${queryParams}`;
-        history.replaceState(null, '', url)
-
+        const payment_method = this.checked ? $(this).val() : null;
+        updatePaymentMethodSelection(payment_method);
     })
 
     $(document).on('click', '[name="collection_container"]', function(e) {
-        const params = new URLSearchParams(window.location.search);
-
-        const cart_typename         = params.get('cart_typename');
-        const order_type            = params.get('order_type');
-        const payment_method        = params.get('payment_method');
+         const params = new URLSearchParams(window.location.search);
+ 
+        const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
+        const order_type            = sanitizeParamValue(params.get('order_type'));
+        const payment_method        = sanitizeParamValue(params.get('payment_method'));
         const collection_container  = $(e.target).val();
-        const delivery_container    = params.get('delivery_container');
-        const order_date            = params.get('order_date');
+        const delivery_container    = sanitizeParamValue(params.get('delivery_container'));
+        const order_date            = sanitizeParamValue(params.get('order_date'));
 
-        const data = {
+        const data = sanitizeParamsObject({
             cart_typename:          cart_typename,
             order_type:             order_type,
             payment_method:         payment_method,
             collection_container:   collection_container,
             delivery_container:     delivery_container,
             order_date:             order_date,
-        }
-        
-        const queryParams = new URLSearchParams(data);
+        });
 
+        const queryParams = new URLSearchParams(data);
+ 
         let url = `/orders/payment?${queryParams}`;
+
         history.replaceState(null, '', url)
     })
 
     $(document).on('click', '[name="delivery_container"]', function(e) {
         const params = new URLSearchParams(window.location.search);
 
-        const cart_typename         = params.get('cart_typename');
-        const order_type            = params.get('order_type');
-        const payment_method        = params.get('payment_method');
-        const collection_container  = params.get('collection_container');
+        const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
+        const order_type            = sanitizeParamValue(params.get('order_type'));
+        const payment_method        = sanitizeParamValue(params.get('payment_method'));
+        const collection_container  = sanitizeParamValue(params.get('collection_container'));
         const delivery_container    = $(e.target).val();
-        const order_date            = params.get('order_date');
+        const order_date            = sanitizeParamValue(params.get('order_date'));
 
-        const data = {
+        const data = sanitizeParamsObject({
             cart_typename:          cart_typename,
             order_type:             order_type,
             payment_method:         payment_method,
             collection_container:   collection_container,
             delivery_container:     delivery_container,
             order_date:             order_date,
-        }
-        
+        });
+
         const queryParams = new URLSearchParams(data);
 
         let url = `/orders/payment?${queryParams}`;
@@ -1055,81 +1139,83 @@
     })
 
     $(document).on('click', '#collection_date', function(e) {
-        const params = new URLSearchParams(window.location.search);
-
-        const cart_typename         = params.get('cart_typename');
-        const order_type            = params.get('order_type');
-        const payment_method        = params.get('payment_method');
-        const collection_container  = params.get('collection_container');
-        const delivery_container    = params.get('delivery_container');
+         const params = new URLSearchParams(window.location.search);
+ 
+        const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
+        const order_type            = sanitizeParamValue(params.get('order_type'));
+        const payment_method        = sanitizeParamValue(params.get('payment_method'));
+        const collection_container  = sanitizeParamValue(params.get('collection_container'));
+        const delivery_container    = sanitizeParamValue(params.get('delivery_container'));
         const order_date            = $(e.target).val();
-
+ 
         $('#delivery_date').val(order_date);
-
-        const data = {
+ 
+        const data = sanitizeParamsObject({
             cart_typename:          cart_typename,
             order_type:             order_type,
             payment_method:         payment_method,
             collection_container:   collection_container,
             delivery_container:     delivery_container,
             order_date:             order_date,
-        }
-        
-        const queryParams = new URLSearchParams(data);
+        });
 
+        const queryParams = new URLSearchParams(data);
+ 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
     })
 
     $(document).on('click', '#delivery_date', function(e) {
-        const params = new URLSearchParams(window.location.search);
-
-        const cart_typename         = params.get('cart_typename');
-        const order_type            = params.get('order_type');
-        const payment_method        = params.get('payment_method');
-        const collection_container  = params.get('collection_container');
-        const delivery_container    = params.get('delivery_container');
+         const params = new URLSearchParams(window.location.search);
+ 
+        const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
+        const order_type            = sanitizeParamValue(params.get('order_type'));
+        const payment_method        = sanitizeParamValue(params.get('payment_method'));
+        const collection_container  = sanitizeParamValue(params.get('collection_container'));
+        const delivery_container    = sanitizeParamValue(params.get('delivery_container'));
         const order_date            = $(e.target).val();
-
+ 
         $('#collection_date').val(order_date);
-
-        const data = {
+ 
+        const data = sanitizeParamsObject({
             cart_typename:          cart_typename,
             order_type:             order_type,
             payment_method:         payment_method,
             collection_container:   collection_container,
             delivery_container:     delivery_container,
             order_date:             order_date,
-        }
-        
-        const queryParams = new URLSearchParams(data);
+        });
 
+        const queryParams = new URLSearchParams(data);
+ 
         let url = `/orders/payment?${queryParams}`;
         history.replaceState(null, '', url)
     })
 
     $(document).ready(function() {
+        debugger
         const params                = new URLSearchParams(window.location.search);
 
-        const order_type            = params.get('order_type');
-        const payment_method        = params.get('payment_method');
-        const collection_container  = params.get('collection_container');
-        const delivery_container    = params.get('delivery_container')
-        const order_date            = params.get('order_date');
+        const order_type            = sanitizeParamValue(params.get('order_type'));
+        const payment_method        = sanitizeParamValue(params.get('payment_method'));
+        const collection_container  = sanitizeParamValue(params.get('collection_container'));
+        const delivery_container    = sanitizeParamValue(params.get('delivery_container'));
+        const order_date            = sanitizeParamValue(params.get('order_date'));
 
-        if (payment_method) {
-            $(`#${payment_method}`).click();
-        } 
+        if (order_date) {
+            $(`#collection_date`).val(order_date);
+            $(`#delivery_date`).val(order_date);
+        }
         if (collection_container) {
             $(`[name='collection_container']#${collection_container}`).click();
         }
         if (delivery_container) {
             $(`[name='delivery_container']#${delivery_container}`).click();
         }
-        if (order_date) {
-            $(`#collection_date`).val(order_date);
-            $(`#delivery_date`  ).val(order_date);
+        if (payment_method) {
+            $(`#${payment_method}`).click();
         }
+        
 
         const charge = $('#charge').text();
 
@@ -1138,29 +1224,31 @@
             let el = $(`[data-bs-target="${bsTgtStr}"]`);
             if (!el.hasClass('active') || charge == undefined || charge == '' ) {
                 el.click();
+                return;
             }
-        } else {
-            let el = $('.delivery-methods li')
-            if (el.length == 0) {
-                $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
-                let pay_total_amount    = $('#pay_total_amount').text();
-                let pay_total_vats      = $('#pay_total_vats').text();
+        } 
+        // else {
+        //     let el = $('.delivery-methods li')
+        //     if (el.length == 0) {
+        //         $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
+        //         let pay_total_amount    = $('#pay_total_amount').text();
+        //         let pay_total_vats      = $('#pay_total_vats').text();
 
-                pay_total_amount = pay_total_amount.slice(1);
-                pay_total_vats = pay_total_vats.slice(1);
+        //         pay_total_amount = pay_total_amount.slice(1);
+        //         pay_total_vats = pay_total_vats.slice(1);
 
-                let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
-                $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-                $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
-                $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
-            } else {
-                let selected_el_bsTarget = $(el[0]).data('bs-target');
-                if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
-                    (order_type == 'delivery' && selected_el_bsTarget != '#pane-via-delivery')) {
-                    el[0].click();
-                }
-            }
-        }
+        //         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
+        //         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+        //         $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
+        //         $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
+        //     } else {
+        //         let selected_el_bsTarget = $(el[0]).data('bs-target');
+        //         if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
+        //             (order_type == 'delivery' && selected_el_bsTarget != '#pane-via-delivery')) {
+        //             el[0].click();
+        //         }
+        //     }
+        // }
 
         let pay_total_amount    = $('#pay_total_amount').text();
         let pay_total_vats      = $('#pay_total_vats').text();
@@ -1173,6 +1261,8 @@
 
         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
+
+        updatePaymentMethodSelection($('[name="payment_method"]:checked').val() || null);
     })
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {

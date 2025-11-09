@@ -474,6 +474,14 @@ $(document).ready(function () {
         add_loadingSpinner_to_button($submit);
     })
 
+    $(document).on('click', '.checkout-button', function () {
+        const $btn = $(this);
+        if ($btn.hasClass('has-loading-spinner')) {
+            return;
+        }
+        add_loadingSpinner_to_button($btn);
+    })
+
     $(document).on('click', '.cms-content', function (e) {
         const cms = $(e.target).closest('.cms-content');
         const cms_itm_id = cms.data('cms-itm-id');

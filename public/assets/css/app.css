@@ -993,7 +993,9 @@ input[type='radio'] {
     }
 }
 
-button.has-loading-spinner {
+button.has-loading-spinner,
+.btn.has-loading-spinner {
+    position: relative;
     padding-left: 35px !important;
 }
 

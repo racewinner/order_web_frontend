@@ -147,7 +147,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100">Next</a>
+                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button">Next</a>
             </div>
         </div>
     </div>

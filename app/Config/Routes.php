@@ -125,3 +125,7 @@ $routes->post('opayo/initiate',                   'Opayo::initiatePayment');
 $routes->post('opayo/notification',               'Opayo::notification');
 $routes->get ('opayo/success',                    'Opayo::success');
 $routes->get ('opayo/failure',                    'Opayo::failure');
+
+
+$routes->get ('sagepayment/initiate',                   'SagePayment::initiate');
+
