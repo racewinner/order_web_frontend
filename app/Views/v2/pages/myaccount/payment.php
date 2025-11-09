@@ -140,6 +140,7 @@
     .one-delivery-container {
         border: 1px solid #eee;
         border-radius: 10px;
+        cursor: pointer;
     }
     @media (max-width: 992px) {
         .delivery-payment {
@@ -1074,13 +1075,39 @@
          }
  
          const $radio = $(this).find("input[type='radio']");
-        if (!$radio.length) {
-            return;
-        }
+         if (!$radio.length) {
+             return;
+         }
+ 
+         $radio.prop('checked', true).trigger('change');
+         updatePaymentMethodSelection($radio.val());
+     })
+ 
+    $(document).on('click', '.one-collection-container, .one-delivery-container', function(e) {
+        debugger
+        const $target = $(e.target);
+         if ($target.is('input, label, button, a')) {
+             return;
+         }
+ 
+         const $radio = $(this).find("input[type='radio']");
+         if (!$radio.length) {
+             return;
+         }
+ 
+         const isCollection = $(this).hasClass('one-collection-container');
+         const groupName = isCollection ? 'collection_container' : 'delivery_container';
+         const $groupRadios = $(`input[name='${groupName}']`);
 
-        $radio.prop('checked', true).trigger('change');
-        updatePaymentMethodSelection($radio.val());
-    })
+         if ($radio.prop('checked')) {
+             return;
+         }
+
+         $groupRadios.prop('checked', false);
+         $radio.prop('checked', true);
+         $radio.trigger('change');
+         $radio.trigger('click');
+     })
 
     $(document).on('click', '[name="payment_method"]', function(e) {
         const payment_method = this.checked ? $(this).val() : null;
@@ -1088,6 +1115,7 @@
     })
 
     $(document).on('click', '[name="collection_container"]', function(e) {
+        debugger
          const params = new URLSearchParams(window.location.search);
  
         const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
@@ -1193,7 +1221,6 @@
     })
 
     $(document).ready(function() {
-        debugger
         const params                = new URLSearchParams(window.location.search);
 
         const order_type            = sanitizeParamValue(params.get('order_type'));
@@ -1227,28 +1254,6 @@
                 return;
             }
         } 
-        // else {
-        //     let el = $('.delivery-methods li')
-        //     if (el.length == 0) {
-        //         $('.delivery-charge-v-in-right-sidebar').addClass('must-hide');
-        //         let pay_total_amount    = $('#pay_total_amount').text();
-        //         let pay_total_vats      = $('#pay_total_vats').text();
-
-        //         pay_total_amount = pay_total_amount.slice(1);
-        //         pay_total_vats = pay_total_vats.slice(1);
-
-        //         let cart_subtotal2 = parseFloat(pay_total_amount) + parseFloat(pay_total_vats);
-        //         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
-        //         $('#pay_total_amount').text('£'+parseFloat(pay_total_amount).toFixed(2));
-        //         $('#pay_total_vats').text('£'+parseFloat(pay_total_vats).toFixed(2));
-        //     } else {
-        //         let selected_el_bsTarget = $(el[0]).data('bs-target');
-        //         if ((order_type == 'collection' && selected_el_bsTarget != '#pane-pickup-depot') ||
-        //             (order_type == 'delivery' && selected_el_bsTarget != '#pane-via-delivery')) {
-        //             el[0].click();
-        //         }
-        //     }
-        // }
 
         let pay_total_amount    = $('#pay_total_amount').text();
         let pay_total_vats      = $('#pay_total_vats').text();
