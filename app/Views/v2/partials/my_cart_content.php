@@ -42,6 +42,6 @@
         <div class="total-amount" id="cart_subtotal">£<?= $total_amount/* + $delivery_charge + $total_vats*/ ?></div>
     </div>
     <div>
-        <a href="/orders/checkout" class="btn btn-danger checkout-button">Go to Checkout</a>
+        <a href="/orders/checkout" class="btn btn-danger checkout-button" style="width: 220px;">Go to Checkout</a>
     </div>
 </div>

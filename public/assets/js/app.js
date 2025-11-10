@@ -55,13 +55,14 @@ function alert_message(msg='Hello!', title='Alert', cls='', hiddenCallback=f=>f)
 }
 
 function searchProductsByProdCodes(prod_codes) {
+    debugger
     let url  = '/products/index?';
         url += "&sort_key=0";
         url += "&category_id=0";
         url += "&offset=0";
         url += "&per_page=30";
         url += "&view_mode=" + ($("#view_mode").val() ?? 'grid');
-        url += '&search0=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
+        url += '&search3=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
     window.location.href = url;
 }
 
@@ -358,7 +359,7 @@ function load_products(filter) {
         data.category_id = '';                      //
     }                                               //
     if (data.category_id) {                         //
-        data.search0 = '';                          //                       
+        data.search0 = '';                          //   
     }                                               //
     // ---------------------------------------------//
     const queryParams = new URLSearchParams(data);

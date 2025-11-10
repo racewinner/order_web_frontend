@@ -832,40 +832,40 @@ class Orders extends Secure_area implements iData_controller
 				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
 				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
 				if ($ftp_stream==false) {
-					/*
+					
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Unable to connect to order server.'
-					]);*/
+					]);
 				}
 			} catch (Exception $e) {
-				/*
+				
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Unable to connect to order server.'
-				]);*/
+				]);
 			}
 				
 			try {	
 				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
 				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
 				if ($login_stat==false) {
-					/*
+					
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Unable to login to order server.'
-					]);*/
+					]);
 				}
 			} catch (Exception $e) {
-				/*
+				
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Unable to login to order server.'
-				]);*/
+				]);
 			}
 				
 			try {
@@ -878,20 +878,20 @@ class Orders extends Secure_area implements iData_controller
 					// echo  FCPATH.'tempftp/'.$file_name;
 					// exit;
 					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
-					/*
+					
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
 						'msg' => 'Sorry, issue with creating order file.'
-					]);*/
+					]);
 				}
 			} catch (Exception $e) {
-				/*
+				
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
 					'msg' => 'Sorry, issue with creating order file.'
-				]);*/
+				]);
 			}
 				
 			//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
@@ -918,12 +918,12 @@ class Orders extends Secure_area implements iData_controller
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
 		$res = $this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
 		if (!$res) {
-			/*
+			
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,
-				'msg' => 'Sorry, issue sending email.'
-			]);*/
+				'msg' => 'Sorry, issue with sending email.'
+			]);
 		}
 		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);

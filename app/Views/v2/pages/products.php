@@ -258,6 +258,9 @@
 <?= $this->section('javascript') ?>
 <script>
     function loadProducts() {
+        const params        = new URLSearchParams(window.location.search);
+        const search3       = params.get('search3');
+
         const data = {
             sort_key: $('#sort_key').val(),
             category_id: $('#category_id').val() ?? 0,
@@ -274,6 +277,7 @@
             spresell: 0,
             search0: $('#search0').val().replace(/[\/()|'*]/g, ' '),
             search1: $('div.products-table-header:visible input[name="search1"]').val().replace(/[\/()|'*]/g, ' '),
+            search3: search3,
         }
         const filter_brands = getFilterBrands();
         if (filter_brands?.length > 0) {

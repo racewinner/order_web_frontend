@@ -1283,6 +1283,60 @@ class Product extends Model
 
 				}
 			}
+			// search3
+			if (!empty($filter['search3'])) {
+				$search0 = urldecode($filter['search3']);
+				try {
+					$cond .= "AND (";
+					$arr0 = preg_split("/\,/", $search0);
+					foreach ($arr0 as $index0 => $a0) {
+						if ($index0 > 0)
+							$cond .= " OR ";
+						$cond .= "( ";
+						//------------
+						$a0 = trim($a0);
+						$arr = preg_split("/\ /", $a0);
+						foreach ($arr as $index => $a) {
+							$keyword = $a;
+							if (strpos($keyword, '%') !== false) {
+								$keyword = str_replace(['%', '_'], ['\%', '\_'], $keyword);
+							} else {
+								$keyword = $db->escapeLikeString($a);
+							}
+							if ($index > 0)
+								$cond .= " AND ";
+							$cond .= "( ";
+							// original search engine...
+								// $cond .= "p.prod_code LIKE '%" . $keyword . "' ";
+								// $cond .= "OR retail LIKE '" . 	$keyword . "%' ";
+								// $cond .= "OR wholesale LIKE '" . $keyword . "%' ";
+								// $cond .= "OR prod_desc LIKE '%". $keyword . "%' ";
+								// $cond .= "OR brand LIKE '%" . 	$keyword . "%' ";
+							// new search engine, holla.ardy
+							$cond .= "p.prod_code LIKE '%" . 		$keyword . "' ";		
+							//----------
+							$cond .= "OR retail LIKE '" . 			$keyword . "%' ";			
+							//----------
+							$cond .= "OR wholesale LIKE '" . 		$keyword . "%' ";		
+							//----------
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . "' ";		
+							$cond .= "OR prod_desc LIKE '" . 		$keyword . " %' ";
+							$cond .= "OR prod_desc LIKE '% " . 		$keyword . " %' ";
+							$cond .= "OR prod_desc = '" . 			$keyword . "' ";
+							//----------
+							$cond .= "OR prod_pack_desc LIKE '%" . 	$keyword . "%' ";
+							//----------
+							$cond .= "OR brand LIKE '%" . 			$keyword . "%' ";
+							$cond .= ") ";
+						}
+						//------------
+						$cond .= ") ";
+					}
+					$cond .= ") ";
+				} catch (\Exception $e) {
+
+				}
+			}
 			$cond .= "AND prod_sell > 0 ";
 
 			return $cond;

@@ -692,7 +692,7 @@
     </div>
 </div>
 <?= view("v2/partials/confirm_order_modal"); ?>
-<?= view("opayo/checkout"); ?>
+<!-- <= view("opayo/checkout"); ?> -->
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
@@ -964,28 +964,28 @@
                 debugger
                 const {success, msg, data} = res;
                 if (success) {
-                    if (payment_method == 'pay_in_card') {
-                        const {order_id, customer_email} = data;
+                    // if (payment_method == 'pay_in_card') {
+                    //     const {order_id, customer_email} = data;
 
-                        let pay_total_amount    = $('#pay_total_amount').text();
-                        let pay_total_vats      = $('#pay_total_vats').text();
-                        let pay_charge          = $('#cc_charge').val();
+                    //     let pay_total_amount    = $('#pay_total_amount').text();
+                    //     let pay_total_vats      = $('#pay_total_vats').text();
+                    //     let pay_charge          = $('#cc_charge').val();
 
-                        pay_total_amount = pay_total_amount.slice(1);
-                        pay_total_vats = pay_total_vats.slice(1);
+                    //     pay_total_amount = pay_total_amount.slice(1);
+                    //     pay_total_vats = pay_total_vats.slice(1);
 
-                        const amount = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
-                        // if the customer want to pay immediately,
-                        debugger
-                        make_payment(order_id, customer_email, amount);
-                    } else {
+                    //     const amount = parseFloat(pay_total_amount) + parseFloat(pay_charge) + parseFloat(pay_total_vats);
+                    //     // if the customer want to pay immediately,
+                    //     debugger
+                    //     make_payment(order_id, customer_email, amount);
+                    // } else {
                         showToast({
                             type: 'success',
                             message: "Product order has done successfully.",
                         });
                         let url = `<?php echo base_url("");?>myaccount/order_history`;
                         window.location.href = url;
-                    }
+                    // }
                 } else {
                     alert_message(res.msg)
                 }

@@ -30,6 +30,7 @@ class Products extends BaseController implements iData_controller
 		$search0 = urldecode($this->request->getGet('search0')) ?? '';
 		$search1 = urldecode($this->request->getGet('search1')) ?? '';
 		$search2 = urldecode($this->request->getGet('search2')) ?? '';
+		$search3 = urldecode($this->request->getGet('search3')) ?? '';
 		$sort_key = $this->request->getGet('sort_key') ?? 3;
 		$category_id = $this->request->getGet('category_id') ?? 0;
 		$per_page = intval($this->request->getGet('per_page') ?? 30);
@@ -55,6 +56,7 @@ class Products extends BaseController implements iData_controller
 			'search0' => $search0,
 			'search1' => $search1,
 			'search2' => $search2,
+			'search3' => $search3,
 			'category_id' => $category_id,
 			'im_new' => $im_new,
 			'plan_profit' => $plan_profit,
@@ -71,6 +73,7 @@ class Products extends BaseController implements iData_controller
 			'search0' => $search0,
 			'search1' => $search1,
 			'search2' => $search2,
+			'search3' => $search3,
 			'category_id' => $category_id,
 			'im_new' => $im_new,
 			'plan_profit' => $plan_profit,
@@ -116,6 +119,7 @@ class Products extends BaseController implements iData_controller
 			'search0' => $search0, 
 			'search1' => $search1,
 			'search2' => $search2, 
+			'search3' => $search3, 
 			'limit' => $per_page, 
 			'offset' => $offset, 
 			'sort_key' => $sort_key, 
@@ -164,6 +168,7 @@ class Products extends BaseController implements iData_controller
 			."&search0=".$search0
 			."&search1=".$search1
 			."&search2=".$search2
+			."&search3=".$search3
 			."&sort_key=".$sort_key
 			."&category_id=".$category_id
 			."&view_mode=".$view_mode
