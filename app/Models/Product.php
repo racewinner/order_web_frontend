@@ -1284,7 +1284,7 @@ class Product extends Model
 				}
 			}
 			// search3
-			if (!empty($filter['search3'])) {
+			if (!empty($filter['search3']) && $filter['search3'] != 'null') {
 				$search0 = urldecode($filter['search3']);
 				try {
 					$cond .= "AND (";

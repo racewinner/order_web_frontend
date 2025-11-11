@@ -277,7 +277,7 @@
             spresell: 0,
             search0: $('#search0').val().replace(/[\/()|'*]/g, ' '),
             search1: $('div.products-table-header:visible input[name="search1"]').val().replace(/[\/()|'*]/g, ' '),
-            search3: search3,
+            search3: !empty(search3) && search3 !== 'null' ? search3 : '',
         }
         const filter_brands = getFilterBrands();
         if (filter_brands?.length > 0) {
