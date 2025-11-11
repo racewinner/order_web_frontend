@@ -54,6 +54,47 @@ function alert_message(msg='Hello!', title='Alert', cls='', hiddenCallback=f=>f)
     })
 }
 
+function question_message(msg='Hello!', title='Alert', cls='', okCallback=f=>f) {
+    const container = document.getElementById('question-msg-container');
+    container.innerHTML = `<div class="modal fade ${cls}" id="question_message_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered max-w-700">
+                                    <div class="modal-auto-width-content">
+                                        <div class="modal-header">
+                                            <div class="w-100 text-center">${title}</div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body px-100 py-5 d-flex flex-column align-items-center">
+                                            <div class="confirm-content-panel mt-0">
+                                                <div class="">
+                                                    ${msg}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button class="btn btn-danger full-fill border mt-4 ok-btn" style="width: 150px" data-bs-dismiss="modal" >
+                                                    OK
+                                            </button>
+                                            <button class="btn btn-general full-fill border mt-4" style="width: 150px" data-bs-dismiss="modal" >
+                                                    Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+    const question_message_modal = $("#question_message_dialog");
+    const modal = new bootstrap.Modal(question_message_modal[0]);
+    debugger
+    modal.show();
+
+    $(`.${cls} .ok-btn`).on ('click', function (e) {
+        // do something...
+        okCallback();
+    })
+}
+
 function searchProductsByProdCodes(prod_codes) {
     debugger
     let url  = '/products/index?';

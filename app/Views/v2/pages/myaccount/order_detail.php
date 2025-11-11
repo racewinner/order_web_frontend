@@ -90,7 +90,8 @@ table {
                         </div>
                     </div>
                     <div class="">
-                        <button id="add-to-cart-by-bulk" class="btn btn-danger">Repeat Order</button>
+                        <button id="ask-to-cart-by-bulk" class="btn btn-danger">Repeat Order</button>
+                        <button id="add-to-cart-by-bulk" class="btn btn-danger must-hide">Repeat Order</button>
                     </div>
                 </div>
             </td></tr>
@@ -98,6 +99,7 @@ table {
         <?php } ?>
     </table>
 </div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
@@ -162,9 +164,13 @@ $(document).ready(function(e) {
             }
         });
     })
-    $(document).on('click', 'button#add-to-cart-by-bulk', function(e) {
-
+    $(document).on('click', 'button#ask-to-cart-by-bulk', function(e) {
         debugger
+        question_message('Do you want to repeat the full order?', 'Info required', 'full-repeat-order-form-modal', function(e){
+            $('button#add-to-cart-by-bulk').click();
+        });
+    });
+    $(document).on('click', 'button#add-to-cart-by-bulk', function(e) {
         const params        = new URLSearchParams(window.location.search);
         const on            = params.get('on');
         const branch        = params.get('branch');
@@ -220,7 +226,7 @@ $(document).ready(function(e) {
                     update_cart();
                     showToast({
                         type: 'success',
-                        message: "Your request to reorder has been sent",
+                        message: "Available items have been added to your trolley",
                     });
                     return;
                 } else {

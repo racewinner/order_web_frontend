@@ -1134,6 +1134,9 @@ html {
 #alert_message_dialog .modal-footer {
     justify-content: center !important;
 }
+#question_message_dialog .modal-footer {
+    justify-content: center !important;
+}
 
 /*
  * label multiple break lines

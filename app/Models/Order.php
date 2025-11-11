@@ -301,6 +301,13 @@ class Order extends Model
 		
 		// get FTP credential based on branch
 		$result = $db->table('epos_branches_ordering_config')->where('branch' , $branch)->get()->getRow();
+		if (!empty($result->cc_email)) 		{ $ftp_credential['cc_email'    ] = $result->cc_email; 	    }
+		if (!empty($result->from_email))	{ $ftp_credential['from_email'  ] = $result->from_email; 	}
+
+		if (!empty($result->smtp_server))	{ $ftp_credential['smtp_server'  ] = $result->smtp_server; 	}
+		if (!empty($result->smtp_username))	{ $ftp_credential['smtp_username'] = $result->smtp_username;}
+		if (!empty($result->smtp_password))	{ $ftp_credential['smtp_password'] = $result->smtp_password;}
+
 		if (!empty($result->ftp_host)) 		{ $ftp_credential['ftp_host'	] = $result->ftp_host; 		}
 		if (!empty($result->ftp_path)) 		{ $ftp_credential['ftp_path'	] = $result->ftp_path; 		}
 		if (!empty($result->ftp_username)) 	{ $ftp_credential['ftp_username'] = $result->ftp_username; 	}
@@ -339,6 +346,11 @@ class Order extends Model
 		}
 		if (empty($ftp_credential['ftp_password'])) { 
 			$ftp_credential['ftp_password'] = 'Yasir123$%^'; 		
+		}
+
+		// remove trailing slash from ftp_path
+		if (!empty($ftp_credential['ftp_path'])) {
+			$ftp_credential['ftp_path'] = trim($ftp_credential['ftp_path'], "/\\ \t\n\r\0\x0B");
 		}
 
 		return $ftp_credential;

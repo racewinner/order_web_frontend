@@ -826,8 +826,6 @@ class Orders extends Secure_area implements iData_controller
 		if($type != 'spresell') {
 			
 			// ### FTP Start 
-			$ftp_credential = $Order->getFTPcredential();
-
 			try {
 				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
 				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
@@ -873,6 +871,10 @@ class Orders extends Secure_area implements iData_controller
 				// echo FCPATH.'temp/'.$file_name;
 				// exit;
 				$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
+				$directory = dirname($file_path);
+				if (!is_dir($directory)) {
+					mkdir($directory, 0775, true);
+				}
 				if(!write_file($file_path, $file_data))
 				{
 					// echo  FCPATH.'tempftp/'.$file_name;
@@ -918,7 +920,6 @@ class Orders extends Secure_area implements iData_controller
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
 		$res = $this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
 		if (!$res) {
-			
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,

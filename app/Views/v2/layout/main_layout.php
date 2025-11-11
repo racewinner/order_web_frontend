@@ -116,6 +116,7 @@
 
 	<!-- alert message container start -->
 	<div id="alert-msg-container"></div>
+	<div id="question-msg-container"></div>
 	<!-- alert message container end -->
 
     <?= view('v2/partials/main_footer') ?>
