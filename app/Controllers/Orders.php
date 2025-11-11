@@ -692,9 +692,11 @@ class Orders extends Secure_area implements iData_controller
 	
 	function get_total_items_cart($type='general')
 	{
-		$id = $this->input->post('id');
-		//$user_info = $this->Employee->get_logged_in_employee_info();
-		$data = $this->Order->get_count_cart_products($id, $type);
+		$Employee = new Employee();
+		$Order = new Order();
+		$user_info = $Employee->get_logged_in_employee_info();
+		$presell = $type == 'spresell' ? 1 : 0;
+		$data = $Order->get_count_cart_products($user_info->person_id, $type, $presell);
 		return $data;
 	}
 
@@ -704,7 +706,8 @@ class Orders extends Secure_area implements iData_controller
 		$Employee = new Employee();
 		$Order = new Order();
 		$user_info = $Employee->get_logged_in_employee_info();
-		if($Order->get_count_cart_products($user_info->person_id, $type) == 0)
+		$presell = $type == 'spresell' ? 1 : 0;
+		if($Order->get_count_cart_products($user_info->person_id, $type, $presell) == 0)
 			echo 100;
 		else echo $Order->save_for_later($user_info->person_id , 0, $type);
 	}
@@ -725,7 +728,7 @@ class Orders extends Secure_area implements iData_controller
 		
 		$user_info = $Employee->get_logged_in_employee_info();
 		$presell = $type == 'spresell' ? 1 : 0;
-		if ($Order->get_count_cart_products($user_info->person_id, $presell) == 0) {
+		if ($Order->get_count_cart_products($user_info->person_id, $type, $presell) == 0) {
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,

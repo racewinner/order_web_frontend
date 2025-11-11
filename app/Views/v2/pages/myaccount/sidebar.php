@@ -1,5 +1,16 @@
 <?php
+	$allowed_module_ids = array_map(function($module) {
+		return $module['module_id'];
+	}, $allowed_modules);
+
 	$logon_user_menues = LOGON_USER_MENUES;
+    if(!in_array('employees', $allowed_module_ids)) {
+		unset($logon_user_menues['my_orders']); //2
+	}
+	if(!in_array('employees', $allowed_module_ids)) {
+		unset($logon_user_menues['add_employee']); //2
+	}
+
     $current_url = request()->uri->getPath();    
 ?>
 

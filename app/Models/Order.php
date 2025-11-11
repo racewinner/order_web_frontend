@@ -165,7 +165,7 @@ class Order extends Model
 	}
 
 
-	function get_count_cart_products($person_id, $presell=0)
+	function get_count_cart_products($person_id, $type, $presell=0)
 	{
 		$db = \Config\Database::connect();
 		$branch = session()->get('branch');
@@ -173,6 +173,7 @@ class Order extends Model
 
 		$builder = $db->table('epos_cart');
 		$builder->where('person_id', $person_id);
+		$builder->where('group_type', $type);
 		$builder->where('presell', $presell);
 		$builder->where('branch', $branch);
 		if (!empty($organization_id)) {
@@ -668,7 +669,7 @@ class Order extends Model
 		];
 	}
 	
-	function save_for_later($person_id ,$opened, $type='general', $presell = 0, $ref = "", $payload = [], $passed_db = null)
+	function save_for_later($person_id , $opened, $type='general', $presell=0, $ref="", $payload=[], $passed_db=null)
 	{
 		if ($passed_db) {
 			$db = $passed_db;
