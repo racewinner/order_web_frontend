@@ -1166,7 +1166,7 @@ class Orders extends Secure_area implements iData_controller
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
-		if (!$cc) {
+		if (!empty($cc)) {
 			$email->setCC($cc);
 		}
 		$email->setReplyTo($from);
