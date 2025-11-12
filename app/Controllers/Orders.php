@@ -274,39 +274,19 @@ class Orders extends Secure_area implements iData_controller
 		// $this->data['total_epoints']    = $cart['total_epoints'];
 		$this->data['cc_charge']  		= $trolledType['cc_charge'];
 		$this->data['dv_charge']  		= $trolledType['dv_charge'];
-
 		$this->data['cc_vat']  			= $trolledType['cc_vat'];
 		$this->data['dv_vat']  			= $trolledType['dv_vat'];
-
 		$this->data['total_vats']       = $trolledType['vat'];
-
-
-
-
-
-
-
-
-
-
 
 
 		// $this->data['credit_account_info'] = session()->get('credit_account_info');
 		// $this->data['payment_card_info'] = session()->get('payment_card_info');
 
 
-		
-
-
-
 		$this->data['form_width'] = $this->get_form_width();
 	    
 	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
-
-
-
-
 		
 
 		if($page == 'checkout') {
@@ -478,19 +458,11 @@ class Orders extends Secure_area implements iData_controller
 		
 		$types = [
 			['id' => 'general', 'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			// ['id' => 'tobacco', 'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			// ['id' => 'chilled', 'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0], 
-			// ['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0], 
 		];
 		foreach($types as &$type) {
-			// $type['lines'] = $Order->get_lines($pid, $type['id']);
-      $type['lines'] = $Order->get_lines_ignore_type($pid, $type['id']);
-
-			// $type['items'] = $Order->get_items($pid, $type['id']);
+			$type['lines'] = $Order->get_lines_ignore_type($pid, $type['id']);
 			$type['items'] = $Order->get_items_ignore_type($pid, $type['id']);
-
-			// $orders = $Order->get_all_cart($pid, $type['id'])->getResult();
-      $orders = $Order->get_all_cart_ignore_type($pid, $type['id'])->getResult();
+			$orders = $Order->get_all_cart_ignore_type($pid, $type['id'])->getResult();
 
 			foreach($orders as $order) {
 				Order::populateProduct($order, $this->priceList, $user_info, 0);
@@ -727,12 +699,12 @@ class Orders extends Secure_area implements iData_controller
 		$delivery_method = $payload['delivery_method'];
 		$user_info = $Employee->get_logged_in_employee_info();
 		$presell = $type == 'spresell' ? 1 : 0;
-		
+
 		if ($Order->get_count_cart_products($user_info->person_id, $type, $presell) == 0) {
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,
-				'msg' => 'There is not any product to order.'
+				'msg' => 'There is not any product to order. Code 1001'
 			]);
 		}
 		
@@ -741,7 +713,7 @@ class Orders extends Secure_area implements iData_controller
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,
-				'msg' => 'Sorry, there is something wrong in ordering, error code: save_for_later().'
+				'msg' => 'Sorry, there is something wrong in ordering, Code 1002'
 			]);
 		}
 
@@ -779,7 +751,6 @@ class Orders extends Secure_area implements iData_controller
 		}
 		$file_data = $Order->get_order_file_data($user_info->person_id , 2, $type);
         $vv=substr($file_data,-3);
-        $file_data = substr($file_data,0,strlen($file_data)-3);
         if($file_data < 0) {
 			$db->transRollback();
 			return response()->setJSON([

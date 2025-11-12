@@ -870,8 +870,8 @@ class Order extends Model
 		$branch = session()->get('branch');
 		$organization_id = session()->get('organization_id');
 
-		if($option == 1)	//get first line
-		{
+		// get first line
+		if ($option == 1) {
 			$res = $db->table('epos_employees')->where('person_id' , $person_id)->get()->getRow();
 			$account_number = substr('000000'.$res->username,-5);
 			$builder = $db->table($this->table);
@@ -903,8 +903,8 @@ class Order extends Model
 			$first_line .= "\r\n";
 			return $first_line;
 		}
-		else if($option == 2)	//get file data
-		{
+		// get file data
+		else if($option == 2) {
 			$builder = $db->table($this->table);
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
@@ -944,8 +944,7 @@ class Order extends Model
 			$results = $db->query($query);
 			$nCount = 1;
 			$file_data = "";
-			foreach($results->getResult() as $res_prod)
-			{
+			foreach($results->getResult() as $res_prod) {
                 $nCount1 = substr("000".$nCount,-3);
                 $prod_code = substr("0000000".$res_prod->prod_code,-7);
                 $quantity = substr("0000".$res_prod->quantity,-4);
@@ -958,9 +957,8 @@ class Order extends Model
 				   break;
 				 }
 			}
-			// $file_data .= "EOF".$nCount."\r\n".$vv;
-			$file_data .= "EOF".$vv;
 
+			$file_data .= "EOF".$vv; //"EOF".$nCount."\r\n".$vv;
 			return $file_data;
 		}
 	}
