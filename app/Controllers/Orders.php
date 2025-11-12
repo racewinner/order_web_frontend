@@ -815,7 +815,7 @@ class Orders extends Secure_area implements iData_controller
 				$login_stat = ftp_login($ftp_stream,
 								   $ftp_credential['ftp_username'], 
 								   $ftp_credential['ftp_password']); 
-				if ($login_stat==false) {
+				if ($login_stat == false) {
 					ftp_close($ftp_stream);
 					$db->transRollback();
 					return response()->setJSON([
@@ -833,11 +833,11 @@ class Orders extends Secure_area implements iData_controller
 			}
 				
 			try {
-				$file_ul=ftp_put($ftp_stream,
+				$file_ul = ftp_put($ftp_stream,
 					 $ftp_credential['ftp_path'].'/'.$file_name,
 					  $file_path,
 							    FTP_BINARY);
-				if ($file_ul==false) {
+				if ($file_ul == false) {
 					ftp_close($ftp_stream);
 					$db->transRollback();
 					return response()->setJSON([

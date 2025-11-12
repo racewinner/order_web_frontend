@@ -923,7 +923,9 @@ class Order extends Model
 			$order_id = $res->order_id;
             $result_vv = $db->query("SELECT count(*) AS vv 
 										  FROM epos_orders_products 
-										  WHERE order_id='{$order_id}' AND presell={$presell} AND branch={$branch} AND organization_id={$organization_id}");
+										  WHERE order_id='{$order_id}' AND presell={$presell} 
+										  AND branch={$branch} AND organization_id={$organization_id} 
+										  AND group_type='{$type}'");
 			$result_vv2 = $result_vv->getRow();
 			$vv=substr('000'.$result_vv2->vv,-3);
             $vv_count=0;
