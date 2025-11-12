@@ -725,9 +725,9 @@ class Orders extends Secure_area implements iData_controller
 		$payload = $this->request->getJSON(true);
 		$delivery_date = $payload['delivery_date'];
 		$delivery_method = $payload['delivery_method'];
-		
 		$user_info = $Employee->get_logged_in_employee_info();
 		$presell = $type == 'spresell' ? 1 : 0;
+		
 		if ($Order->get_count_cart_products($user_info->person_id, $type, $presell) == 0) {
 			$db->transRollback();
 			return response()->setJSON([
@@ -758,7 +758,6 @@ class Orders extends Secure_area implements iData_controller
 		$row = $q->get()->getRow();
 		$order_id = $row->order_id;
 		$epos = $row->epos;
-        //$order_id = $this->db->get()->row()->order_id;
 		if($epos == 0){ $origin = 'wo2'; } else { $origin = 'eo'; }
         $file_name = substr("00000".$user_info->username,-5).'_'.$datetime.'_'.$origin.'-'.$order_id.'_';
     	srand((double)microtime()*1000000);
@@ -789,10 +788,7 @@ class Orders extends Secure_area implements iData_controller
 			]);
 		}
 		$file_data = $first_line.$file_data;
-		//$file_path = "/home/uws003/public_html/temp/".$file_name;
 		$file_path = FCPATH . 'temp/' . $file_name;
-		
-		//$file_path = "/home/staging/public_html/temp/".$file_name; // --- SWAP
 		if(!write_file($file_path, $file_data)) {
 			$db->transRollback();
 			return response()->setJSON([
@@ -823,92 +819,76 @@ class Orders extends Secure_area implements iData_controller
         $db->query("DELETE FROM epos_orders 
 						 WHERE opened=1 AND type='{$type}'   AND person_id={$user_info->person_id} 
 						 				AND branch={$branch} AND organization_id={$organization_id}");
-
-		$ftp_credential = $Order->getFTPcredential();
 		
+		// Send order file to FTP server
+		$ftp_credential = $Order->getFTPcredential();
 		if($type != 'spresell') {
-			
-			// ### FTP Start 
 			try {
-				$ftp_stream = ftp_connect($ftp_credential['ftp_host']); //'order2.uniteduk.co.uk'
-				//$ftp_stream = ftp_connect('staging456.uniteduk.co.uk'); // --- SWAP
+				$ftp_stream = ftp_connect($ftp_credential['ftp_host']);
 				if ($ftp_stream==false) {
-					
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
-						'msg' => 'Unable to connect to order server.'
+						'msg' => 'Unable to connect to order server. Code 1001'
 					]);
 				}
 			} catch (Exception $e) {
-				
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
-					'msg' => 'Unable to connect to order server.'
+					'msg' => 'Unable to connect to order server. Code 1002'
 				]);
 			}
 				
 			try {	
-				$login_stat = ftp_login($ftp_stream,$ftp_credential['ftp_username'], $ftp_credential['ftp_password']); //'yasir@order2.uniteduk.co.uk'&'Yasir123$%^'
-				//$login_stat = ftp_login($ftp_stream,'staging','tWG8y&ZLtZ)9E0&pQ#CSU1Zn');  // --- SWAP
+				$login_stat = ftp_login($ftp_stream,
+								   $ftp_credential['ftp_username'], 
+								   $ftp_credential['ftp_password']); 
 				if ($login_stat==false) {
-					
+					ftp_close($ftp_stream);
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
-						'msg' => 'Unable to login to order server.'
+						'msg' => 'Unable to login to order server. Code 1003'
 					]);
 				}
 			} catch (Exception $e) {
-				
+				ftp_close($ftp_stream);
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
-					'msg' => 'Unable to login to order server.'
+					'msg' => 'Unable to login to order server. Code 1004'
 				]);
 			}
 				
 			try {
-				//$file_ul=ftp_put($ftp_stream,'epos_link_files/ordersin/'.$file_name,'/home/uws003/public_html/temp/'.$file_name,FTP_BINARY);
-				// echo FCPATH.'temp/'.$file_name;
-				// exit;
-				$file_path = FCPATH . $ftp_credential['ftp_path'] . '/' . $file_name; //'tempftp/'
-				$directory = dirname($file_path);
-				if (!is_dir($directory)) {
-					mkdir($directory, 0775, true);
-				}
-				if(!write_file($file_path, $file_data))
-				{
-					// echo  FCPATH.'tempftp/'.$file_name;
-					// exit;
-					//$file_ul = ftp_put($ftp_stream, FCPATH.'tempftp',  FCPATH.'temp/'.$file_name, FTP_BINARY);
-					
+				$file_ul=ftp_put($ftp_stream,
+					 $ftp_credential['ftp_path'].'/'.$file_name,
+					  $file_path,
+							    FTP_BINARY);
+				if ($file_ul==false) {
+					ftp_close($ftp_stream);
 					$db->transRollback();
 					return response()->setJSON([
 						'success' => false,
-						'msg' => 'Sorry, issue with creating order file.'
+						'msg' => 'Sorry, issue with creating order file. Code 1005'
 					]);
 				}
 			} catch (Exception $e) {
-				
+				ftp_close($ftp_stream);
 				$db->transRollback();
 				return response()->setJSON([
 					'success' => false,
-					'msg' => 'Sorry, issue with creating order file.'
+					'msg' => 'Sorry, issue with creating order file. Code 1006'
 				]);
 			}
 				
-			//$file_ul = ftp_put($ftp_stream,'public_html/temp_live/ordersin/'.$file_name,'/home/staging/public_html/temp/'.$file_name,FTP_BINARY); // --- SWAP
-			// if ($file_ul==false){ echo 'unable to write ORDER file'; ftp_close($ftp_stream); return; }
-			
 			ftp_close($ftp_stream);
-			// ### FTP End
 		}
 
+		// Send email to customer
 		$addr_mail = $Order->from_addr_mail();
 		$send_message = $Order->from_message_mail($user_info->person_id, $order_id, $type, $delivery_method, $delivery_date, 0, $type=='spresell');
-		// $mail_subject = lang('orders_email_subject').$user_info->username.' ['.ucfirst($type).'] order id : '.$origin.'-'.$order_id;
 		$mail_subject = "Your ";
 		$mail_subject.= $delivery_method == "#pane-pickup-depot" ? "Collection " : "Delivery ";
 		$mail_subject.= "Order for A/C " . $user_info->username . " ";
@@ -918,10 +898,14 @@ class Orders extends Secure_area implements iData_controller
 		if($type == 'spresell') {
 			$mail_subject = "SEASONAL PRESELL ORDER! " . $mail_subject;
 		}
-
-		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';//$addr_mail['email_addr']
+		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
-		$res = $this->do_send_email($from, $customer_mail_addr, $cc, $addr_mail['company_name'], $mail_subject, $send_message);
+		$res = $this->do_send_email($from, 
+									  $customer_mail_addr, 
+									  $cc, 
+						   $addr_mail['company_name'], 
+						   		 $mail_subject, 
+								 $send_message);
 		if (!$res) {
 			$db->transRollback();
 			return response()->setJSON([
@@ -929,13 +913,8 @@ class Orders extends Secure_area implements iData_controller
 				'msg' => 'Sorry, issue with sending email.'
 			]);
 		}
-		// $this->do_send_email($addr_mail['email_addr'], 'mh@uniteduk.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
-		// $this->do_send_email($addr_mail['email_addr'], 'yasirikram@gmail.com', $ftp_credential['cc_email'], $addr_mail['company_name'], $mail_subject, $send_message);
 
-		// EmailService::send($addr_mail['email_addr'], 'mh@uniteduk.com', $addr_mail['company_name'], $mail_subject, $send_message);
-		// EmailService::send($addr_mail['email_addr'], 'yasirikram@gmail.com', $addr_mail['company_name'], $mail_subject, $send_message);
-
-		// echo "Send Order success.";
+		// complete db transaction
 		$db->transComplete();
 		if ($db->transStatus() === FALSE) {
 			$db->transRollback();

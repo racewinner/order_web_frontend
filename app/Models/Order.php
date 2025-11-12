@@ -864,7 +864,7 @@ class Order extends Model
 		}
 	}
 
-	function get_order_file_data($person_id , $option ,$type='general', $presell = 0 , $ref = "")
+	function get_order_file_data($person_id , $option , $type='general', $presell = 0 , $ref = "")
 	{
 		$db = \Config\Database::connect();
 		$branch = session()->get('branch');
@@ -877,6 +877,7 @@ class Order extends Model
 			$builder = $db->table($this->table);
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
+			$builder->where('type' , $type);
 			$builder->where('presell' , $presell);
 			$builder->where('branch', $branch);
 			$builder->where('organization_id', $organization_id);
@@ -907,6 +908,7 @@ class Order extends Model
 			$builder = $db->table($this->table);
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
+			$builder->where('type' , $type);
 			$builder->where('presell' , $presell);
 			$builder->where('branch', $branch);
 			$builder->where('organization_id', $organization_id);
@@ -931,10 +933,13 @@ class Order extends Model
 			} else { 
 				$table = "product"; 
 			}
-			$query = "SELECT p.*, op.quantity, op.price 
+			$query = "SELECT p.*, op.order_id, op.quantity, op.price 
 					  FROM epos_orders_products AS op 
 					  LEFT JOIN epos_{$table} AS p ON op.prod_code=p.prod_code 
-					  WHERE op.order_id={$order_id} AND op.presell={$presell} AND op.branch={$branch} AND op.organization_id={$organization_id} ";
+					  WHERE op.order_id={$order_id} AND op.presell={$presell} 
+					  AND op.branch={$branch} AND op.organization_id={$organization_id} 
+					  AND op.group_type='{$type}' 
+					  GROUP BY op.prod_code";
 			
 			$results = $db->query($query);
 			$nCount = 1;
@@ -946,14 +951,16 @@ class Order extends Model
                 $quantity = substr("0000".$res_prod->quantity,-4);
 				$price = substr("00000000".number_format($res_prod->price,2,'.',''),-8);
                 if(strlen($price) > 8) return -206;
-				$file_data = $nCount1.$prod_code.$quantity.$price."\r\n";
+				$file_data.= $nCount1.$prod_code.$quantity.$price."\r\n";
 				$nCount ++;
 				if($nCount == 1000) {
 				   $file_data ="over 999 !!!"."\r\n";
 				   break;
 				 }
 			}
-			$file_data .= "EOF".$nCount."\r\n".$vv;
+			// $file_data .= "EOF".$nCount."\r\n".$vv;
+			$file_data .= "EOF".$vv;
+
 			return $file_data;
 		}
 	}
