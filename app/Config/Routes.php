@@ -12,6 +12,7 @@ $routes->get ('/home/preview',                    'Home::preview');
 $routes->get ('/home/logout',                     'Home::logout');
 $routes->get ('/login',                           'Login::index');
 $routes->post('/login',                           'Login::login_check');
+$routes->post('/login/pre-login',                 'Login::pre_login');
 $routes->get ('/login/guest_login',               'Login::guest_login');
 $routes->get ('/forgot-password',                 'Home::forgot_password');
 $routes->post('/reset-password',                  'Login::reset_password');

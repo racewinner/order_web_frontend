@@ -5,6 +5,7 @@ use App\Controllers\Secure_area;
 use App\Models\Admin;
 use App\Models\Employee;
 use App\Models\Hom;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\PriceList;
 use App\Models\Branch;
@@ -76,19 +77,7 @@ class Customer extends BaseController
 		$delivered    					= request()->getPost("delivered");	
 		$confirm_legal_owner_director 	= request()->getPost("confirm_legal_owner_director");
 		$prefered_branch 				= request()->getPost("prefered_branch");
-
-		// $query = $db->table('epos_customer_registration')
-		// 			->where('email', $email)
-		// 			->where('username', $username)
-		// 			->orderBy('id','desc')	
-		// 			->get();
-
-		// if ($query->getNumRows() == 0) {
-		// 	return response()->setJSON([
-		// 		'success' => 0,
-		// 		'msg' => "Confirm number doesn't exist"
-		// 	]);
-		// }
+		$email_form    					= request()->getPost("email_form");	
 
 		$dt = new DateTime(); // current date/time
 		$date_created  = $dt->format('Y-m-d H:i:s'); // 2025-11-05 12:34:56
@@ -122,16 +111,68 @@ class Customer extends BaseController
 			'prefered_branch' 				=> $prefered_branch
 		);		
 
-		$res = $db->table('epos_customer_registration')->insert($customer_data_to_save);
+    	$db->transStart();
+		$db->table('epos_customer_registration')->insert($customer_data_to_save);
+		$db->transComplete();
+		if ($db->transStatus() === FALSE) {
+			$db->transRollback();
+			return response()->setJSON([
+				'success' => 0,
+				'msg' => 'An error has occurred. Code 2001 '
+			]);
+		} 
+
+		// Send email to customer
+		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
+		$mail_addr = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
+		$company_name = $result->value;
+
+		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
+		$seller_mail_addr = $result->value;
+
+		$mail_subject = "New Account Application";
+
+		$message = "<html><body>";
+		$message .= $email_form;
+		$message .= "</body></html>";
+
+		$res = $this->do_send_email($mail_addr, $mail_addr, $company_name, $mail_subject, $message);
 		if ($res) {
 			return response()->setJSON([
 				'success' => 1,
 			]);
 		} else {
+			$db->transRollback();
 			return response()->setJSON([
 				'success' => 0,
+				'msg' => 'An error has occurred. Code 2002 '
 			]);
 		}
+		
+	}
+
+	function do_send_email($from, $to, $senderCompany, $subject, $message)
+	{
+		$email = \Config\Services::email();
+        $email->setFrom($from, $senderCompany);
+		$email->setCC($from);
+		$email->setReplyTo($from);
+        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
+		
+        $email->setSubject($subject);
+        $email->setMessage($message);
+
+        $email->setProtocol('mail');
+		$email->setMailType('html');
+        if ($email->send()) {
+            // echo 'Email sent'; 
+			return true;
+        } else {
+            // echo $email->printDebugger(); 
+			return false;
+        }
 	}
 }
 

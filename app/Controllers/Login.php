@@ -83,6 +83,16 @@ class Login extends BaseController
 		return redirect()->to(base_url('/login'));
 
 	}
+	function pre_login() 
+	{
+		$username = request()->getPost("username");	
+		$Employee = new Employee();
+		$res = $Employee->hasPasswordByUsername($username);
+		return response()->setJSON([
+				'success' => 1,
+				'data' => $res,
+			]);
+	}
 	function login_check(){
 		$rules = [
 			'username' => [

@@ -75,6 +75,23 @@
     flex: 1 1 !important
 }
 
+.customer-register-panel-for-email {
+    .form-control, .form-select {
+        font-size: 80%;
+        line-height: 1;
+    }
+    * {
+        border-radius: 0 !important;
+        color: #545454;
+    }
+    label {
+        font-size: 12px !important;
+    }
+    .form-check.d-flex label {
+        line-height: 25px;
+    }
+
+}
 </style>
 <?= $this->endSection() ?>
 
@@ -379,6 +396,199 @@
         </form>
     </div>
 </div>
+<div class="customer-register-panel-for-email">
+  <div id="customer_register_form_for_email" class="needs-validation" novalidate style="display: flex; flex-direction: column; gap: 10px; width: 900px">
+    <input type="hidden" id="sell_taxes" name="sell_taxes" value="" />
+    <div class="d-flex2 justify-content-between" style="gap: 10px">
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 2">
+        <div class="card-header p-2">
+          <div class='m-0'>Business</div>
+        </div>
+        <div class="card-body p-3">
+          <div class="d-flex2" style="gap: 20px">
+            <div class="full-fill">
+              <div class="mb-2">
+                <label class="required">Business Legal Name:</label>
+                <input type="text" maxlength="50" class="form-control" id="busi_legal_nm_for_email" name="busi_legal_nm_for_email" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label class="required">Business Trading Name:</label>
+                <input type="text" maxlength="50" class="form-control" id="busi_trad_nm_for_email" name="busi_trad_nm_for_email" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label class="required">Business Start Date:</label>
+                <input type="text" pattern="\d{2}/\d{2}/\d{4}" class="form-control datepicker" id="busi_start_dt_for_email" name="busi_start_dt_for_email" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label for="prefered_branch" class="">Preferred Branch:</label>
+                <select class="form-select" id="prefered_branch_for_email" name="prefered_branch_for_email">
+                  <option value="" selected></option> <?php foreach ($all_branches as $branch_name) : ?> <option value="
+										<?= esc($branch_name) ?>"> <?= esc($branch_name) ?> </option> <?php endforeach; ?>
+                </select>
+                <div class="invalid-feedback">Please select a branch.</div>
+              </div>
+              <div class="form-check  form-check mb-2">
+                <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" required />
+                <label class="form-check-label ps-0" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
+                <div class="invalid-feedback">You must agree to this option setting.</div>
+              </div>
+            </div>
+            <div class="full-fill">
+              <div class="mb-2">
+                <label class="required">Address Line 1:</label>
+                <input type="text" maxlength="39" class="form-control" id="addr_line1" name="addr_line1" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label class="">Address Line 2:</label>
+                <input type="text" maxlength="30" class="form-control" id="addr_line2" name="addr_line2" placeholder="" value="" />
+              </div>
+              <div class="mb-2">
+                <label class="required">County:</label>
+                <input type="text" maxlength="25" class="form-control" id="county" name="county" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label class="required">City:</label>
+                <input type="text" maxlength="25" class="form-control" id="city" name="city" placeholder="" value="" required />
+              </div>
+              <div class="mb-2">
+                <label class="required">Post Code:</label>
+                <input type="text" maxlength="8" class="form-control" id="post_code" name="post_code" placeholder="" value="" required />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex2 justify-content-between" style="gap: 10px">
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
+        <div class="card-header p-2">
+          <div class='m-0'>Contact</div>
+        </div>
+        <div class="card-body p-3">
+          <div class="mb-2">
+            <label class="required">Contact Name:</label>
+            <input type="text" maxlength="30" class="form-control" id="contact_nm" name="contact_nm" placeholder="" value="" required />
+          </div>
+          <div class="mb-2">
+            <label class="">Contact Telephone Landline:</label>
+            <input type="number" max="100000000000" class="form-control" id="contact_phone_ll" name="contact_phone_ll" placeholder="" value="" />
+            <div class="invalid-feedback"> Please provide a number of less than 11-digits. </div>
+          </div>
+          <div class="mb-2">
+            <label class="required">Contact Telephone Mobile:</label>
+            <input type="number" max="100000000000" class="form-control" id="contact_phone_mb" name="contact_phone_mb" placeholder="" value="" required />
+            <div class="invalid-feedback"> Please provide a number of less than 11-digits. </div>
+          </div>
+          <div class="mb-2">
+            <label class="required">Contact email adresss:</label>
+            <input type="email" maxlength="60" class="form-control" id="contact_email" name="contact_email" placeholder="" value="" required />
+            <div class="invalid-feedback"> Please provide a email type. </div>
+          </div>
+        </div>
+      </div>
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
+        <div class="card-header p-2">
+          <div class='m-0'>Company</div>
+        </div>
+        <div class="card-body p-3">
+          <div class="mb-2">
+            <label class="">Company Number:</label>
+            <input type="text" maxlength="12" class="form-control" id="company_no" name="company_no" placeholder="" value="" />
+          </div>
+          <div class="mb-2">
+            <label class="">VAT Number:</label>
+            <input type="number" max="10000000000" class="form-control" id="vat_number" name="vat_number" placeholder="" value="" />
+            <div class="invalid-feedback"> Please provide a number of less than 10-digits. </div>
+          </div>
+          <div class="mb-2">
+            <label class="required break-over-word">For how many years has the business been trading?</label>
+            <input type="number" max="100" class="form-control" id="busi_trad_years" name="busi_trad_years" placeholder="" value="" required />
+            <div class="invalid-feedback"> Please provide a number of less than 2-digits. </div>
+          </div>
+        </div>
+      </div>
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
+        <div class="card-header p-2">
+          <div class='m-0'>Sell</div>
+        </div>
+        <div class="card-body p-3">
+          <ul style="padding-left: 0;">
+            <li class="form-check  form-check mb-2">
+              <input class="form-check-input sell-tax" type="checkbox" id="alcohol" value="alcohol" />
+              <label class="form-check-label ps-0" for="alcohol">Do you sell Alcohol?</label>
+            </li>
+            <li class="form-check  form-check mb-2">
+              <input class="form-check-input sell-tax" type="checkbox" id="tobacco" value="tobacco" />
+              <label class="form-check-label ps-0" for="tobacco">Do you sell Tobacco?</label>
+            </li>
+            <li class="form-check  form-check mb-2">
+              <input class="form-check-input sell-tax" type="checkbox" id="vapes" value="vapes" />
+              <label class="form-check-label ps-0" for="vapes">Do you sell Vapes?</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex2 justify-content-between" style="gap: 10px">
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
+        <div class="card-header p-2">
+          <div class='m-0'>Store</div>
+        </div>
+        <div class="card-body p-3">
+          <div class="mb-2">
+            <label class="required">Store size in square feet?</label>
+            <input type="number" max="100000" class="form-control" id="store_sz" name="store_sz" placeholder="" value="" required />
+            <div class="invalid-feedback"> Please provide a number of less than 5-digits. </div>
+          </div>
+          <div class="mb-2">
+            <label class="required">Store average turnover weekly?</label>
+            <input type="number" max="100000000" class="form-control" id="store_avg" name="store_avg" placeholder="" value="" required />
+            <div class="invalid-feedback"> Please provide a number of less than 8-digits. </div>
+          </div>
+          <div class="form-check  mb-2 d-flex">
+            <input class="form-check-input self-service" type="checkbox" id="self_service" />
+            <label class="form-check-label ps-2 break-over-word" for="self_service">I will visit the store to purchase goods</label>
+          </div>
+          <div class="form-check  mb-2 d-flex">
+            <input class="form-check-input click-and-collect" type="checkbox" id="click_and_collect" />
+            <label class="form-check-label ps-2 break-over-word" for="click_and_collect">I will order online then come in to collect goods</label>
+          </div>
+          <div class="form-check  mb-2 d-flex">
+            <input class="form-check-input delivered" type="checkbox" id="delivered" />
+            <label class="form-check-label ps-2 break-over-word" for="delivered">I will order onlne and require a delivery of goods</label>
+          </div>
+          <div class="form-check  mb-2 d-flex">
+            <input class="form-check-input offers-and-info" type="checkbox" id="offers_and_info" />
+            <label class="form-check-label ps-2 break-over-word" for="offers_and_info">Do you wish to receive marketing offers and info?</label>
+          </div>
+        </div>
+      </div>
+      <div class="customer-reg-info card full-width-on-mobile" style="flex: 1">
+        <div class="card-header p-2">
+          <div class='m-0'>Payment & Offer</div>
+        </div>
+        <div class="card-body p-3">
+          <div class="mb-2">
+            <label class="">What is your prefered payment method? </label>
+            <select class="form-select" name="pref_payment_method" id="pref_payment_method" required>
+              <option value=""></option>
+              <option value="cash">Cash</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="echo_pay">EchoPay</option>
+              <option value="card">Card</option>
+              <option value="credit_facility">Credit Facility</option>
+            </select>
+            <div class="invalid-feedback"> Please provide at least one item. </div>
+          </div>
+          <div class="form-check  mb-2 d-flex">
+            <input class="form-check-input credit-acc-facility" type="checkbox" id="credit_acc_facility" />
+            <label class="form-check-label ps-2 break-over-word" for="credit_acc_facility">Do you require a credit account facility?</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('javascript') ?>
@@ -567,11 +777,18 @@
             }
             console.log(payload);
 
+            // generate email form
+            $('#busi_legal_nm_for_email').val($('#busi_legal_nm').val());
+            $('#busi_trad_nm_for_email').val($('#busi_trad_nm').val());
+            $('#busi_start_dt_for_email').val($('#busi_start_dt').val());
+            $('#prefered_branch_for_email').val($('#prefered_branch').val());
+            payload.email_form = $('.customer-register-panel-for-email').html();
+
             $.ajax({
                 type: "POST"
                 , async: true
                 , url: "customer-register"
-                , dataType: "html"
+                , dataType: "json"
                 , timeout: 30000
                 , cache: false
                 , data: payload
@@ -582,11 +799,18 @@
                         console.log("An error occured: " + xhr.status + " " + xhr.statusText);
                     }}
                 , success: function (response, status, request) {
-                    alert_message('Your request to register has been sent.', 'Info', 'customer-register-form-modal', function(e){
-                        location.reload();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                    return;
+                    debugger
+                    if (response.success == 1) {
+                        alert_message('Your request to register has been sent.', 'Info', 'customer-register-form-modal', function(e){
+                            location.reload();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        });
+                        return;
+                    } else {
+                        alert_message('An error occured: ' + response.msg, 'Error', 'customer-register-form-modal', function(e){
+                            return;
+                        });
+                    }
                 }
                 , complete: function() {
                     remove_loadingSpinner_from_button(e.target);

@@ -249,6 +249,25 @@ class Employee extends Model
 
 		return ($query->getNumRows() > 0);
 	}
+	function hasPasswordByUsername($username)
+	{
+		$db = \Config\Database::connect();
+
+		$query = $db->table('epos_employees')
+					->where('username', $username)
+					->get();
+
+		$res = -1; // there is not user having such username
+		if ($query->getNumRows() > 0){
+			if (empty($query->getRow()->password)) {
+				$res = 0;
+			} else {
+				$res = 1;
+			}
+		}
+
+		return $res;
+	}
 	/*	/*
 	Returns all the customers
 	*/

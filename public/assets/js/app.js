@@ -16,6 +16,13 @@ function remove_loadingSpinner_from_button(target) {
 }
 
 function alert_message(msg='Hello!', title='Alert', cls='', hiddenCallback=f=>f) {
+
+    if (typeof msg === 'string' && msg.includes('\n')) {
+        const lines = msg.split('\n');
+        const paragraphs = lines.map(line => `<p>${line}</p>`);
+        msg = paragraphs.join('');
+    }
+    
     const container = document.getElementById('alert-msg-container');
     container.innerHTML = `<div class="modal fade ${cls}" id="alert_message_dialog" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered max-w-700">

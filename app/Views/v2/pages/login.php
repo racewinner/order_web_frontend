@@ -17,7 +17,7 @@
 
 <?= $this->section('content') ?>
 <div class="login-panel mx-auto">
-    <form action="/login" method="post">
+    <form id="login-form" action="/login" method="post">
         <h4 class="text-center mb-4 pt-4-5">Welcome</h4>
 
         <div class="text-red mb-4">
@@ -46,14 +46,13 @@
         </div>
 
         <div class="mb-4">
-            <button class="btn mb-0 btn-danger" id="btn-login" type="submit">
+            <button class="btn mb-0 btn-danger" id="btn-login" type="button">
                 LOGIN
             </button>
         </div>
         <div class="mb-4" style="margin-top: -10px; text-align: right;">
             <a href="/forgot-password" style="color: red; text-decoration: underline;">forgot password?</a>
         </div>
-
 
         <div class="mb-4 text-center">OR</div>
         
@@ -76,11 +75,66 @@
 <script>
     $(document).ready(function(e) {
         $(document).on('click', '#btn-guest-login', function(e) {
-            debugger
-            window.location = '/login/guest_login';
+            add_loadingSpinner_to_button(e.target);
+            window.location.href = '/login/guest_login';
         })
         $(document).on('click', '#btn-customer-register', function(e) {
-            window.location = 'customer-register';
+            add_loadingSpinner_to_button(e.target);
+            window.location.href = '/customer-register';
+        })
+        $(document).on('keyup', '#username, #password', function(e) {
+            if (e.key === 'Enter') {
+                $('#btn-login').click();
+            }
+        })
+        $(document).on('click', '#btn-login', function(e) {
+            add_loadingSpinner_to_button(e.target);
+
+            const payload = {
+                username: $('#username').val()
+            }
+            $.ajax({
+                type: "POST"
+                , async: true
+                , url: "/login/pre-login"
+                , dataType: "json"
+                , timeout: 30000
+                , cache: false
+                , data: payload
+                , error: function (xhr, status, error) {
+                    if (xhr.status == 401) {
+                        window.location.href = '/login'; 
+                        return;
+                    } else {
+                        console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+                    }}
+                , success: function (response, status, request) {
+                    if (response.data == 1) {
+                        $('#login-form').submit();
+                        return;
+                    } else if (response.data == 0) {
+                        alert_message(
+                            'You currently do not have a paasword currently setup. \n'+
+                            'Please enter your account number and email address on the next screen. \n'+
+                            'A cde will be then sent to  our email address to allow you to create a new password and log in.', 
+                            'Security Alert', 
+                            'user-has-not-got-password', 
+                            function(e) {
+                                window.location.href = '/forgot-password';
+                                return;
+                            });
+                    } else {
+                        showToast({
+                            type: 'error',
+                            message: "There is no user with that username.",
+                        });
+                        remove_loadingSpinner_from_button(e.target);
+                        return;
+                    }
+                }
+                , complete: function() {
+                }
+            });
         })
     })
 </script>
