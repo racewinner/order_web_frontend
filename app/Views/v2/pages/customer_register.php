@@ -120,12 +120,21 @@
                                         required 
                                     />
                                 </div>
+                                <div class="mb-3">
+									<label for="prefered_branch" class="">Preferred Branch:</label>
+									<select class="form-select" id="prefered_branch" name="prefered_branch" >
+										<option value="" selected></option>
+										<?php foreach ($all_branches as $branch_name) : ?>
+											<option value="<?= esc($branch_name) ?>"><?= esc($branch_name) ?></option>
+										<?php endforeach; ?>
+									</select>
+									<div class="invalid-feedback">Please select a branch.</div>
+								</div>
                                 <div class="form-check form-switch form-check mb-3">
                                     <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" required/>
                                     <label class="form-check-label ps-2" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
                                     <div class="invalid-feedback">You must agree to this option setting.</div>
                                 </div>
-                                
                             </div>
                             <div class="full-fill">
                                 <div class="mb-3">
@@ -404,8 +413,9 @@
                             emailInput.setCustomValidity(''); // marks as valid
                         }
                     }
+                    /*
                     {// datepicker special validator including the date is valid
-
+                        debugger
                         // If the form is valid according to browser's built-in validation,
                         // then apply valid date for datepicker.
                         const dateInput = document.getElementById('busi_start_dt');
@@ -426,7 +436,7 @@
                             dateInput.classList.remove('is-invalid');
                             dateInput.setCustomValidity(''); // marks as valid
                         }
-                    }
+                    }*/
                     if (!form.checkValidity()) {
                         event.preventDefault()
                         event.stopPropagation()
@@ -447,7 +457,7 @@
             todayHighlight: true
         })
         const $extra = $(`<div class="invalid-feedback">
-                            Please provide a date type of 'dd/mm/yyyy'.
+                            Please enter a valid date in 'dd/mm/yyyy' format.'.
                         </div>`);
         $('.gj-datepicker-bootstrap').append($extra); // jQuery handles all matched elements
 

@@ -36,7 +36,15 @@ class Customer extends BaseController
 		
 	function get_register()
 	{
-		echo view('v2/pages/customer_register'); // after you stored the query results inside the $data array, send the array to the view 
+		$branchModel 	= new Branch();
+		$branchRecords 	= $branchModel->select('site_name')
+									  ->orderBy('site_name', 'asc')
+									  ->findAll();
+		$all_branches 	= array_map(static function ($branch) {
+			return $branch['site_name'] ?? null;
+		}, $branchRecords);
+
+		echo view('v2/pages/customer_register', ['all_branches' => array_filter($all_branches)]);
 	}
 
 	function post_register()
@@ -67,6 +75,8 @@ class Customer extends BaseController
 		$click_and_collect    			= request()->getPost("click_and_collect");	
 		$delivered    					= request()->getPost("delivered");	
 		$confirm_legal_owner_director 	= request()->getPost("confirm_legal_owner_director");
+		$prefered_branch 				= request()->getPost("prefered_branch");
+
 		// $query = $db->table('epos_customer_registration')
 		// 			->where('email', $email)
 		// 			->where('username', $username)
@@ -108,12 +118,21 @@ class Customer extends BaseController
 			'click_and_collect' 			=> $click_and_collect,
 			'delivered' 					=> $delivered,
 			'confirm_legal_owner_director'	=> $confirm_legal_owner_director,
-			'date_created' 					=> $date_created
+			'date_created' 					=> $date_created,
+			'prefered_branch' 				=> $prefered_branch
 		);		
 
-		$db->table('epos_customer_registration')->insert($customer_data_to_save);
+		$res = $db->table('epos_customer_registration')->insert($customer_data_to_save);
+		if ($res) {
+			return response()->setJSON([
+				'success' => 1,
+			]);
+		} else {
+			return response()->setJSON([
+				'success' => 0,
+			]);
+		}
 	}
-
 }
 
 ?>
