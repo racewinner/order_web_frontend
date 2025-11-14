@@ -787,7 +787,7 @@
             $.ajax({
                 type: "POST"
                 , async: true
-                , url: "customer-register"
+                , url: "/customer-register"
                 , dataType: "json"
                 , timeout: 30000
                 , cache: false

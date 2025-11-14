@@ -979,15 +979,23 @@
                     //     debugger
                     //     make_payment(order_id, customer_email, amount);
                     // } else {
-                        showToast({
-                            type: 'success',
-                            message: "Product order has done successfully.",
-                        });
-                        let url = `<?php echo base_url("");?>myaccount/order_history`;
-                        window.location.href = url;
+                            alert_message(
+                                `Your order has been sent.\nYour reference is ${data.order_id}`, 
+                                'Info', 
+                                'send-order-success-form-modal', 
+                                function(e){
+                                    window.location.href = '/home';
+                                    return;
+                                });
                     // }
                 } else {
-                    alert_message(res.msg)
+                    alert_message(
+                        res.msg, 
+                        'Error', 
+                        'send-order-failed-form-modal', 
+                        function(e){
+                            return;
+                        });
                 }
             });
         } else {

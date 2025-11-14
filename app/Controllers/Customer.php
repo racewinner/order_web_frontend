@@ -135,7 +135,7 @@ class Customer extends BaseController
 		$mail_subject = "New Account Application";
 
 		$message = "<html><body>";
-		$message .= $email_form;
+		$message .= "<div>This is customer registration form.</div>";
 		$message .= "</body></html>";
 
 		$res = $this->do_send_email($mail_addr, $mail_addr, $company_name, $mail_subject, $message);

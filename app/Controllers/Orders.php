@@ -891,13 +891,13 @@ class Orders extends Secure_area implements iData_controller
 			$db->transRollback();
 			return response()->setJSON([
 				'success' => false,
-				'msg' => 'Sorry, send order failed.'
+				'msg' => 'Sorry, send order failed. Code 4008'
 			]);
 		} else {
 			return response()->setJSON([
 				'success' => true,
 				'data' => [
-					'order_id' => $order_id,
+					'order_id' => $origin . '-' . $order_id,
 					'customer_email' => $customer_mail_addr,
 				]
 			]);
