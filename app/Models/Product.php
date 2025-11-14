@@ -590,10 +590,10 @@ class Product extends Model
 		if ($mode == 4) {
 			$query =  " DELETE FROM epos_cart WHERE person_id={$person_id}" .
                 " AND branch={$branch}";
-      if (!empty($organization_id)) {
-      $query .= " AND organization_id={$organization_id} ";
-      }
-      $query .= " AND prod_code='{$prod_code}' AND presell=0 AND group_type='{$type}'";
+			if (!empty($organization_id)) {
+				$query .= " AND organization_id={$organization_id} ";
+			}
+			$query .= " AND prod_code='{$prod_code}' AND presell=0 AND group_type='{$type}'";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -604,11 +604,11 @@ class Product extends Model
 				return 0;
 		} else {
 			$cond = " prod_code='{$prod_code}' and person_id={$person_id}" . 
-              " AND branch={$branch}";
-      if (!empty($organization_id)) {
-      $cond.= " AND organization_id={$organization_id} ";
-      }
-      $cond .= " AND presell=0 ";
+            		" AND branch={$branch}";
+			if (!empty($organization_id)) {
+				$cond.= " AND organization_id={$organization_id} ";
+			}
+			$cond .= " AND presell=0 ";
 			$cond .= ($spresell == 1) ? " AND group_type='spresell'" : " AND group_type!='spresell'";
 			$query = "SELECT * FROM epos_cart WHERE " . $cond;
 			$res = $db->query($query);
@@ -624,16 +624,16 @@ class Product extends Model
 						$type = !empty($category) ? $category->type : 'general';
 					}
 	
-          $line_position = $this->genCartLinePosition($person_id);
+          			$line_position = $this->genCartLinePosition($person_id);
 
 					$cart_data = array(
 						'prod_code' => $prod_code,
 						'quantity' => $quantity,
 						'person_id' => $person_id,
 						'group_type' => $type,
-            'line_position' => $line_position,
-            'branch' => $branch,
-            'organization_id' => $organization_id,
+						'line_position' => $line_position,
+						'branch' => $branch,
+						'organization_id' => $organization_id,
 					);
 					$db->table('epos_cart')->insert($cart_data);
 					return $quantity;
@@ -658,15 +658,16 @@ class Product extends Model
 					$db->query("DELETE FROM epos_cart WHERE " . $cond);
 					return 0;
 				} else {
-          // $line_position = $this->genCartLinePosition($person_id);
-          $cart_data = ['quantity' => $quantity1/*, 'line_position' => $line_position*/];
+					// $line_position = $this->genCartLinePosition($person_id);
+					$cart_data = ['quantity' => $quantity1/*, 'line_position' => $line_position*/];
 					$builder = $db->table('epos_cart');
 					$builder->where($cond);
 					$builder->update($cart_data);
 					return $quantity1;
 				}
-			} else
+			} else {
 				return -1;
+			}
 		}
 	}
 
@@ -1428,7 +1429,7 @@ class Product extends Model
 							THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
 							ELSE 0   
 						END)  AS por, 
-						 MIN(prod_sell) as prod_sell, 
+						MIN(prod_sell) as prod_sell, 
 						pi.url as image_url, 
 						pi.version as image_version, 
 						vat.rate as vat_rate 

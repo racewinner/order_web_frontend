@@ -759,7 +759,7 @@ class Order extends Model
 
 		$results1 = $db->query("SELECT * FROM epos_cart 
 									 WHERE person_id='{$person_id}' AND presell={$presell} AND branch = {$branch} AND organization_id = {$organization_id}");		
-		foreach($results1->getResult() as $res1){
+		foreach ($results1->getResult() as $res1) {
 			$found = 0;
 			// TODO check for $ref cart item id in presell table, allow if $ref match.
 			if ($ref != "") {			
@@ -776,14 +776,13 @@ class Order extends Model
 					$f = 'price_list'.$f;
 					if($u->{$f} == 1){ $found = 1; }
 				}
-			}
-			else { 
+			} else { 
 				$found = 1; 
 			}
 
-			if($found == 1) {
+			if ($found == 1) {
 				$product = Product::getLowestPriceProductByCode($u, $res1->prod_code, true, $res1->group_type == 'spresell');
-				if($product) {
+				if ($product) {
 					$order_product_data = array(
 						'order_id' 			=> $order_id ,
 						'quantity' 			=> $res1->quantity ,
@@ -797,13 +796,14 @@ class Order extends Model
 					$db->transStart();
 					$db->table('epos_orders_products')->insert( $order_product_data);
 					$db->transComplete();
-					if($db->transStatus() == FALSE) return -5;
+					if ($db->transStatus() == FALSE) return -5;
 				}
 			}
 		}
-		if($ref == ""){
-			$query = "DELETE FROM epos_cart WHERE person_id='{$person_id}' AND group_type='{$type}' AND presell={$presell} 
-																		   AND branch = {$branch}   AND organization_id = {$organization_id}";
+		if ($ref == "") {
+			$query = "DELETE FROM epos_cart WHERE person_id='{$person_id}' 
+					  AND group_type='{$type}' AND presell={$presell} 
+					  AND branch = {$branch}   AND organization_id = {$organization_id}";
 			$db->transStart();
 			$db->query($query);
 			$db->transComplete();
@@ -815,56 +815,63 @@ class Order extends Model
 	function get_order_file_data1($order, $option)
 	{
 		$db = \Config\Database::connect();
-		if($option == 1)	//get first line
-		{
+		//get first line
+		if($option == 1) {
 			$res = $db->table('epos_employees')->where('person_id' , $order->person_id)->get()->getRow();
 			$account_number = substr('000000'.$res->username,-5);
 			$order_date = substr($order->order_date,6,2).substr($order->order_date,4,2).substr($order->order_date,0,4);
 			$order_time = $order->order_time;
 			$first_line = $order_date;
-			$first_line .= $order_time;
-			$first_line .= $account_number;
-			if($order->presell == 1){ $first_line .= " Presell_".$ref;}
+			$first_line.= $order_time;
+			$first_line.= $account_number;
+			if ($order->presell == 1) { 
+				$first_line .= " Presell_".$ref;
+			}
 			$first_line .= "\r\n";
 			return $first_line;
-		}
-		else if ($option == 2)	//get file data
-		{
+		} 
+		//get file data
+		else if ($option == 2) {
 			$order_id = $order->order_id;
             $result_vv = $db->query("SELECT count(*) as vv FROM epos_orders_products WHERE order_id='".$order_id."' and presell=".$order->presell."");
 			$result_vv2 = $result_vv->getRow();
 			$vv=substr('000'.$result_vv2->vv,-3);
             $vv_count=0;
 
-            if($order->presell == 1){ $table = "presell"; }else{ $table = "product"; }
+            if ($order->presell == 1) { 
+				$table = "presell"; 
+			} else { 
+				$table = "product"; 
+			}
 			$query = "SELECT p.*, op.quantity, op.price ";
-			$query .= " FROM epos_orders_products as op ";
-			$query .= " LEFT JOIN epos_{$table} as p on op.prod_code=p.prod_code ";
-			$query .= " WHERE op.order_id={$order_id} AND op.presell={$order->presell}";
+			$query.= " FROM epos_orders_products as op ";
+			$query.= " LEFT JOIN epos_{$table} as p on op.prod_code=p.prod_code ";
+			$query.= " WHERE op.order_id={$order_id} AND op.presell={$order->presell}";
 			
 			$results = $db->query($query);
 			$nCount = 1;
 			$file_data = "";
-			foreach ($results->getResult() as $res_prod)
-			{
+			foreach ($results->getResult() as $res_prod) {
                 $nCount1 = substr("000".$nCount,-3);
                 $prod_code = substr("0000000".$res_prod->prod_code,-7);
                 $quantity = substr("0000".$res_prod->quantity,-4);
 				$price = substr("00000000".number_format($res_prod->price,2,'.',''),-8);
-                if(strlen($price) > 8) return -206;
+                if (strlen($price) > 8) {
+					return -206;
+				}
 				$file_data = $nCount1.$prod_code.$quantity.$price."\r\n";
 				$nCount ++;
-				if($nCount == 1000) {
+				if ($nCount == 1000) {
 				   $file_data ="over 999 !!!"."\r\n";
 				   break;
-				 }
+				}
 			}
 			$file_data .= "EOF".$nCount."\r\n".$vv;
 			return $file_data;
 		}
 	}
 
-	function get_order_file_data($person_id , $option , $type='general', $presell = 0 , $ref = "")
+	function get_order_file_data($person_id, $option, $type='general', $presell=0, $ref="")
 	{
 		$db = \Config\Database::connect();
 		$branch = session()->get('branch');
@@ -885,7 +892,7 @@ class Order extends Model
             $builder->limit(1);
 
             $result = $builder->get();
-			if($result->getNumRows() == 0) 
+			if ($result->getNumRows() == 0) 
 				return -201;
 
             $res = $result->getRow();
@@ -896,7 +903,7 @@ class Order extends Model
 			$first_line.= $order_time;
 			$first_line.= $account_number;
 
-			if($presell == 1){ 
+			if ($presell == 1){ 
 				$first_line .= " Presell_".$ref;
 			}
 			
@@ -904,7 +911,7 @@ class Order extends Model
 			return $first_line;
 		}
 		// get file data
-		else if($option == 2) {
+		else if ($option == 2) {
 			$builder = $db->table($this->table);
 			$builder->where('person_id' , $person_id);
 			$builder->where('opened' , 1);
@@ -916,7 +923,7 @@ class Order extends Model
             $builder->limit(1);
 
 			$result = $builder->get();
-			if($result->getNumRows() == 0) 
+			if ($result->getNumRows() == 0) 
 				return -202;
 
 			$res = $result->getRow();
@@ -946,18 +953,20 @@ class Order extends Model
 			$results = $db->query($query);
 			$nCount = 1;
 			$file_data = "";
-			foreach($results->getResult() as $res_prod) {
+			foreach ($results->getResult() as $res_prod) {
                 $nCount1 = substr("000".$nCount,-3);
                 $prod_code = substr("0000000".$res_prod->prod_code,-7);
                 $quantity = substr("0000".$res_prod->quantity,-4);
 				$price = substr("00000000".number_format($res_prod->price,2,'.',''),-8);
-                if(strlen($price) > 8) return -206;
+                if (strlen($price) > 8) {
+					return -206;
+				}
 				$file_data.= $nCount1.$prod_code.$quantity.$price."\r\n";
 				$nCount ++;
-				if($nCount == 1000) {
+				if ($nCount == 1000) {
 				   $file_data ="over 999 !!!"."\r\n";
 				   break;
-				 }
+				}
 			}
 
 			$file_data .= "EOF".$vv; //"EOF".$nCount."\r\n".$vv;
@@ -980,20 +989,20 @@ class Order extends Model
 		$builder->where('organization_id' , $organization_id);
 
 		$results = $builder->get();
-		if($results->getNumRows() == 0) return -1;
+		if ($results->getNumRows() == 0) {
+			return -1;
+		}
 
 		$res = $results->getRow();
-
 		$order_id = $res->order_id;
-
 		$order_data = array(
 			'opened' => 0 ,
 			'completed' => 1
 		);
 		return $db->table($this->table)
-					->where('order_id' , $order_id)
-					->where('presell' , $presell)
-					->update($order_data);
+				  ->where('order_id' , $order_id)
+				  ->where('presell' , $presell)
+				  ->update($order_data);
 
 	}
 
@@ -1001,38 +1010,36 @@ class Order extends Model
 	{
 		$db = \Config\Database::connect();
 
-    $query="SELECT prod_id, prod_code, prod_uos, prod_desc, prod_pack_desc,
-                    vat_code, prod_price, group_desc, prod_code1, start_date,
-                    price_list, prod_level1, prod_level2, prod_level3,
-                    MIN(prod_sell) as prod_sell, prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life
-            FROM epos_product
-            WHERE is_disabled='N' AND (wholesale like'".$barcode."' OR retail like'".$barcode."') AND (price_list = '000' ";
-    if ($user_info->price_list999) $query .= "OR price_list = '999' ";
-    if ($user_info->price_list012) $query .= "OR price_list = '12' ";
-    if ($user_info->price_list011) $query .= "OR price_list = '11' ";
-    if ($user_info->price_list010) $query .= "OR price_list = '10' ";
-    if ($user_info->price_list009) $query .= "OR price_list = '09' ";
-    if ($user_info->price_list008) $query .= "OR price_list = '08' ";
-    if ($user_info->price_list007) $query .= "OR price_list = '07' ";
-    if ($user_info->price_list005) $query .= "OR price_list = '05' ";
-    if ($user_info->price_list001) $query .= "OR price_list = '01' ";
-    $query .= ") GROUP BY prod_code ORDER BY prod_code DESC LIMIT 6";
+    	$query="SELECT prod_id, prod_code, prod_uos, prod_desc, prod_pack_desc,
+                       vat_code, prod_price, group_desc, prod_code1, start_date,
+                       price_list, prod_level1, prod_level2, prod_level3,
+                       MIN(prod_sell) as prod_sell, prod_rrp, wholesale, retail, p_size, is_disabled, promo, van, shelf_life
+				FROM epos_product
+				WHERE is_disabled='N' AND (wholesale like'".$barcode."' OR retail like'".$barcode."') AND (price_list = '000' ";
+
+		if ($user_info->price_list999) $query .= "OR price_list = '999' ";
+		if ($user_info->price_list012) $query .= "OR price_list = '12'  ";
+		if ($user_info->price_list011) $query .= "OR price_list = '11'  ";
+		if ($user_info->price_list010) $query .= "OR price_list = '10'  ";
+		if ($user_info->price_list009) $query .= "OR price_list = '09'  ";
+		if ($user_info->price_list008) $query .= "OR price_list = '08'  ";
+		if ($user_info->price_list007) $query .= "OR price_list = '07'  ";
+		if ($user_info->price_list005) $query .= "OR price_list = '05'  ";
+		if ($user_info->price_list001) $query .= "OR price_list = '01'  ";
+
+		$query .= ") GROUP BY prod_code ORDER BY prod_code DESC LIMIT 6 ";
 		$res = $db->query($query);
 
-		if($res->getNumRows() == 0) return false;
-
-		else
-		{
-			foreach($res->getResult() as $res_row)
-			{
+		if ($res->getNumRows() == 0) {
+			return false;
+		} else {
+			foreach ($res->getResult() as $res_row) {
 				$builder = $db->table('epos_cart')
-								->where(array('prod_code'=>$res_row->prod_code,
-                                       'person_id'=>$user_info->person_id,
-									   'presell'=>$presell));
-				
+							  ->where(array('prod_code'=>$res_row->prod_code,
+                                       			 'person_id'=>$user_info->person_id,
+									   			 'presell'=>$presell));
 				$res1 = $builder->get();
-				if($res1->getNumRows() == 0)
-				{
+				if ($res1->getNumRows() == 0) {
 					$insert_data = array(
 						'prod_code' => $res_row->prod_code,
 						'quantity' => 1 ,
@@ -1065,19 +1072,19 @@ class Order extends Model
 
 	public static function populateProduct(&$order, $priceList, $user_info, $spresell=0) {
 		$product = Product::getLowestPriceProductByCode($user_info, $order->prod_code, true, $order->group_type == 'spresell');
-		if(!$product) $product = Product::getLowestPriceProductByCode($user_info, $order->prod_code, false, $order->group_type == 'spresell');
-		if(!$product) return;	
+		if (!$product) $product = Product::getLowestPriceProductByCode($user_info, $order->prod_code, false, $order->group_type == 'spresell');
+		if (!$product) return;	
 
 		Product::populate($product, $priceList, $user_info, $spresell);
 		$order->product = $product;
 
 		$background = '';
 		$promotion = '';
-		if (isset($product->promo) && $product->promo=='Y'){
-			if($product->price_list=='08'){ 
+		if (isset($product->promo) && $product->promo=='Y') {
+			if ($product->price_list=='08') { 
 				$background="#a0e2c8"; 
 				$promotion="DAY-TODAY EXPRESS ELITE"; 
-			} else if($product->price_list=='10'){ 
+			} else if($product->price_list=='10') { 
 				$background="#a0e2c8"; 
 				$promotion="DAY-TODAY PRICE"; 
 			} else if($product->price_list=='11') { 

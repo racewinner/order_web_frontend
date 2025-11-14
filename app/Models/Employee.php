@@ -715,6 +715,8 @@ class Employee extends Model
 	*/
 	function login($username, $password)
 	{
+		$db = \Config\Database::connect();
+
 		$result = $this->where([
 			'username' => $username,
 			'password' => md5($password),
@@ -722,13 +724,35 @@ class Employee extends Model
 		])->first();
 
 		if ($result) {
+			/**
+			 * set session data
+			 */ 
 			session()->set('person_id', $result['person_id']);
 			session()->set('organization_id', $result['organization_id']);
 		
-			$now = new DateTime(); // current date and time
-			$interval = new DateInterval('PT1H'); // 5 minutes
+			$now = new DateTime();
+			$interval = new DateInterval('PT1H');
 			$now->add($interval);
 			session()->set('expired_datetime', $now);
+
+			/**
+			 * register last login info
+			 */
+			$login_track_data = array(
+				'employeeId' 	=> $result['person_id'],
+				'dateTime' 		=> $now->format('Y-m-d H:i:s'),
+				'ipAddress' 	=> request()->getIPAddress(),
+				'success' 		=> true);
+
+			$db->table('epos_login_track')
+			   ->insert($login_track_data);
+
+			$thirty_days_ago = (new DateTime())->sub(new DateInterval('P30D'))->format('Y-m-d H:i:s');
+
+			$db->table('epos_login_track')
+			   ->where('employeeId', $result['person_id'])
+			   ->where('dateTime <', $thirty_days_ago)
+			   ->delete();
 
 			return true;
 		}
