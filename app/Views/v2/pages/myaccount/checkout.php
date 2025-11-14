@@ -78,9 +78,14 @@
 <div class="d-flex flex-column flex-lg-row mx-auto main-content-pad-on-mobile">
     <div class="my-cart">
         <div class="my-cart-header d-flex">
-            <div class="flex-fill">
-                <h5 class="fw-bold">My Trolley</h5>
+            <div class="d-flex full-fill" style="justify-content: space-between; align-items: center;">
+                <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
+                <div class="" style="padding: 0px 10px;">
+                    <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button" 
+                       style="font-size: 80%;padding: 5px 12px;">Next</a>
+                </div>
             </div>
+
         </div>
         <div class="my-cart-body">
             <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
@@ -183,6 +188,10 @@
 
         let url = `/orders/payment?${queryParams}`;
         $('#nxt2complete').attr('href', url);
+    })
+
+    $(document).on('click', '.checkout-button', function(e) {
+        add_loadingSpinner_to_button(this);
     })
 </script>
 

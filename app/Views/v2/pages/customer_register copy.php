@@ -100,6 +100,7 @@
     <h4 class="text-center mb-4 pt-4-5">New Account Application Form</h4>
     <div class="employee-edit">
         <form id="customer_register_form" class="needs-validation" novalidate style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="hidden" id="sell_taxes" name="sell_taxes" value="" />
 
             <div class="d-flex2 justify-content-between" style="gap: 10px">
                 <div class="customer-reg-info card full-width-on-mobile" style="flex: 2">
@@ -299,15 +300,15 @@
                     <div class="card-body p-3">
                         <ul>
                             <li class="form-check form-switch form-check mb-3">
-                                <input class="form-check-input sell-alcohol" type="checkbox" id="alcohol" value="alcohol" />
+                                <input class="form-check-input sell-tax" type="checkbox" id="alcohol" value="alcohol" />
                                 <label class="form-check-label ps-2" for="alcohol">Do you sell Alcohol?</label>
                             </li>
                             <li class="form-check form-switch form-check mb-3">
-                                <input class="form-check-input sell-tobacco" type="checkbox" id="tobacco" value="tobacco" />
+                                <input class="form-check-input sell-tax" type="checkbox" id="tobacco" value="tobacco" />
                                 <label class="form-check-label ps-2" for="tobacco">Do you sell Tobacco?</label>
                             </li>
                             <li class="form-check form-switch form-check mb-3">
-                                <input class="form-check-input sell-vapes" type="checkbox" id="vapes" value="vapes" />
+                                <input class="form-check-input sell-tax" type="checkbox" id="vapes" value="vapes" />
                                 <label class="form-check-label ps-2" for="vapes">Do you sell Vapes?</label>
                             </li>
                         </ul>
@@ -523,6 +524,14 @@
             e.preventDefault();
             const $form = $(e.target);
 
+            //  sell taxes
+            let sell_taxes = [];
+            $sell_tax_chkboxes = $form.find("input.sell-tax:checked");
+            for(let i=0; i<$sell_tax_chkboxes.length; i++) {
+                sell_taxes.push($sell_tax_chkboxes[i].value);
+            }
+            $form.find("input#sell_taxes").val(sell_taxes);
+
             //  credit account facility
             let credit_acc_facility = "";
             if ($form.find("input.credit-acc-facility:checked").length > 0) {
@@ -559,37 +568,19 @@
                 confirm_legal_owner_director = 1
             }
 
-            //  sell alcohol
-            let sell_alcohol = "";
-            if ($form.find("input.sell-alcohol:checked").length > 0) {
-                sell_alcohol = 1
-            }
-            //  sell tobacco
-            let sell_tobacco = "";
-            if ($form.find("input.sell-tobacco:checked").length > 0) {
-                sell_tobacco = 1
-            }
-            //  sell vapes
-            let sell_vapes = "";
-            if ($form.find("input.sell-vapes:checked").length > 0) {
-                sell_vapes = 1
-            }
-
             debugger
             const dt = $("#customer_register_form").serialize();
             const params = new URLSearchParams(dt);
             let payload = Object.fromEntries(params.entries());
             payload = {
                 ...payload,
+                sell_taxes:                     $('input#sell_taxes').val(),
                 credit_acc_facility:            credit_acc_facility,
                 offers_and_info:                offers_and_info,
                 self_service:                   self_service,
                 click_and_collect:              click_and_collect,
                 delivered:                      delivered,
-                confirm_legal_owner_director:   confirm_legal_owner_director,
-                sell_alcohol:                   sell_alcohol,
-                sell_tobacco:                   sell_tobacco,
-                sell_vapes:                     sell_vapes
+                confirm_legal_owner_director:   confirm_legal_owner_director
             }
             console.log(payload);
 

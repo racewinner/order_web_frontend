@@ -78,8 +78,13 @@
 <div class="d-flex flex-column flex-lg-row mx-auto main-content-pad-on-mobile">
     <div class="my-cart">
         <div class="my-cart-header d-flex">
-            <div class="flex-fill">
+            <div class="d-flex full-fill" style="justify-content: space-between; align-items: center;">
                 <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
+                <div class="" style="padding: 0px 10px;">
+                    <a href="/orders/checkout" class="btn btn-danger w-100 js-go-to-checkout" 
+                       style="font-size: 80%;padding: 5px 12px;">Go to Checkout</a>
+                </div>
+
             </div>
         </div>
         <?php if (isset($type['orders'])) { ?>
@@ -130,7 +135,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="/orders/checkout" id="nxt2complete" class="btn btn-danger w-100">Next</a>
+                <a href="/orders/checkout" class="btn btn-danger w-100 js-go-to-checkout">Next</a>
             </div>
         </div>
     </div>
@@ -139,8 +144,10 @@
 
 <?= $this->section('javascript') ?>
 <script>
-     $(document).ready(function() {
-      
+    $(document).ready(function() {
+        $(document).on('click', '.js-go-to-checkout', function(e) {
+            add_loadingSpinner_to_button(this);
+        });
     })
     
 </script>
