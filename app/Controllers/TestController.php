@@ -18,7 +18,7 @@ class TestController extends BaseController
     }
     
     public function sendEmail () {
-
+        /*
         $email = \Config\Services::email();
         $email->setFrom('telesales@uniteduk.com', 'United UK Telesales');
         $email->setTo('QSfTfSilinaRoza@gmail.com');
@@ -30,6 +30,7 @@ class TestController extends BaseController
         } else {
             echo $email->printDebugger(); 
         }
-
+        */
+        echo "Test doesn't exist";
     }
 }

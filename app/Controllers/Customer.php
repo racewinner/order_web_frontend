@@ -143,13 +143,17 @@ class Customer extends BaseController
 		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
 		$mail_addr = $result->value;
 
+		$result = $db->table('epos_app_config')->where('key' , 'development_cc_email')->get()->getRow();
+		$mail_addr_development_cc = $result->value;
+
 		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
 		$company_name = $result->value;
 
 		$result = $db->table('epos_app_config')->where('key' , 'seller_mail_addr')->get()->getRow();
 		$seller_mail_addr = $result->value;
 
-		$mail_subject = "New Account Application Request";
+		$result = $db->table('epos_app_config')->where('key' , 'customer_register_email_subject')->get()->getRow();
+		$mail_subject = $result->value ?? "New Account Application Request";
 
 		$message = "<html><head><style>
 			.customer-register-panel-for-email {
@@ -328,7 +332,7 @@ class Customer extends BaseController
 		$message .= "</body></html>";
 
 		// $email = "test_ac_1234@ecso.co.uk";
-		$res = $this->do_send_email($mail_addr, $mail_addr, $company_name, $mail_subject, $message);
+		$res = $this->do_send_email($mail_addr, $mail_addr, $mail_addr_development_cc, $company_name, $mail_subject, $message);
 
 		if ($res) {
 			return response()->setJSON([
@@ -343,13 +347,15 @@ class Customer extends BaseController
 		}
 	}
 
-	function do_send_email($from, $to, $senderCompany, $subject, $message)
+	function do_send_email($from, $to, $mail_addr_development_cc, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
 		$email->setCC($from);
 		$email->setReplyTo($from);
-        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
+		
+		$to_email = $to . ($mail_addr_development_cc ? "," . $mail_addr_development_cc : "");
+        $email->setTo($to_email);
 		
         $email->setSubject($subject);
         $email->setMessage($message);

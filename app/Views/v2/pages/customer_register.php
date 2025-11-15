@@ -146,9 +146,9 @@
 									</select>
 									<div class="invalid-feedback">Please select a branch.</div>
 								</div>
-                                <div class="form-check form-switch form-check mb-3">
+                                <div class="form-check form-switch form-check mb-3 d-flex">
                                     <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" required/>
-                                    <label class="form-check-label ps-2" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
+                                    <label class="form-check-label ps-2 break-over-word" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
                                     <div class="invalid-feedback">You must agree to this option setting.</div>
                                 </div>
                             </div>
@@ -368,7 +368,7 @@
                     </div>
                     <div class="card-body p-3">
                         <div class="mb-3">
-                            <label class="">What is your prefered payment method? </label>
+                            <label class="break-over-word">What is your prefered payment method? </label>
                             <select class="form-select" name="pref_payment_method" id="pref_payment_method" required>
                                     <option value=""></option>
                                     <option value="cash">Cash</option>

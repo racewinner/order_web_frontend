@@ -871,9 +871,14 @@ class Orders extends Secure_area implements iData_controller
 		}
 		$from = !empty($ftp_credential['from_email']) ? $ftp_credential['from_email'] : '';
 		$cc = !empty($ftp_credential['cc_email']) ? $ftp_credential['cc_email'] : '';
+
+		$result = $db->table('epos_app_config')->where('key' , 'development_cc_email')->get()->getRow();
+		$mail_addr_development_cc = $result->value;
+
 		$res = $this->do_send_email($from, 
 									  $customer_mail_addr, 
 									  $cc, 
+									  $mail_addr_development_cc,
 						   $addr_mail['company_name'], 
 						   		 $mail_subject, 
 								 $send_message);
@@ -1115,7 +1120,7 @@ class Orders extends Secure_area implements iData_controller
 
 	}
 
-	function do_send_email($from, $to, $cc, $senderCompany, $subject, $message)
+	function do_send_email($from, $to, $mail_addr_development_cc, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
@@ -1123,8 +1128,10 @@ class Orders extends Secure_area implements iData_controller
 			$email->setCC($cc);
 		}
 		$email->setReplyTo($from);
-        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
-		
+
+		$to_email = $to . ($mail_addr_development_cc ? "," . $mail_addr_development_cc : "");
+        $email->setTo($to_email);
+
         $email->setSubject($subject);
         $email->setMessage($message);
 

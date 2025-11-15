@@ -66,18 +66,20 @@
                         <label>POR: </label>
                         <span class="ms-1 ms-sm-2 prop-value"><?= $product->por ?>%</span>
                     </span>
+
+                    <?php if(!empty($product->shelf_life)) { ?>    
+                    <!-- <div class="prod-shelf-life"> -->
+                        <span>
+                            <label class="mx-1">|</label>
+                            <label>Shelf Life:</label>    
+                            <span class="ms-1 ms-sm-2 prop-value"><?= $product->shelf_life ?></span>
+                        </span>
+                    <!-- </div> -->
+                    <?php } ?>
                 </div>
                 
 
-                <?php if(!empty($product->shelf_life)) { ?>    
-                <div class="prod-shelf-life">
-                    <label class="mx-1">|</label>
-                    <span>
-                        <label>Shelf Life:</label>    
-                        <span class="ms-1 ms-sm-2 prop-value"><?= $product->shelf_life ?></span>
-                    </span>
-                </div>
-                <?php } ?>
+                
 
             </div>
 
@@ -232,8 +234,8 @@
                     </div>
 
                     <?php if(!empty($product->shelf_life)) { ?>    
-                    <div class="prod-shelf-life">
-                        <label class="mx-1">|</label>
+                    <div class="prod-shelf-life" style="font-size: 0.7rem">
+                        <!-- <label class="mx-1">|</label> -->
                         <span>
                             <label>Shelf Life:</label>    
                             <span class="ms-1 ms-sm-2 prop-value"><?= $product->shelf_life ?></span>

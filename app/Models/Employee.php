@@ -85,6 +85,9 @@ class Employee extends Model
 		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
 		$mail_addr = $result->value;
 
+		$result = $db->table('epos_app_config')->where('key' , 'development_cc_email')->get()->getRow();
+		$mail_addr_development_cc = $result->value;
+
 		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
 		$company_name = $result->value;
 
@@ -105,7 +108,7 @@ class Employee extends Model
 
 		$message .= "</body></html>";
 
-		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
+		$this->do_send_email($mail_addr, $email, $mail_addr_development_cc, $company_name, $mail_subject, $message);
 
 		return $success;
 	}
@@ -139,6 +142,9 @@ class Employee extends Model
 		$result = $db->table('epos_app_config')->where('key' , 'email')->get()->getRow();
 		$mail_addr = $result->value;
 
+		$result = $db->table('epos_app_config')->where('key' , 'development_cc_email')->get()->getRow();
+		$mail_addr_development_cc = $result->value;
+
 		$result = $db->table('epos_app_config')->where('key' , 'company')->get()->getRow();
 		$company_name = $result->value;
 
@@ -159,7 +165,7 @@ class Employee extends Model
 
 		$message .= "</body></html>";
 
-		$this->do_send_email($mail_addr, $email, $company_name, $mail_subject, $message);
+		$this->do_send_email($mail_addr, $email, $mail_addr_development_cc, $company_name, $mail_subject, $message);
 
 		return $success;
 	}
@@ -207,14 +213,16 @@ class Employee extends Model
 		return $success;
 	}
 
-	function do_send_email($from, $to, $senderCompany, $subject, $message)
+	function do_send_email($from, $to, $mail_addr_development_cc, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
 		$email->setCC($from);
 		$email->setReplyTo($from);
-        $email->setTo($to . ",QSfTfSilinaRoza@gmail.com");
-		
+
+		$to_email = $to . ($mail_addr_development_cc ? "," . $mail_addr_development_cc : "");
+        $email->setTo($to_email);
+
         $email->setSubject($subject);
         $email->setMessage($message);
 
