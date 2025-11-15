@@ -13,7 +13,7 @@
     } ?>
 
     <div class="card-body p-2 d-flex">
-        <div class="cart-item-image2">
+        <div>
             <?php if(!empty($product->image_url)) { ?>
                 <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
             <?php } else { ?>
@@ -158,7 +158,7 @@
     </div>
 </div>
 
-<div class="one-cart-item one-product card border bg-transparent show-in-mobile"
+<div class="one-cart-item one-product card border bg-transparent show-in-mobile" style="margin-bottom: 10px !important;"
     data-prod-id="<?= $product->prod_id ?>"
     data-prod-code="<?= $product->prod_code ?>"
     data-prod-desc="<?= $product->prod_desc ?>"
@@ -169,7 +169,7 @@
     } ?>
 
     <div class="card-body p-2 d-flex">
-        <div class="cart-item-image2">
+        <div style="width: 80px;">
             <?php if(!empty($product->image_url)) { ?>
                 <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
             <?php } else { ?>
@@ -177,7 +177,7 @@
             <?php } ?>
         </div>
 
-        <div class="ms-2 flex-fill d-flex flex-column position-relative">
+        <div class="ms-2 flex-fill d-flex flex-column position-relative" style="width: calc(100% - 80px);">
             <!-- Title -->
             <div class="d-flex" style="justify-content: space-between; align-items: flex-start;">
                 <h6 class="card-title prod-desc mb-1"><?= $product->prod_desc ?></h6>
@@ -202,9 +202,17 @@
                         <label>Pack: </label>
                         <span class="ms-1 ms-sm-2" style="color:black;">
                             <span class="prop-value"><?= $product->prod_pack_desc ?></span>
-                            <label class="mx-1 text-gray">x</label>
+                            <label class="text-gray">x</label>
                             <span class="prop-value"><?= $product->prod_uos?></span>
-                            <span class="ms-1 fw-bold prop-value"><?= $product->case ?></span>
+                            <span class="fw-bold prop-value"><?= $product->case ?></span>
+                        </span>
+
+                        <span class="">
+                            <label class="mx-1">|</label>
+                            <label>Code: </label>
+                            <span class="ms-sm-2 prop-value prod_code_2do" 
+                                    data-trolley-type="<?= $product->type ?>"
+                                    data-can-reorder="yes"><?= $product->prod_code ?></span>
                         </span>
                     </span>
                 </div>
@@ -212,41 +220,32 @@
 
             <div class="d-flex align-items-end" style="justify-content: space-between;">
                 <div>
-                    <div>
-                        <div style="font-size: 80%">
-                            <span class="">
-                                <label>Code: </label>
-                                <span class="ms-1 ms-sm-2 prop-value prod_code_2do" 
-                                        data-trolley-type="<?= $product->type ?>"
-                                        data-can-reorder="yes"><?= $product->prod_code ?></span>
-                            </span>
-                        </div>
-                        <div style="font-size: 80%">
-                            <span class="">
-                                <label>RRP: </label>
-                                <span class="ms-1 ms-sm-2 prop-value">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
-                            </span>
-                            
-                            <span class="">
-                                <label class="mx-1">|</label>
-                                <label>POR: </label>
-                                <span class="ms-1 ms-sm-2 prop-value"><?= $product->por ?>%</span>
-                            </span>
-                        </div>
-
-                        <?php if(!empty($product->shelf_life)) { ?>    
-                        <div class="prod-shelf-life">
+                    <div style="font-size: 0.7rem">
+                        <span class="">
+                            <label>RRP: </label>
+                            <span class="ms-1 ms-sm-2 prop-value" style="color: black;">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
+                        </span>
+                        <span class="">
                             <label class="mx-1">|</label>
-                            <span>
-                                <label>Shelf Life:</label>    
-                                <span class="ms-1 ms-sm-2 prop-value"><?= $product->shelf_life ?></span>
-                            </span>
-                        </div>
-                        <?php } ?>
+                            <label>POR: </label>
+                            <span class="ms-1 ms-sm-2 prop-value" style="color: black;"><?= $product->por ?>%</span>
+                        </span>
                     </div>
 
-                    
-
+                    <?php if(!empty($product->shelf_life)) { ?>    
+                    <div class="prod-shelf-life">
+                        <label class="mx-1">|</label>
+                        <span>
+                            <label>Shelf Life:</label>    
+                            <span class="ms-1 ms-sm-2 prop-value"><?= $product->shelf_life ?></span>
+                        </span>
+                    </div>
+                    <?php } ?>
+                </div>
+               
+            </div>
+            <div class="d-flex align-items-end" style="justify-content: space-between;">
+                <div>
                     <?php if($product->price >= 0) { ?>
                     <div class="prod-price">
                         <?php if($product->price == 0) { ?>
@@ -266,7 +265,7 @@
                     </div>
                     <?php } ?>
                 </div>
-                <div>
+                <div style="display: flex; gap: 5px">
                     <div class="d-flex align-items-end" style="justify-content: flex-end;">
                         <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
                             <div class="profit d-none">
@@ -300,7 +299,7 @@
                         </div> -->
                         <?php } ?>
                         <?php if($product->available['avail']) { ?>
-                        <div class="purchase-action d-flex align-items-center px-1">
+                        <div class="purchase-action d-flex align-items-center px-1" style="padding-top: 2px !important; padding-bottom: 2px !important;">
                             <i class="bi bi-dash minus-cart"></i>
                             <input class="form-control cart-quantity" value="<?= $product->cart_quantity ?? 0 ?>" />
                             <i class="bi bi-plus-lg add-cart"></i>

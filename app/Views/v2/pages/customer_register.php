@@ -515,6 +515,7 @@
         })
 
         $(document).on('click', '#btn-go-back', function(e) {
+            add_loadingSpinner_to_button(e.currentTarget);
             window.location.href = '/login';
         })
 

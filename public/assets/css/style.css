@@ -19129,8 +19129,8 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
     }
     .main-content-pad-on-mobile {
         width: 100% !important;
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
         max-width: 550px;
     }
 }
@@ -19158,18 +19158,6 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
 @media (max-width: 992px) {
   .show-in-desktop {
     display: none !important;
-  }
-}
-
-.cart-item-image2 {
-
-}
-@media (max-width: 992px) {
-  .cart-item-image2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
   }
 }
 

@@ -761,14 +761,14 @@ footer {
         }
         &.list-view, &.list-mini, &.one-cart-item {
             .prod-desc {
-                font-size: 1rem !important;
-                min-height: 40px;;
+                font-size: 0.9rem !important;
+                min-height: 36px;;
             }
             .prod-other-props {
-                font-size: 0.8rem;
+                font-size: 0.7rem;
             }
             .prod-price {
-                font-size: 0.8rem;
+                font-size: 0.7rem;
             }
             .purchase-action i {
                 font-size: 12px !important;

@@ -80,7 +80,7 @@
         <div class="my-cart-header d-flex">
             <div class="d-flex full-fill" style="justify-content: space-between; align-items: center;">
                 <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
-                <div class="" style="padding: 0px 10px;">
+                <div class="show-in-mobile" style="padding: 0px 10px;">
                     <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button" 
                        style="font-size: 80%;padding: 5px 12px;">Next</a>
                 </div>
