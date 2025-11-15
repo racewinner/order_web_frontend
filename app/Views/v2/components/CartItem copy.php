@@ -56,7 +56,7 @@
                         <span class="ms-2 prop-value"><?= $product->brand ?? '' ?></span>
                     </div>
                 <?php } else { ?>
-                    <div class="prod-brand">&nbsp;</div>
+                    <!-- <div class="prod-brand">&nbsp;</div> -->
                 <?php } ?>
 
                 <div>

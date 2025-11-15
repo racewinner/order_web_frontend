@@ -185,7 +185,6 @@
                     <i class="bi bi-trash"></i>
                 </button>
             </div>
-            
 
             <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">
                 <?php if(!empty($product->brand)) { ?>

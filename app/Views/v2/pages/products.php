@@ -132,7 +132,7 @@
 
             <div class="products-table px-md-2">
                 <div class="products-table-header pc d-none d-xl-flex justify-content-between align-items-center px-2">
-                    <div class="flex-fill d-flex align-items-center">
+                    <div class="flex-fill d-flex align-items-center" style="margin-left: 10px;">
                         <div class="d-flex align-items-center toggle-sidebar me-4" data-toggle-target="#product-side-filter">
                             <i class="bi bi-funnel-fill me-1" style="font-size: 20px;"></i>
                             Filter
@@ -184,7 +184,7 @@
 
                 <div class="products-table-header mobile d-xl-none px-2">
                     <div class="d-flex align-items-center">
-                        <div class="d-flex align-items-center me-4">
+                        <div class="d-flex align-items-center me-1">
                             <div class="d-flex align-items-center toggle-sidebar" data-toggle-target="#product-side-filter">
                                 <i class="bi bi-funnel-fill me-1" style="font-size: 20px;"></i>
                                 Filter
@@ -194,8 +194,8 @@
                         <div class="d-flex align-items-center flex-fill">
                             <?php if($total_rows > 0) { ?>
                                 <span class="text-black"><?= $from ?> - <?= $to ?></span>
-                                <label class="mx-2">of</label>
-                                <span class="me-2 text-black"><?= $total_rows ?></span>
+                                <label class="mx-1">of</label>
+                                <span class="me-1 text-black"><?= $total_rows ?></span>
                                 <label>products</label>
                             <?php } else { ?>
                                 No Products
@@ -239,7 +239,7 @@
                 <?php } ?>
                 
                 <?php if($total_rows > 0) { ?>
-                <div class="d-flex justify-content-end mt-4">
+                <div class="d-flex justify-content-end mt-1">
                     <?= view('v2/components/Pagination', [
                         'curd_page'=>$curd_page, 
                         'total_page'=>$total_page,

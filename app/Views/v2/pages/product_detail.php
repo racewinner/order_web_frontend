@@ -117,7 +117,8 @@
 
         <?php if(!empty($all_attributes['calculatedNutrition'])) { ?>
         <div class="guideline-daily-amount mt-4 w-100">
-            <h5 class="mb-4 fw-bold text-color-555 text-center" style="font-size: 20px;">Guideline Daily Amounts</h5>
+            <h5 class="mb-4 fw-bold text-color-555 text-center show-in-desktop" style="font-size: 20px;">Guideline Daily Amounts</h5>
+            <h5 class="mb-2 fw-bold text-color-555 text-center show-in-mobile"  style="font-size: 20px;">Guideline Daily Amounts</h5>
             
             <h6 class="fw-bold text-color-555 text-center">
                 <?php
