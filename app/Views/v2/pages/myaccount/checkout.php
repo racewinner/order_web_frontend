@@ -81,7 +81,7 @@
             <div class="d-flex full-fill" style="justify-content: space-between; align-items: center;">
                 <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
                 <div class="show-in-mobile" style="padding: 0px 10px;">
-                    <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button" 
+                    <a href="/orders/payment?xxx" id="nxt2complete_mobile" class="btn btn-danger w-100 checkout-button" 
                        style="font-size: 80%;padding: 5px 12px;">Next</a>
                 </div>
             </div>
@@ -162,6 +162,7 @@
 <?= $this->section('javascript') ?>
 <script>
      $(document).ready(function() {
+        debugger
         let el = $('.one-cart-type')
         if (el.length == 0) {
             return;
@@ -170,6 +171,7 @@
         }
     })
     $(document).on('click', '.one-cart-type', function(e) {
+        debugger
         let el_tab_id = e.currentTarget.id
         let cart_typename = el_tab_id.slice(4)
         
@@ -188,9 +190,12 @@
 
         let url = `/orders/payment?${queryParams}`;
         $('#nxt2complete').attr('href', url);
+        $('#nxt2complete_mobile').attr('href', url);
+
     })
 
     $(document).on('click', '.checkout-button', function(e) {
+        debugger
         add_loadingSpinner_to_button(this);
     })
 </script>
