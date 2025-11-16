@@ -50,7 +50,9 @@
         $menus['employees'] = ['icon' => 'bi-person-fill', 'label' => 'User', 'url' => '/employees'];
 
         if(in_array('branch', $allowed_module_ids)) {
-            $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 'label' => 'Select Branch', 'url' => '/myaccount/sel_allocated_branch'];
+            $menus['branch'] = ['icon' => 'bi-geo-alt-fill', 
+                                'label' => (empty($branchName) ? 'Select Branch' : $branchName), 
+                                'url' => '/myaccount/sel_allocated_branch'];
         }
 
         $menus['myaccount'] = ['icon' => 'bi-person-fill', 'label' => 'My Account', 'url' => '/', 'submenus' => $logon_user_menues];

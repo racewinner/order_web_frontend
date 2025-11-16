@@ -355,15 +355,11 @@ if($view_mode == 'grid') {
                                 <label>RRP: </label>
                                 <span class="ms-2 prop-value">£<?= number_format($product->prod_rrp,2,'.','') ?></span>
                             </span>
-                            <span class="prod-por inline">
+                            <span class="prod-por">
                                 <label class="mx-1">|</label>
                                 <label>POR: </label>
                                 <span class="ms-2 prop-value"><?= $product->por ?>%</span>
                             </span>
-                        </div>
-                        <div class="prod-por">
-                            <label>POR: </label>
-                            <span class="ms-2 prop-value"><?= $product->por ?>%</span>
                         </div>
                         <?php if(!empty($product->shelf_life)) { ?>
                             <div>

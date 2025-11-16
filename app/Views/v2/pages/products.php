@@ -257,12 +257,12 @@
 
 <?= $this->section('javascript') ?>
 <script>
-    function loadProducts() {
+    function loadProducts(filter) {
         const params        = new URLSearchParams(window.location.search);
         const search3       = params.get('search3');
 
         const data = {
-            sort_key: $('#sort_key').val(),
+            sort_key: filter && filter.sort_key ? filter.sort_key : $('#sort_key').val(),
             category_id: $('#category_id').val() ?? 0,
             offset: $("#offset").val() ?? 0,
             per_page: $('#per_page').val() ?? 30,
@@ -317,7 +317,13 @@
         $(document).on('change', '#per_page, #chk_im_new, #chk_plainprofit, #chk_own_label, #chk_favorite, #chk_rrp, #chk_pmp, #chk_non_pmp, input[name="filter_brand"], #sort_key, #search1', function(e) {
           debugger  
             $("#offset").val(0);
-            loadProducts();
+
+            let filter = {};
+
+            if (e.target.id == 'sort_key') {
+                filter = {...filter, sort_key: $(e.target).val()};
+            }
+            loadProducts(filter);
         })
 
         $(document).on('click', '#clear-filter', function(e) {
@@ -327,6 +333,15 @@
             setTimeout(function(){
                 loadProducts();
             }, 500)
+        })
+
+        $(document).on('click', '.products-table .view-mode button', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $button = $(e.target).closest('button');
+            const view_mode = $button.data('view-mode');
+            $('#view_mode').val(view_mode);
+            loadProducts();
         })
 
         $(document).on('click', '.products-table .view-mode button', function(e) {

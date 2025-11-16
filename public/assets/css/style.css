@@ -4916,8 +4916,8 @@ textarea.form-control-lg {
 }
 @media (max-width: 992px) {
   .pagination {
-    --bs-pagination-padding-x: 0.8rem;
-    --bs-pagination-padding-y: 0.4rem;
+    --bs-pagination-padding-x: 0.6rem;
+    --bs-pagination-padding-y: 0.3rem;
   }
 }
 

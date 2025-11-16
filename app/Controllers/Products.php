@@ -31,7 +31,7 @@ class Products extends BaseController implements iData_controller
 		$search1 = urldecode($this->request->getGet('search1')) ?? '';
 		$search2 = urldecode($this->request->getGet('search2')) ?? '';
 		$search3 = urldecode($this->request->getGet('search3')) ?? '';
-		$sort_key = $this->request->getGet('sort_key') ?? 9;
+		$sort_key = $this->request->getGet('sort_key') ?? 3;
 		$category_id = $this->request->getGet('category_id') ?? 0;
 		$per_page = intval($this->request->getGet('per_page') ?? 30);
 		$offset = intval($this->request->getGet('offset') ?? 0);
@@ -218,7 +218,7 @@ class Products extends BaseController implements iData_controller
 
 		$per_page = intval($this->request->getGet('per_page') ?? 30);
 		$offset = intval($this->request->getGet('offset') ?? 0);
-		$sort_key = $this->request->getGet('sort_key') ?? 9;
+		$sort_key = $this->request->getGet('sort_key') ?? 3;
 		$view_mode = $this->request->getGet('view_mode') ?? 'grid';
 		$spresell = $this->request->getGet('spresell') ?? 0;
 		$mobile = session()->get('is_mobile');
