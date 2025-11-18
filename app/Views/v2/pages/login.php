@@ -114,9 +114,8 @@
                         return;
                     } else if (response.data == 0) {
                         alert_message(
-                            'You currently do not have a paasword currently setup. \n'+
-                            'Please enter your account number and email address on the next screen. \n'+
-                            'A cde will be then sent to  our email address to allow you to create a new password and log in.', 
+                            'Your password has expired, on the next screen please enter your account number and the registered email address.\n'+
+                            'A security code will then be emailed to you, so that you can set up a new password and log in.', 
                             'Security Alert', 
                             'user-has-not-got-password', 
                             function(e) {

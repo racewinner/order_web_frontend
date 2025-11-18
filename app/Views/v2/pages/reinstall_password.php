@@ -24,16 +24,16 @@
         <input type="hidden" name="username" id="username" value="<?= $username ?>">
 
         <div class="mb-4">
-            <label for="pin_verify_number" class="required fs-90">Enter your verify number</label>
+            <label for="pin_verify_number" class="required fs-90">Enter your verification code</label>
             <input type="text" class="form-control" id="pin_verify_number" name="pin_verify_number" required>
         </div>
 
         <div class="mb-4">
-            <label for="password" class="required fs-90">Enter your New Password</label>
+            <label for="password" class="required fs-90">Enter your NEW password</label>
             <input type="password" class="form-control" id="password" name="password" size="20" required>
         </div>
         <div class="mb-4">
-            <label for="password2" class="required fs-90">Enter your Confirm Password</label>
+            <label for="password2" class="required fs-90">Confirm your NEW password</label>
             <input type="password" class="form-control" id="password2" name="password2" size="20" required>
         </div>
 
