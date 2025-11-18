@@ -61,7 +61,7 @@ if($view_mode == 'grid') {
                         <span class="ms-2 prop-value"><?= $product->brand ?? '' ?></span>
                     </div>
                 <?php } else { ?>
-                    <!-- <div>&nbsp;</div> -->
+                    <div>&nbsp;</div>
                 <?php } ?>
                 
                 <div>
@@ -96,14 +96,14 @@ if($view_mode == 'grid') {
                         <span class="ms-2 prop-value"><?= $product->shelf_life ?? '&nbsp;' ?></span>
                     </div>
                 <?php } else { ?>
-                    <!-- <div>&nbsp;</div> -->
+                    <div>&nbsp;</div>
                 <?php } ?>
             </div>
 
             <?php if(!empty($user_info)) { 
                 if($product->price >= 0) {
             ?>
-                <div class="d-flex align-items-center mt-1">
+                <div class="d-flex align-items-center mt-1" style="min-height: 40px;">
                     <div class="prod-price flex-fill">
                         <?php if($product->price == 0) { ?>
                             <div class="current-price call-for-price">Call for Price</div>
@@ -155,6 +155,7 @@ if($view_mode == 'grid') {
     </div>
 <?php } else if($view_mode == 'list'){ ?>
     <div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-desktop"
+        style="margin-bottom: 0px !important;"
         data-prod-id="<?= $product->prod_id ?>"
         data-prod-code="<?= $product->prod_code ?>"
         data-prod-desc="<?= $product->prod_desc ?>"
@@ -228,70 +229,76 @@ if($view_mode == 'grid') {
                                 <span class="ms-2 prop-value"><?= $product->shelf_life ?></span>
                             </div>
                         <?php } else { ?>
-                            <!-- <div>&nbsp;</div> -->
+                            <div>&nbsp;</div>
                         <?php } ?>
                     </div>
-
-                    <?php if(!empty($user_info)) { 
-                        if($product->price >= 0) {
-                    ?>
-                        <div class="d-flex align-items-end ms-0 ms-md-2 mt-2" style="justify-content: space-between;">
-                            <div class="prod-price d-flex flex-column align-items-center justify-content-center">
-                                <?php if($product->price == 0) { ?>
-                                    <div class="current-price call-for-price">Call for Price</div>
+                    
+                </div>
+                <div class="d-flex">
+                    <div class="d-flex align-items-end">
+                        <div class="pt-1 ps-1 pe-1">
+                            <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
+                                <div class="profit mt-1 d-none">
+                                    <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
+                                </div>
+                                <div class="profit mt-1">
+                                    <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
+                                </div>
+                            <?php } ?>
+                            <?php if($product->available['icon_name']) { ?>
+                                <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { ?>
+                                    <div class="stock-avail" style="">
+                                        <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                    </div>
                                 <?php } else { ?>
-                                    <div class="d-flex align-items-center">
-                                        <span class="current-price">£<?= $product->price ?></span>
-                                        <?php if($product->is_show_non_promo_price) { ?>
-                                        <span class="deprecated ms-2">£<?= $product->non_promo_price ?></span>
-                                        <?php } ?>
+                                    <div class="stock-avail mt-1">
+                                        <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
                                     </div>
                                 <?php } ?>
-                                    
-                                <?php if(!empty($product->promo_end_text) && $product->promo_end_text) { ?>
-                                    <div class="promo-end-text"><?= $product->promo_end_text ?></div>
-                                <?php } ?>
-                            </div>
-                            <div class="d-flex">
-                                <div class="profit-avail d-flex" style="right: -11px">
-                                    <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
-                                        <div class="profit mt-1 d-none">
-                                            <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
-                                        </div>
-                                        <div class="profit mt-1">
-                                            <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
-                                        </div>
-                                    <?php } ?>
-                                    <?php if($product->available['icon_name']) { ?>
-                                        <?php if ($product->available['icon_name'] == 'out-of-stock' || 
-                                                $product->available['icon_name'] == 'new-item' || 
-                                                $product->available['icon_name'] == 'low-stock' || 
-                                                $product->available['icon_name'] == 'coming-soon') { ?>
-                                            <div class="stock-avail" style="margin-top: 2rem">
-                                                <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-                                            </div>
+                            <?php } ?>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px;">
+                            <?php if(!empty($user_info)) { 
+                                if($product->price >= 0) {
+                            ?>
+                                <div class="d-flex justify-content-center align-items-end mt-2">
+                                    <div class="prod-price d-flex flex-column align-items-center justify-content-center">
+                                        <?php if($product->price == 0) { ?>
+                                            <div class="current-price call-for-price">Call for Price</div>
                                         <?php } else { ?>
-                                            <div class="stock-avail mt-1">
-                                                <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                            <div class="d-flex align-items-center">
+                                                <span class="current-price">£<?= $product->price ?></span>
+                                                <?php if($product->is_show_non_promo_price) { ?>
+                                                <span class="deprecated ms-2">£<?= $product->non_promo_price ?></span>
+                                                <?php } ?>
                                             </div>
                                         <?php } ?>
-                                    <?php } ?>
+                                            
+                                        <?php if(!empty($product->promo_end_text) && $product->promo_end_text) { ?>
+                                            <div class="promo-end-text" style="font-size: 80% !important;"><?= $product->promo_end_text ?></div>
+                                        <?php } ?>
+                                    </div>
+                                    
                                 </div>
-                                <div class="purchase-action d-flex align-items-center px-1 mt-2">
-                                    <i class="bi bi-dash minus-cart"></i>
-                                    <input class="form-control cart-quantity" value="<?= $product->cart_quantity ?? 0 ?>" />
-                                    <i class="bi bi-plus-lg add-cart"></i>
+                            <?php 
+                                } 
+                            } else { 
+                            ?>
+                                <div class="d-sm-flex justify-content-center align-items-end p-1 p-sm-3">
+                                    <a class='text-red login-to-see-price' href='/login'>Log in to see price</a>
                                 </div>
+                            <?php } ?>   
+
+                            <div class="purchase-action d-flex align-items-center px-1 mt-2">
+                                <i class="bi bi-dash minus-cart"></i>
+                                <input class="form-control cart-quantity" value="<?= $product->cart_quantity ?? 0 ?>" />
+                                <i class="bi bi-plus-lg add-cart"></i>
                             </div>
                         </div>
-                    <?php 
-                        } 
-                    } else { 
-                    ?>
-                        <div class="d-sm-flex justify-content-center align-items-end p-1 p-sm-3">
-                            <a class='text-red login-to-see-price' href='/login'>Log in to see price</a>
-                        </div>
-                    <?php } ?>   
+                    </div>
                 </div>
             </div>
         </div>
@@ -330,7 +337,7 @@ if($view_mode == 'grid') {
                                 <span class="ms-2 prop-value"><?= $product->brand ?? '' ?></span>
                             </div>
                         <?php } else { ?>
-                            <!-- <div class="prod-brand">&nbsp;</div> -->
+                            <div class="prod-brand">&nbsp;</div>
                         <?php } ?>
                         
                         <div class="prod-spec">
@@ -367,40 +374,57 @@ if($view_mode == 'grid') {
                                 <span class="ms-2 prop-value"><?= $product->shelf_life ?></span>
                             </div>
                         <?php } else { ?>
-                            <!-- <div>&nbsp;</div> -->
+                            <div>&nbsp;</div>
                         <?php } ?>
                     </div>
 
-                    <div class="profit-avail" style="right: -12px">
+                    <div class="profit-avail" style="right: -14px">
                         <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
                             <div class="profit mt-1 d-none">
                                 <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
                             </div>
-                            <div class="profit mt-1">
+                            <div class="profit" style="margin-top: 1.5rem">
                                 <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
                             </div>
-                        <?php } ?>
-                        <?php if($product->available['icon_name']) { ?>
-                            <?php if ($product->available['icon_name'] == 'out-of-stock' || 
-                                      $product->available['icon_name'] == 'new-item' || 
-                                      $product->available['icon_name'] == 'low-stock' || 
-                                      $product->available['icon_name'] == 'coming-soon') { ?>
-                                <div class="stock-avail" style="margin-top: 1.5rem">
-                                    <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-                                </div>
-                            <?php } else { ?>
-                                <div class="stock-avail mt-1">
-                                    <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
-                                </div>
+
+                            <?php if($product->available['icon_name']) { ?>
+                                <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { ?>
+                                    <div class="stock-avail" style="margin-top: 0.2rem">
+                                        <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="stock-avail mt-1">
+                                        <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                    </div>
+                                <?php } ?>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <?php if($product->available['icon_name']) { ?>
+                                <?php if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { ?>
+                                    <div class="stock-avail" style="margin-top: 1.5rem">
+                                        <img src="/images/icons/ribbon/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="stock-avail mt-1">
+                                        <img src="<?=$img_host?>/images/icons/<?=$product->available['icon_name']?>.png" title="<?=$product->available['icon_title']?>" />
+                                    </div>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
+                        
                     </div>
 
                     <?php if(!empty($user_info)) { 
                         if($product->price >= 0) {
                     ?>
-                        <div class="d-flex align-items-end ms-0 ms-md-2" style="justify-content: space-between;">
-                            <div class="prod-price d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mt-1 ms-0 ms-md-2" style="justify-content: space-between;">
+                            <div class="prod-price d-flex flex-column align-items-start justify-content-center">
                                 <?php if($product->price == 0) { ?>
                                     <div class="current-price call-for-price">Call for Price</div>
                                 <?php } else { ?>
@@ -497,7 +521,7 @@ if($view_mode == 'grid') {
                             <span class="ms-2 prop-value"><?= $product->shelf_life ?></span>
                         </div>
                     <?php } else { ?>
-                        <!-- <div>&nbsp;</div> -->
+                        <div>&nbsp;</div>
                     <?php } ?>
                 </div>
             </div>

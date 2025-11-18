@@ -14,7 +14,7 @@ $(document).ready(function() {
 
         const offset = (page_num - 1) * per_page;
 
-        const params        = new URLSearchParams(base_url);
+        const params = new URLSearchParams(base_url);
         const url = `${base_url}${params.size === 0 ? '?' : '&'}per_page=${per_page}&offset=${offset}`;
 
         window.location.href = url;
@@ -35,13 +35,14 @@ debugger
 
         const offset = (page_num - 1) * per_page;
 
-        const params        = new URLSearchParams(base_url);
+        const params = new URLSearchParams(base_url);
         const url = `${base_url}${params.size === 0 ? '?' : '&'}per_page=${per_page}&offset=${offset}`;
 
         window.location.href = url;
     })
 
     $(document).on('click', 'ul.pagination a.page-link.goto-page', function(e) {
+        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -56,7 +57,7 @@ debugger
 
         const offset = (page_num - 1) * per_page;
 
-        const params        = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(base_url);
         const url = `${base_url}${params.size === 0 ? '?' : '&'}per_page=${per_page}&offset=${offset}`;
 
         window.location.href = url;

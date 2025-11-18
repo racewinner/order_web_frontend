@@ -49,7 +49,7 @@
     echo view("v2/components/BannerCarousel", ['data' => $category_banners, 'cms_id' => 'category_banners_carousel']);
 } ?>
 
-<section class="p-2 px-4">
+<section class="p-2 px-4 products-page-content">
     <input type="hidden" name="offset" id="offset" value="<?= $offset ?>" />
 
     <h5 class="mt-2"><?= count($category_path) > 0 ? $category_path[count($category_path) - 1]['category_name'] : '' ?></h5>
@@ -229,7 +229,7 @@
                 <?php if($total_rows > 0) { ?>
                     <div class="products-table-body mt-3 <?= $view_mode ?>-view">
                         <?php foreach($products as $product) { ?>
-                            <div class="p-2 mx-auto">
+                            <div class="p-2 mx-auto mb-2">
                                 <?= view("v2/components/Product", ['product' => $product, 'view_mode' => $view_mode]) ?>
                             </div>
                         <?php } ?>

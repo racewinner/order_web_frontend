@@ -109,7 +109,7 @@
             </div>
 
             <?php if($product->price >= 0) { ?>
-                <div class="prod-price">
+                <div class="prod-price" style="min-height: 40px;">
                     <?php if($product->price == 0) { ?>
                         <div class="current-price call-for-price">Call for Price</div>
                     <?php } else { ?>

@@ -1,7 +1,7 @@
 <?php
-  $extra_cls = "p-4 my-cart-body " . $cls;
+  $extra_cls = "my-cart-body " . $cls;
 ?>
-<div class="<?= $extra_cls ?>">
+<div class="<?= $extra_cls ?>" style="padding-left: 1.5rem; padding-right: 1rem; padding-top: 1.5rem; padding-bottom: 1.5rem;">
     <!-- <ul class="d-inline-flex cart-type-select must-hide" role="tablist" aria-label="Cart sections">
         <php foreach($types as $index => $type) { ?>
             <li class="nav-link one-cart-type <= $type['id'] ?> <= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
