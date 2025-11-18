@@ -410,15 +410,27 @@ class Product extends Model
 			$url .= '&search0=' . $prod_desc_alt;
 			$url .= '&category_id=0';
 
-			$suggestions[] = 
-				'<a href="' . $url . '" style="padding:0px;">
-					<div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
-						<div style="margin:5px; padding:10px;">
-							<img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" />
+			if(!empty($row->image_url)) {
+				$suggestions[] = 
+					'<a href="' . $url . '" style="padding:0px;">
+						<div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
+							<div style="margin:5px; padding:10px;">
+								<img width="50" height="50" src="' . $img_host . '/product_images/' . $row->image_url . '?=v' . $row->image_version . '" />
+							</div>
+							<div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
 						</div>
-						<div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
-					</div>
-				</a>';
+					</a>';
+            } else {
+				$suggestions[] = 
+					'<a href="' . $url . '" style="padding:0px;">
+						<div class="autosearch" style="display:flex; align-items:center; background-color:aliceblue;" >
+							<div style="margin:5px; padding:10px;">
+								<img width="50" height="50" src="/images/icons/ribbon/no-product.png" />
+							</div>
+							<div style="margin:5px; padding:10px; font-size:14px; align-self: center;">' . $prod_desc . '</div>
+						</div>
+					</a>';
+            }
 		}
 		return $suggestions;
 	}

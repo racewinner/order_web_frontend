@@ -108,7 +108,7 @@ function searchProductsByProdCodes(prod_codes) {
         url += "&sort_key=0";
         url += "&category_id=0";
         url += "&offset=0";
-        url += "&per_page=30";
+        url += "&per_page=50";
         url += "&view_mode=" + ($("#view_mode").val() ?? 'grid');
         url += '&search3=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
     window.location.href = url;
@@ -118,7 +118,7 @@ function searchProductsByCms(cms_itm_id, cms_itm_tp, cms_itm_nm) {
     let url  = '/products/index?';
         url += "&sort_key=0";
         url += "&offset=0";
-        url += "&per_page=30";
+        url += "&per_page=50";
         url += "&view_mode=" + ($("#view_mode").val() ?? 'grid');
         url += '&search1=';
     if (cms_itm_nm) {
@@ -387,7 +387,7 @@ function load_products(filter) {
         sort_key: filter?.sort_key ?? $('#sort_key').val() ?? 3,
         category_id: filter?.category_id ?? $("#category_id").val() ?? 0,
         offset: filter?.offset ?? 0,
-        per_page: filter?.per_page ?? $('#per_page').val() ?? 30,
+        per_page: filter?.per_page ?? $('#per_page').val() ?? 50,
         view_mode: filter?.view_mode ?? $("#view_mode").val() ?? 'grid',
         im_new: filter?.im_new ?? ($("#chk_im_new").is(':checked') ? 1 : 0),
         plan_profit: filter?.plan_profit ?? ($("#chk_plainprofit").is(':checked') ? 1 : 0),

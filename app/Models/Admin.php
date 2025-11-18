@@ -394,7 +394,7 @@ class Admin extends Model {
 		  $results2 = $db->query($query2);
 
 		  foreach($results2->getResult() as $res2){
-		  	$data2 .= '<li><a href="'.base_url().'products/index?search_mode=default&sort_key=3&category_id='.$res2->category_id.'&offset=0&per_page=30&view_mode='.$view_mode.'">'.$res2->category_name.'</a></li>';
+		  	$data2 .= '<li><a href="'.base_url().'products/index?search_mode=default&sort_key=3&category_id='.$res2->category_id.'&offset=0&per_page=50&view_mode='.$view_mode.'">'.$res2->category_name.'</a></li>';
 		  }
 		  $data2 .='</ul>';
 		  

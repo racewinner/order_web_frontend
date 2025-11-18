@@ -376,7 +376,7 @@ main{background:url('images/diagonal_tile_bg3_light.png');}
         <?php echo form_label('&nbsp;', 'product_code');?>
         <input type="hidden" name="sort_key" id="sort_key" value="3">
         <input type="hidden" name="search_mode" id="search_mode" value="default">
-        <input type="hidden" name="per_page" id="per_page1" value="30"> 
+        <input type="hidden" name="per_page" id="per_page1" value="50"> 
         <input type="hidden" name="uri_segment" id="uri_segment" value="6">
         <input type="hidden" name="category" id="category" value="0">
         <input type="hidden" name="subcategory" id="subcategory" value="0">

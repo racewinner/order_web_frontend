@@ -261,7 +261,7 @@
             sort_key: $('#sort_key').val(),
             category_id: $('#category_id').val() ?? 0,
             offset: $("#offset").val() ?? 0,
-            per_page: $('#per_page').val() ?? 30,
+            per_page: $('#per_page').val() ?? 50,
             view_mode: $("#view_mode").val() ?? 'grid',
             im_new: $("#chk_im_new").is(':checked') ? 1 : 0,
             plan_profit: $("#chk_plainprofit").is(':checked') ? 1 : 0,

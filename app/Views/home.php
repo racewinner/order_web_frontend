@@ -82,7 +82,7 @@ foreach($cms as $index => $one) {
             let location_site = "products/index?";
             location_site += "&category_id=0";
             location_site += "&offset=0";
-            location_site += "&per_page=30";
+            location_site += "&per_page=50";
             location_site += "&view_mode=grid";
             location_site += "&mobile=" + (isMobile() ? 1 : 0);
             location_site += "&filter_brands=" + filter_brands;
@@ -96,7 +96,7 @@ foreach($cms as $index => $one) {
             location_site += "&sort_key=3";
             location_site += `&category_id=${category_id}`;
             location_site += "&mobile=" + (isMobile() ? 1 : 0);
-            location_site += "&offset=0&per_page=30";
+            location_site += "&offset=0&per_page=50";
             location_site += "&view_mode=grid";
             window.location.href = location_site;
         })

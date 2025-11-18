@@ -99,7 +99,7 @@
 			var location_site = "<?php echo base_url("products/index"); ?>";
 			var nCurrentSortKey = 6;
 			var category_id = $('#category0').val();
-			var per_page = 30;
+			var per_page = 50;
 			const search0 = $('#search0').val();
 
 			location_site += "?";

@@ -498,7 +498,7 @@ $sort_options = [
 				var search2 = '';
 				var category_id = $('#category').val() ?? 0;
 				var page_num = $('#curd_page').val() ?? 1;
-				var per_page = $('#per_page').val() ?? 30;
+				var per_page = $('#per_page').val() ?? 50;
 				var im_new = Number($('#im_new').val() ?? 0);
 				var plan_profit = Number($("#plan_profit").val() ?? 0);
 				var own_label = $("#own_label").val() ?? 'N';
@@ -617,7 +617,7 @@ $sort_options = [
 			<input type="hidden" name="non_pmp" id="non_pmp" value="<?= $non_pmp ?? 0 ?>">
 			<input type="hidden" name="view_mode" id="view_mode" value="<?= $view_mode ?? 'grid' ?>">
 			<input type="hidden" name="sort_key" id="sort_key" value="<?= $sort_key ?? 3 ?>">
-			<input type="hidden" name="per_page" id="per_page1" value="<?= $per_page ?? 30 ?>">
+			<input type="hidden" name="per_page" id="per_page1" value="<?= $per_page ?? 50 ?>">
 			<input type="hidden" name="offset" id="offset" value="<?= $offset ?? 0 ?>">
 			<input type="hidden" name="category" id="category" value="<?= $category_id ?? 0 ?>">
 			<input type="hidden" name="current_id" id="current_id" value="0">

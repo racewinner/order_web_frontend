@@ -31,9 +31,9 @@ class Products extends BaseController implements iData_controller
 		$search1 = urldecode($this->request->getGet('search1')) ?? '';
 		$search2 = urldecode($this->request->getGet('search2')) ?? '';
 		$search3 = urldecode($this->request->getGet('search3')) ?? '';
-		$sort_key = $this->request->getGet('sort_key') ?? 3;
+		$sort_key = $this->request->getGet('sort_key') ?? 9;
 		$category_id = $this->request->getGet('category_id') ?? 0;
-		$per_page = intval($this->request->getGet('per_page') ?? 30);
+		$per_page = intval($this->request->getGet('per_page') ?? 50);
 		$offset = intval($this->request->getGet('offset') ?? 0);
 		$im_new      = $this->request->getGet('im_new') ?? 0;
 		$plan_profit = $this->request->getGet('plan_profit') ?? 0;
@@ -216,9 +216,9 @@ class Products extends BaseController implements iData_controller
 
 		$user_info = $Employee->is_logged_in() ? $Employee->get_logged_in_employee_info() : null;
 
-		$per_page = intval($this->request->getGet('per_page') ?? 30);
+		$per_page = intval($this->request->getGet('per_page') ?? 50);
 		$offset = intval($this->request->getGet('offset') ?? 0);
-		$sort_key = $this->request->getGet('sort_key') ?? 3;
+		$sort_key = $this->request->getGet('sort_key') ?? 9;
 		$view_mode = $this->request->getGet('view_mode') ?? 'grid';
 		$spresell = $this->request->getGet('spresell') ?? 0;
 		$mobile = session()->get('is_mobile');
@@ -717,7 +717,7 @@ class Products extends BaseController implements iData_controller
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');
 
-		if($per_page == 0) $per_page = 30;
+		if($per_page == 0) $per_page = 50;
 
 		$user_info = $Employee->get_logged_in_employee_info();
 
@@ -839,7 +839,7 @@ class Products extends BaseController implements iData_controller
 		$search2 = request()->getPost('search2');
 		$category_id = request()->getPost('category_id');
 		$per_page = request()->getPost('per_page');
-		if($per_page == 0) $per_page = 30;
+		if($per_page == 0) $per_page = 50;
 		
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');

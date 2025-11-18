@@ -42,7 +42,7 @@ function searchProductsByProdCodes(prod_codes) {
     url += "&sort_key=0";
     url += "&category_id=0";
     url += "&offset=0";
-    url += "&per_page=30";
+    url += "&per_page=50";
     url += "&view_mode=" + ($("#view_mode").val() ?? 'grid');
     url += '&search1=' + encodeURIComponent(prod_codes.replace(/[\/()|'*]/g, ' '));
     window.location.href = url;

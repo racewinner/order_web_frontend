@@ -319,9 +319,9 @@ if($view_mode == 'grid') {
         <div class="card-body p-0 d-flex">
             <div class="d-flex justify-content-center align-items-center" style="width: 80px !important;">
                 <?php if(!empty($product->image_url)) { ?>
-                    <img class="prod-image2" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
+                    <img class="prod-image prod-image2" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">
                 <?php } else { ?>
-                    <img class="prod-image2" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">
+                    <img class="prod-image prod-image2" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">
                 <?php } ?>
             </div>
 

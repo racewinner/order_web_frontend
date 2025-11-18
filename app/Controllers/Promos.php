@@ -28,9 +28,9 @@ class Promos extends Secure_area /* implements iData_controller*/
 		}
 
 		$type = request()->uri->getSegment(3);
-		$sort_key = $this->request->getGet('sort_key') ?? 3;
+		$sort_key = $this->request->getGet('sort_key') ?? 9;
 		$category_id = $this->request->getGet('category_id') ?? 0;
-		$per_page = $this->request->getGet('per_page') ?? 30;
+		$per_page = $this->request->getGet('per_page') ?? 50;
 		$offset = $this->request->getGet('offset') ?? 0;
 		$view_mode	= $this->request->getGet('view_mode') ?? (session()->get('view_mode') ?? 'grid');
 		$im_new      = $this->request->getGet('im_new') ?? 0;

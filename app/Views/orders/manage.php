@@ -117,7 +117,7 @@ function search_unknown_product(e)
 	let prod_desc = target.data("description");
 	prod_desc = removeNumberSymbols(prod_desc);
 	prod_desc = encodeURIComponent(prod_desc);
-	let url = `<?php echo base_url("");?>/products/index?&sort_key=6&category_id=0&offset=0&per_page=30&view_mode=grid&search0=${prod_desc}`;
+	let url = `<?php echo base_url("");?>/products/index?&sort_key=6&category_id=0&offset=0&per_page=50&view_mode=grid&search0=${prod_desc}`;
 	window.location.href = url;
 }
 
@@ -432,7 +432,7 @@ if(count($unknown_products) > 0) {
         <?php echo form_label('&nbsp;', 'product_code');?>
         <input type="hidden" name="sort_key" id="sort_key" value="3">
         <input type="hidden" name="search_mode" id="search_mode" value="default">
-        <input type="hidden" name="per_page" id="per_page1" value="30"> 
+        <input type="hidden" name="per_page" id="per_page1" value="50"> 
         <input type="hidden" name="uri_segment" id="uri_segment" value="6">
         <input type="hidden" name="category" id="category" value="0">
         <input type="hidden" name="current_id" id="current_id" value="0">

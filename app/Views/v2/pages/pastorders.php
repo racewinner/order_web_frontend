@@ -148,7 +148,7 @@
         const data = {
             sort_key: $('#sort_key').val(),
             offset: $("#offset").val() ?? 0,
-            per_page: $('#per_page').val() ?? 30,
+            per_page: $('#per_page').val() ?? 50,
         }
         const queryParams = new URLSearchParams(data);
 

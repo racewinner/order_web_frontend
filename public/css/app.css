@@ -2604,7 +2604,7 @@ footer a:hover {
 
     .img {
         position: relative;
-
+/* 
         .prod_image {
             margin-top: 20px;
             width: 300px;
@@ -2614,7 +2614,7 @@ footer a:hover {
                 width: 200px;
                 height: 200px;
             }
-        }
+        } */
 
         .stock-avail {
             position: absolute;
