@@ -667,7 +667,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.category-link', function(e) {
         const category_id = $(e.target).closest('.category-link').data('category-id');
-        load_products({sort_key: 3, // Description (asc)
+        load_products({sort_key: 9, // Best Selling (desc)
                        search0: '',
                        category_id
         })
