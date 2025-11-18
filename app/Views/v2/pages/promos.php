@@ -21,7 +21,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<section class="p-2">
+<section class="p-2 px-4 promos-page-content">
     <input type="hidden" name="offset" id="offset" value="<?= $offset ?>" />
     <input type="hidden" name="type" id="type" value="<?= $type ?>">
 

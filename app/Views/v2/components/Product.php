@@ -155,7 +155,6 @@ if($view_mode == 'grid') {
     </div>
 <?php } else if($view_mode == 'list'){ ?>
     <div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-desktop"
-        style="margin-bottom: 0px !important;"
         data-prod-id="<?= $product->prod_id ?>"
         data-prod-code="<?= $product->prod_code ?>"
         data-prod-desc="<?= $product->prod_desc ?>"
@@ -304,7 +303,7 @@ if($view_mode == 'grid') {
         </div>
     </div>
     <div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-mobile" 
-         style="padding: 20px 20px 20px 10px !important; margin-bottom: 0px !important;"
+         style="padding: 20px 20px 20px 10px !important;"
          data-prod-id="<?= $product->prod_id ?>"
          data-prod-code="<?= $product->prod_code ?>"
          data-prod-desc="<?= $product->prod_desc ?>"

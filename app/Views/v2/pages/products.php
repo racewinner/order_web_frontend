@@ -130,7 +130,7 @@
                 </div>
             <?php } ?>
 
-            <div class="products-table px-md-2">
+            <div class="products-table px-md-2 px-lg-4">
                 <div class="products-table-header pc d-none d-xl-flex justify-content-between align-items-center px-2">
                     <div class="flex-fill d-flex align-items-center" style="margin-left: 10px;">
                         <div class="d-flex align-items-center toggle-sidebar me-4" data-toggle-target="#product-side-filter">
@@ -229,9 +229,9 @@
                 <?php if($total_rows > 0) { ?>
                     <div class="products-table-body mt-3 <?= $view_mode ?>-view">
                         <?php foreach($products as $product) { ?>
-                            <div class="p-2 mx-auto mb-2">
+                            <!-- <div class="p-2 mx-auto mb-2"> -->
                                 <?= view("v2/components/Product", ['product' => $product, 'view_mode' => $view_mode]) ?>
-                            </div>
+                            <!-- </div> -->
                         <?php } ?>
                     </div>
                 <?php } else { ?>

@@ -83,12 +83,19 @@
             display: block;
             .one-product {
                 width: 100% !important;
+                margin-bottom: 1.5rem !important;
             }
         }
         &.grid-view {
             display: flex;
             flex-wrap: wrap;
+            gap: 20px;
             justify-content: space-between;
+        }
+        @media (max-width: 992px) {
+            &.grid-view {
+                gap: 0px;
+            }
         }
         .one-product.grid-view {
             width: 250px;
@@ -134,8 +141,8 @@
 }
 
 @media (max-width: 992px) {
-    .products-page-content {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
+    .products-page-content, .promos-page-content {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
 }
