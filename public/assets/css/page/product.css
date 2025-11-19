@@ -145,4 +145,11 @@
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
+
+    .form-select#sort_key {
+        padding: 0.5rem 1rem 0.5rem 0.5rem;
+        background-position: right 0.5rem center;
+        background-size: 12px 12px;
+        min-width: 135px;
+    }
 }

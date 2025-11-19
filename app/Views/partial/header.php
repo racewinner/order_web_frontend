@@ -184,9 +184,10 @@
 			}
 
 			$(document).ready(function () {	
-								<?php if (request()->getUri()->getSegment(2) == 'general') { ?> $("#general").addClass("active"); <?php } ?> 
-								<?php if (request()->getUri()->getSegment(2) == 'tobacco') { ?> $("#tobacco").addClass("active"); <?php } ?> 
-								<?php if (request()->getUri()->getSegment(2) == 'chilled') { ?> $("#chilled").addClass("active"); <?php } ?>
+				<?php if (request()->getUri()->getSegment(2) == 'general') { ?> $("#general").addClass("active"); <?php } ?> 
+				<?php if (request()->getUri()->getSegment(2) == 'tobacco') { ?> $("#tobacco").addClass("active"); <?php } ?> 
+				<?php if (request()->getUri()->getSegment(2) == 'frozen' ) { ?> $("#frozen" ).addClass("active"); <?php } ?> 
+				<?php if (request()->getUri()->getSegment(2) == 'chilled') { ?> $("#chilled").addClass("active"); <?php } ?>
 			});
 		<?php } ?>
 

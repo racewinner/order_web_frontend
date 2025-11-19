@@ -39,9 +39,9 @@
         <span><?= $type['lines'] ?> Lines <?= $type['items'] ?> Items</span>
         <!-- <label>This trolley sub total is</label> -->
         <label>total is</label>
-        <div class="total-amount" id="cart_subtotal">£<?= $total_amount/* + $delivery_charge + $total_vats*/ ?></div>
+        <div class="total-amount" id="cart_subtotal">£<?= $total_amount == 0 ? '0.00' : $total_amount/* + $delivery_charge + $total_vats*/ ?></div>
     </div>
     <div>
-        <a href="/orders/checkout" class="btn btn-danger checkout-button" style="width: 220px;">Go to Checkout</a>
+        <a href="/orders/checkout" class="btn btn-danger checkout-button <?php if ($total_amount == 0) { ?>d-none<?php } ?>" style="width: 220px;">Go to Checkout</a>
     </div>
 </div>

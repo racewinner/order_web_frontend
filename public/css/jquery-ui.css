@@ -528,6 +528,7 @@ button.ui-button::-moz-focus-inner {
 	list-style: none;
 	padding: 2px;
 	margin: 0;
+	width: calc(100% - 110px);
 	display: block;
 	outline: none;
 }

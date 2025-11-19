@@ -18143,7 +18143,7 @@ small,
 }
 @media (max-width: 575.98px) {
   .back-top {
-    display: none;
+    /* display: none; */
   }
 }
 /* rtl:raw:

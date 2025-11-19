@@ -673,11 +673,55 @@ $(document).ready(function () {
         })
     });
 
-    if($("#search0").length > 0) {
+    // Function to extract search0 parameter from URL string
+    function getSearch0FromUrl(urlString) {
+        try {
+            // First, get the <a> tag string
+            const aTagMatch = urlString.match(/<a[^>]*>[\s\S]*?<\/a>/i);
+            if (!aTagMatch) {
+                console.error('No <a> tag found in string');
+                return null;
+            }
+            
+            const aTagString = aTagMatch[0];
+            
+            // Second, get substring from the a tag string, after search0= to "
+            const search0Match = aTagString.match(/search0=([^"]+)/i);
+            if (!search0Match) {
+                console.error('No search0 parameter found in <a> tag');
+                return null;
+            }
+            
+            let substring = search0Match[1];
+            
+            // Third, remove xxx=yyy patterns from the substring
+            // Remove any &xxx=yyy or &xxx=yyy& patterns
+            substring = substring.replace(/&[^&=]+=[^&]*/g, '');
+            // Also remove any trailing & if present
+            substring = substring.replace(/&$/, '');
+            
+            // Replace '%25' with '%' before returning
+            substring = substring.replace(/%25/g, '%');
+            
+            // Return remaining string
+            return substring.trim();
+        } catch (e) {
+            console.error('Error extracting search0:', e);
+            return null;
+        }
+    }
+
+    if ($("#search0").length > 0) {
         $("#search0").autocomplete({minLength:2 ,
             select: function (event, ui) { 
-              this.val(); 
+                console.log(this.val());
+                this.val(); 
             },
+            // focus: function(event, ui) {
+            //     event.preventDefault();
+            //     const search0 = getSearch0FromUrl(ui.item.value);
+            //     $('input#search0').val(search0);
+            // },
             source: function( request, response ) {
                 const category_id = $("input[name='category_id']").val();
     

@@ -81,8 +81,8 @@
             <div class="d-flex full-fill" style="justify-content: space-between; align-items: center;">
                 <h5 class="fw-bold pg-subject-title-on-mobile">My Trolley</h5>
                 <div class="show-in-mobile" style="padding: 0px 10px;">
-                    <a href="/orders/payment?xxx" id="nxt2complete_mobile" class="btn btn-danger w-100 checkout-button" 
-                       style="font-size: 80%;padding: 5px 12px;">Next</a>
+                    <a href="/orders/payment?xxx" id="nxt2complete_mobile" class="btn btn-danger w-100 checkout-button d-none" 
+                       style="font-size: 80%;padding: 5px 12px; min-width: 80px;">Next</a>
                 </div>
             </div>
 
@@ -90,14 +90,16 @@
         <div class="my-cart-body">
             <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
                 <?php foreach($types as $index => $type) { ?>
-                    <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
-                        id="tab-<?= $type['id'] ?>" 
-                        data-bs-toggle="pill" 
-                        data-bs-target="#pane-<?= $type['id'] ?>" 
-                        role="tab" 
-                        aria-controls="pane-<?= $type['id'] ?>" 
-                        aria-selected="true"
-                    ><?= $type['label'] ?></li>
+                    <?php if ($type['item_total'] != 0) { ?>
+                        <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
+                            id="tab-<?= $type['id'] ?>" 
+                            data-bs-toggle="pill" 
+                            data-bs-target="#pane-<?= $type['id'] ?>" 
+                            role="tab" 
+                            aria-controls="pane-<?= $type['id'] ?>" 
+                            aria-selected="true"
+                        ><?= $type['label'] ?></li>
+                    <?php } ?>
                 <?php } ?>
             </ul>
 
@@ -137,22 +139,22 @@
         <div class="card-body">
             <div class="billing-item d-flex">
                 <div class="flex-fill"><label>Item Total</label></div>
-                <div><span class="value" id="cur_trolley_total_amount"></span></div>
+                <div><span class="value" id="cur_trolley_total_amount">£0.00</span></div>
             </div>
             <div class="billing-item d-flex">
                 <div class="flex-fill"><label>VAT</label></div>
-                <div><span class="value" id="cur_trolley_total_vats"></span></div>
+                <div><span class="value" id="cur_trolley_total_vats">£0.00</span></div>
             </div>
         </div>
 
         <div class="card-footer">
             <div class="subtotal subtotal-desc">
                 <div><label>Trolley total is </label></div>
-                <div class="value" id="cur_trolley_total"></div>
+                <div class="value" id="cur_trolley_total">£0.00</div>
             </div>
 
             <div class="mt-4">
-                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button">Next</a>
+                <a href="/orders/payment?xxx" id="nxt2complete" class="btn btn-danger w-100 checkout-button d-none">Next</a>
             </div>
         </div>
     </div>
@@ -162,7 +164,6 @@
 <?= $this->section('javascript') ?>
 <script>
      $(document).ready(function() {
-        debugger
         let el = $('.one-cart-type')
         if (el.length == 0) {
             return;
@@ -171,7 +172,6 @@
         }
     })
     $(document).on('click', '.one-cart-type', function(e) {
-        debugger
         let el_tab_id = e.currentTarget.id
         let cart_typename = el_tab_id.slice(4)
         
@@ -192,10 +192,16 @@
         $('#nxt2complete').attr('href', url);
         $('#nxt2complete_mobile').attr('href', url);
 
+        if (parseFloat(item_total) == 0) {
+            $('#nxt2complete').addClass('d-none');
+            $('#nxt2complete_mobile').addClass('d-none');
+        } else {
+            $('#nxt2complete').removeClass('d-none');
+            $('#nxt2complete_mobile').removeClass('d-none');
+        }
     })
 
     $(document).on('click', '.checkout-button', function(e) {
-        debugger
         add_loadingSpinner_to_button(this);
     })
 </script>

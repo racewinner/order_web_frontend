@@ -146,6 +146,7 @@ class Orders extends Secure_area implements iData_controller
 		$types = [
 			['id' => 'general',  'label' => 'General', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
 			['id' => 'tobacco',  'label' => 'Tobacco', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
+			['id' => 'frozen',   'label' => 'Frozen',  'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
 			['id' => 'chilled',  'label' => 'Chilled', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
 			['id' => 'spresell', 'label' => 'Seasonal Presell', 'orders' => [], 'lines' => 0, 'items' => 0, 'item_total' => 0, 'vat' => 0], 
 		];
@@ -212,9 +213,6 @@ class Orders extends Secure_area implements iData_controller
 
 			$type['cc_vat'] = $type['cc_charge'] * $vat_tbl_dt['A'] / 100;
 			$type['dv_vat'] = $type['dv_charge'] * $vat_tbl_dt['A'] / 100;
-
-
-
 		}
 		$this->data["types"] = $types;
 
@@ -241,22 +239,7 @@ class Orders extends Secure_area implements iData_controller
 			$collection_delivery_dates[] = $next_datetime;
 		}
 		$this->data["collection_delivery_dates"] = $collection_delivery_dates;
-
 		
-		// $this->data['du_prefer_delivery'] 	= $user_info->delivery;
-		// $this->data['wiy_delivery_charge'] 	= $user_info->delivery_charge;
-		// $this->data['du_prefer_collect'] 	= $user_info->collect;
-
-		/**
-		 * generate cart info
-		 */
-		// $cart = Order::get_cart_info($pid);
-		// $this->data['cart_typename'] 	= implode(',', array_keys($cart['cart_types']));
-    	// $this->data['total_quantity']   = $cart['total_quantity'];
-		// $this->data['total_amount']     = $cart['total_amount'];
-		// $this->data['total_epoints']    = $cart['total_epoints'];
-		// $this->data['delivery_charge']  = $cart['total_quantity'] == 0 ? "0.00" : $cart['delivery_charge'];
-		// $this->data['total_vats']       = $cart['total_vats'];
 		$cart_typename = $params && $params['cart_typename'] ? $params['cart_typename'] : 'general';
 		if ($types[0]['id'] == $cart_typename) {
 			$trolledType = $types[0];
@@ -266,28 +249,21 @@ class Orders extends Secure_area implements iData_controller
 			$trolledType = $types[2];
 		} else if ($types[3]['id'] == $cart_typename) {
 			$trolledType = $types[3];
+		} else if ($types[4]['id'] == $cart_typename) {
+			$trolledType = $types[4];
 		} 
 		
 		$this->data['cart_typename'] 	= $cart_typename;
-    	// $this->data['total_quantity']   = $cart['total_quantity'];
 		$this->data['total_amount']     = $trolledType['item_total'];
-		// $this->data['total_epoints']    = $cart['total_epoints'];
 		$this->data['cc_charge']  		= $trolledType['cc_charge'];
 		$this->data['dv_charge']  		= $trolledType['dv_charge'];
 		$this->data['cc_vat']  			= $trolledType['cc_vat'];
 		$this->data['dv_vat']  			= $trolledType['dv_vat'];
 		$this->data['total_vats']       = $trolledType['vat'];
 
-
-		// $this->data['credit_account_info'] = session()->get('credit_account_info');
-		// $this->data['payment_card_info'] = session()->get('payment_card_info');
-
-
 		$this->data['form_width'] = $this->get_form_width();
-	    
 	  	$this->data["slides"] = $Admin->get_scount('slides');
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
-		
 
 		if($page == 'checkout') {
 			return view('v2/pages/myaccount/checkout', $this->data);

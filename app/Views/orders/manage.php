@@ -451,11 +451,22 @@ if(count($unknown_products) > 0) {
 		</div>
         <h2>&nbsp;</h2>
         <div class="tlinks">
-			<a href="<?php echo base_url();?>orders/general" class="general">General<br /><span><?php echo $general_lines; ?> Lines <?php echo $general_items; ?> Items</span></a>
-			<a href="<?php echo base_url();?>orders/tobacco" class="tobacco">Tobacco<br /><span><?php echo $tobacco_lines; ?> Lines <?php echo $tobacco_items; ?> Items</span></a>
-			<a href="<?php echo base_url();?>orders/chilled" class="chilled">Chilled<br /><span><?php echo $chilled_lines; ?> Lines <?php echo $chilled_items; ?> Items</span></a>
+			<a href="<?php echo base_url();?>orders/general" class="general">General<br />
+			   <span><?php echo $general_lines; ?> Lines <?php echo $general_items; ?> Items</span>
+			</a>
+			<a href="<?php echo base_url();?>orders/tobacco" class="tobacco">Tobacco<br />
+			   <span><?php echo $tobacco_lines; ?> Lines <?php echo $tobacco_items; ?> Items</span>
+			</a>
+			<a href="<?php echo base_url();?>orders/frozen" class="frozen">Frozen<br />
+			   <span><?php echo $frozen_lines; ?> Lines <?php echo $frozen_items; ?> Items</span>
+			</a>
+			<a href="<?php echo base_url();?>orders/chilled" class="chilled">Chilled<br />
+			   <span><?php echo $chilled_lines; ?> Lines <?php echo $chilled_items; ?> Items</span>
+			</a>
 			<?php if($spresell_lines) { ?>
-			<a href="<?php echo base_url();?>orders/spresell" class="spresell">Seasonal Presell<br /><span><?= $spresell_lines; ?> Lines <?= $spresell_items; ?> Items</span></a>
+			<a href="<?php echo base_url();?>orders/spresell" class="spresell">Seasonal Presell<br />
+			   <span><?= $spresell_lines; ?> Lines <?= $spresell_items; ?> Items</span>
+			</a>
 			<?php } ?>
 		</div>
 		<p class="desc lead">Review of <span class="value" id="total_quantity"><?php echo $total_quantity;?></span> item(s) <span class="value"><span class="woocommerce-Price-amount amount">£</span><span id="total_amount"><?php echo $total_amount;?></span></p>

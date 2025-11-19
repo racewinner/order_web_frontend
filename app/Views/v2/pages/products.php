@@ -182,7 +182,7 @@
                     </div>
                 </div>
 
-                <div class="products-table-header mobile d-xl-none px-2">
+                <div class="products-table-header mobile d-xl-none">
                     <div class="d-flex align-items-center">
                         <div class="d-flex align-items-center me-1">
                             <div class="d-flex align-items-center toggle-sidebar" data-toggle-target="#product-side-filter">
@@ -209,12 +209,12 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        <div class="flex-fill me-4">
+                        <div class="flex-fill me-2">
                             <?= view('v2/components/SearchInput2', ['name'=>'search1', 'id'=>'search1', 'value'=>$search1 ?? '', 'placeholder' => 'Search here']) ?>
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <label for="sort_key" class="me-2"><i class="bi bi-sort-alpha-up" style="font-size: 20px;"></i></label>
+                            <label for="sort_key" class="me-1"><i class="bi bi-sort-alpha-up" style="font-size: 20px;"></i></label>
                             <select class="form-select" name='sort_key' id='sort_key' aria-label="Sort" >
                             <?php foreach ($sort_options as $sort) { ?>
                                 <option value='<?= $sort['value'] ?>' class="circle" <?= $sort['value'] == $sort_key ? 'selected' : '' ?>>

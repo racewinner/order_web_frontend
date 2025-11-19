@@ -160,7 +160,7 @@
     </div>
 </div>
 
-<div class="one-cart-item one-product card border bg-transparent show-in-mobile" style="margin-bottom: 10px !important;"
+<div class="one-cart-item one-product card border bg-transparent show-in-mobile" style="margin-bottom: 16px !important;"
     data-prod-id="<?= $product->prod_id ?>"
     data-prod-code="<?= $product->prod_code ?>"
     data-prod-desc="<?= $product->prod_desc ?>"

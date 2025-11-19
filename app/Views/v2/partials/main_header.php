@@ -107,7 +107,7 @@ if(!empty($category_id) && $category_id > 0) {
 			<?= view('v2/components/SearchInput', ['name'=>'search_product', 'id'=>'search0', 'value'=>$search0 ?? '', 'placeholder' => 'Search Products']) ?>
 		</div>
 
-		<div class="header-logo-mainmenu mobile d-flex d-xl-none align-items-center p-2">
+		<div class="header-logo-mainmenu mobile d-flex d-xl-none align-items-center">
 			<div class="">
 				<i class="bi bi-tags toggle-sidebar" data-toggle-target="#category-sidebar"></i>
 			</div>
