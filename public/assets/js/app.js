@@ -251,6 +251,7 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
 }
 
 function update_cart() {
+    debugger
     $.ajax({
         'url' : '/orders/cartinfo',
         'type': 'GET', //the way you want to send data to your URL
@@ -309,6 +310,14 @@ function update_cart() {
                     $('#cur_trolley_total_vats').text('£' + parseFloat(cur_trolley_cart_vat).toFixed(2));
                 }
                 
+                /**
+                 * set checkout button in footer of trolleyPopupDlg
+                 */
+                if(total_amount == 0) {
+                    $('.my-cart-footer .checkout-button').addClass('d-none');
+                } else {
+                    $('.my-cart-footer .checkout-button').removeClass('d-none');
+                }
             }
         }
     });
