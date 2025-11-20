@@ -434,7 +434,7 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
 
             $data_row.='<div class="ms-2 ms-md-4 flex-fill d-flex" style="width: calc(100% - 80px) !important;">
                 <div class="flex-fill position-relative" style="">
-                    <h6 class="card-title prod-desc">'. $product->prod_desc .'</h6>
+                    <h6 class="card-title prod-desc min-height-auto">'. $product->prod_desc .'</h6>
 
                     <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">';
                         if(!empty($product->brand)) { 
@@ -443,7 +443,7 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
                                 <span class="ms-2 prop-value">'. ($product->brand ?? '') .'</span>
                             </div>';
                         } else { 
-                            $data_row.='<div class="prod-brand">&nbsp;</div>';
+                            // $data_row.='<div class="prod-brand">&nbsp;</div>';
                         } 
                         
                         $data_row.='<div class="prod-spec">
@@ -480,7 +480,7 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
                                 <span class="ms-2 prop-value">'. $product->shelf_life .'</span>
                             </div>';
                         } else { 
-                            $data_row.='<div>&nbsp;</div>';
+                            // $data_row.='<div>&nbsp;</div>';
                         } 
                     $data_row.='</div>';
 
@@ -555,14 +555,10 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
                     
                         } 
                     } else { 
-                    
                         $data_row.='<div class="d-sm-flex justify-content-center align-items-end p-1 p-sm-3">
                             <a class="text-red login-to-see-price" href="/login">Log in to see price</a>
                         </div>';
                     }  
-
-
-
                 $data_row.='</div>
             </div>
         </div>

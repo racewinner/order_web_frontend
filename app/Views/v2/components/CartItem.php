@@ -182,7 +182,7 @@
         <div class="ms-2 flex-fill d-flex flex-column position-relative" style="width: calc(100% - 80px);">
             <!-- Title -->
             <div class="d-flex" style="justify-content: space-between; align-items: flex-start;">
-                <h6 class="card-title prod-desc mb-1"><?= $product->prod_desc ?></h6>
+                <h6 class="card-title prod-desc min-height-auto mb-1"><?= $product->prod_desc ?></h6>
                 <button type="button" class="remove-item">
                     <i class="bi bi-trash"></i>
                 </button>

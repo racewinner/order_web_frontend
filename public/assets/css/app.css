@@ -441,6 +441,44 @@ footer {
     }
 }
 
+.prod-label.show-in-mobile {
+    top: -8px !important;
+    left: -8px !important;
+    width: 80px !important;
+    height: 80px !important;
+    &::before {
+        top: -2px !important;
+        right: 0;
+    }
+    &::after {
+        bottom: 0;
+        left: -2px !important;
+    }
+    span {
+        width: 112px !important;
+        padding: 4px 0 !important;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, .1) !important;
+        font: 700 10px / 1 'Lato', sans-serif !important;
+        right: -9px !important;
+        top: 25px !important;
+    }
+}
+
+.one-product.show-in-mobile {
+    .prod-label {
+        top: -8px !important;
+        left: -8px !important;
+        &::before {
+            top: -3px;
+            right: 0;
+        }
+        &::after {
+            bottom: 0;
+            left: -3px;
+        }
+    }
+}
+
 .one-product {
     cursor: default !important;
     background-color: white !important;
@@ -448,8 +486,8 @@ footer {
         position: absolute;
         top: -11px;
         left: -11px;
-        width: 111px;
-        height: 111px;
+        width: 110px;
+        height: 110px;
         overflow: hidden;
         z-index: 20;
         &::before {
@@ -474,7 +512,7 @@ footer {
         }
         span {
             position: absolute;
-            width: 161px;
+            width: 160px;
             padding: 5px 0;
             box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
             color: #fff;
@@ -702,17 +740,17 @@ footer {
             display: none !important;
         }
         .prod-label {
-            top: -10px;
-            left: -10px;
-            width: 60px;
-            height: 60px;
+            top: -11px;
+            left: -11px;
+            width: 80px;
+            height: 80px;
             overflow: hidden;
             span {
-                width: 100px;
-                padding: 3px 15px 3px 0;
-                font-size: 8px;
-                right: -20px;
-                top: 12px;
+                width: 215px;
+                padding: 5px 15px 5px 0;
+                font-size: 10px;
+                right: -66px;
+                top: 17px;
             }
         }
     }
@@ -758,8 +796,8 @@ footer {
     }
     @media (max-width: 768px) {
         .prod-image {
-            width: 200px !important;
-            height: 200px !important;
+            width: 170px !important;
+            height: 170px !important;
             object-fit: contain;
         }
         &.grid-view {
@@ -817,6 +855,7 @@ footer {
                 font-size: 15px;
                 width: 30px;
                 height: 30px;
+                z-index: 999 !important;
             }
             .login-to-see-price {
                 text-align: center;
@@ -824,15 +863,15 @@ footer {
             .prod-label {
                 top: -11px;
                 left: -11px;
-                width: 60px;
-                height: 60px;
+                width: 64px;
+                height: 64px;
                 overflow: hidden;
                 span {
-                    width: 100px;
+                    width: 108px;
                     padding: 3px 15px 3px 0;
                     font-size: 8px;
-                    right: -20px;
-                    top: 12px;
+                    right: -24px;
+                    top: 14px;
                 }
             }
             .purchase-action {
@@ -1216,4 +1255,8 @@ html {
     background-color: #a8a8a8;
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+}
+
+.min-height-auto {
+    min-height: auto !important;
 }

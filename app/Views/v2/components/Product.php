@@ -18,7 +18,8 @@ if($view_mode == 'grid') {
         <?php } ?>
 
         <?php if(!empty($product->p_label) && $product->p_label != 'CC' && $product->p_label != '') { 
-            echo "<div class='prod-label'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
+            echo "<div class='prod-label show-in-desktop'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
+            echo "<div class='prod-label show-in-mobile'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
         } ?>
 
         <?php if($product->available['icon_name']) { ?>
@@ -50,7 +51,7 @@ if($view_mode == 'grid') {
         </div>
 
         <!-- Card body -->
-        <div class="card-body p-2">
+        <div class="card-body px-2 pt-2 card-body-padding-bottom">
             <!-- Title -->
             <h6 class="card-title prod-desc prod-desc-hover"><?= $product->prod_desc ?></h6>
 
@@ -303,7 +304,7 @@ if($view_mode == 'grid') {
         </div>
     </div>
     <div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-mobile" 
-         style="padding: 20px 20px 20px 10px !important;"
+         style="padding: 20px 10px 10px 10px !important; margin-bottom: 1rem !important;"
          data-prod-id="<?= $product->prod_id ?>"
          data-prod-code="<?= $product->prod_code ?>"
          data-prod-desc="<?= $product->prod_desc ?>"
@@ -327,7 +328,7 @@ if($view_mode == 'grid') {
 
             <div class="ms-2 ms-md-4 flex-fill d-flex" style="width: calc(100% - 80px) !important;">
                 <div class="flex-fill position-relative" style="">
-                    <h6 class="card-title prod-desc"><?= $product->prod_desc ?></h6>
+                    <h6 class="card-title prod-desc min-height-auto"><?= $product->prod_desc ?></h6>
 
                     <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">
                         <?php if(!empty($product->brand)) { ?>
@@ -336,7 +337,7 @@ if($view_mode == 'grid') {
                                 <span class="ms-2 prop-value"><?= $product->brand ?? '' ?></span>
                             </div>
                         <?php } else { ?>
-                            <div class="prod-brand">&nbsp;</div>
+                            <!-- <div class="prod-brand">&nbsp;</div> -->
                         <?php } ?>
                         
                         <div class="prod-spec">
@@ -373,11 +374,11 @@ if($view_mode == 'grid') {
                                 <span class="ms-2 prop-value"><?= $product->shelf_life ?></span>
                             </div>
                         <?php } else { ?>
-                            <div>&nbsp;</div>
+                            <!-- <div>&nbsp;</div> -->
                         <?php } ?>
                     </div>
 
-                    <div class="profit-avail" style="right: -14px">
+                    <div class="profit-avail" style="right: -4px">
                         <?php if(isset($product->pfp) && $product->pfp == "1") { ?>
                             <div class="profit mt-1 d-none">
                                 <img src="<?=$img_host?>/images/icons/top-selling-line.png" title="top-selling-line" />
@@ -453,12 +454,7 @@ if($view_mode == 'grid') {
                             <a class='text-red login-to-see-price' href='/login'>Log in to see price</a>
                         </div>
                     <?php } ?>    
-
-
-
                 </div>
-
-                                    
             </div>
         </div>
     </div>

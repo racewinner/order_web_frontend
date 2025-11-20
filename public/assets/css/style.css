@@ -19182,3 +19182,12 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
   justify-content: space-between;
   margin-bottom: 1.5rem;
 }
+
+.card-body-padding-bottom {
+  padding-bottom: 0.5rem !important;
+}
+@media (max-width: 992px) {
+  .card-body-padding-bottom {
+    padding-bottom: 0rem !important;
+  }
+}
