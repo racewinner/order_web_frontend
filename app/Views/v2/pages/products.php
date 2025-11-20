@@ -129,13 +129,10 @@
                         <div class="sponsor-ribbon text-<?php echo $sponsor['ribbon']['align'] ?? 'center' ?>" style="color:<?= $sponsor['ribbon']['txt_color'] ?>;">
                             <?= $sponsor['ribbon']['content'] ?>
                         </div>
-                        <?= $sponsor['manage_table'] ?>
                     <?php } ?>
+                    <?= $sponsor['manage_table'] ?>
                 </div>
             <?php } ?>
-
-        
-            
 
             <div class="products-table px-md-2 px-lg-4">
                 <div class="products-table-header pc d-none d-xl-flex justify-content-between align-items-center px-2">
