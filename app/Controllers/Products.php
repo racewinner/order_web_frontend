@@ -192,7 +192,7 @@ class Products extends BaseController implements iData_controller
 			$sponsor = Cms::getActiveSponsor($search0);
 			if($sponsor) {
 				$sponsor_products = $Product->search_category($user_info, [
-					'search1' => $sponsor['prod_codes'],
+					'search1' => $sponsor['data']['prod_codes'],
 					'limit' => 1000, 
 					'offset' => 0, 
 				]);

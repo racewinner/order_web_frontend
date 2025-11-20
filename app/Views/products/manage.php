@@ -857,7 +857,9 @@ $sort_options = [
 
 						<div id="content_main" style="display:none;">
 							<div id="table_holder" class="table_holder">
-								<?php echo $manage_table; ?>
+								<!-- <php echo $manage_table; ?> -->
+								<?php echo $sponsor['manage_table'] ?? $manage_table; ?>
+
 							</div>
 						</div>
 					</div>

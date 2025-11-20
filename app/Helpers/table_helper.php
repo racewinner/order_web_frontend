@@ -173,6 +173,7 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
 	}
 
 	if($hide != true) {
+		/*
 		$case = "&nbsp;<b>" . Product::getCase($product) . "</b>";
 
 		$data_row = '<div class="d-flex list-item mb-4">
@@ -258,6 +259,314 @@ function get_product_data_row_listview($product, $priceList, $controller, $img_h
 		$data_row .=		'</div>
 						</div>
 					</div>';
+		*/
+		$data_row = '';
+		$data_row.='<div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-desktop"
+						data-prod-id="'. $product->prod_id.'"
+						data-prod-code="'. $product->prod_code.'"
+						data-prod-desc="'. $product->prod_desc.'"
+					>';
+        if(!empty($product->p_label) && $product->p_label != 'CC' && $product->p_label != '') { 
+            $data_row.="<div class='prod-label'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
+        }
+
+        if($Employee->is_logged_in()) {
+            $data_row.='<i class="favorite bi bi-heart '. (!empty($product->favorite) ? $product->favorite : '') .'"></i>';
+        }
+
+        $data_row.='<div class="card-body p-0 d-flex">
+            <div class="d-flex justify-content-center align-items-center">';
+                if(!empty($product->image_url)) {
+                    $data_row.='<img class="prod-image" src="'. $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version .'" alt="" loading="lazy">';
+                } else {
+                    $data_row.='<img class="prod-image" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">';
+                }
+			$data_row.='</div>';
+
+            $data_row.='<div class="ms-2 ms-md-4 flex-fill d-flex">
+                <div class="flex-fill position-relative">
+                    <h6 class="card-title prod-desc" style="padding-top: 10px; min-height: 40px;">'. $product->prod_desc .'</h6>
+
+                    <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">';
+                        if(!empty($product->brand)) { 
+                            $data_row.='<div class="prod-brand">
+                                <label>Brand: </label>
+                                <span class="ms-2 prop-value">'. ($product->brand ?? '') . '</span>
+                            </div>';
+                        } else { 
+                            $data_row.='<div class="prod-brand">&nbsp;</div>';
+                        } 
+                        
+                        $data_row.='<div class="prod-spec">
+                            <label>Pack: </label>
+                            <span class="ms-2" style="color:black;">
+                                <span class="prop-value">'. $product->prod_pack_desc .'</span>
+                                <label class="mx-1 text-gray">x</label>
+                                <span class="prop-value">'. $product->prod_uos .'</span>
+                                <span class="ms-1 fw-bold prop-value">'. ($product->case ?? '') .'</span>
+                            </span>
+                        </div>
+
+                        <div class="prod-spec">
+                            <label>Code: </label>
+                            <span class="ms-2 prop-value prod_code_2do" 
+                                  data-trolley-type="'. (!empty($product->type) ? $product->type : 'not-sure') .'"
+                                  data-can-reorder="yes">'. $product->prod_code .'</span>
+                        </div>
+
+                        <div>
+                            <span class="prod-rrp">
+                                <label>RRP: </label>
+                                <span class="ms-2 prop-value">£'. number_format($product->prod_rrp,2,'.','') .'</span>
+                            </span>
+                            <span class="prod-por inline">
+                                <label class="mx-1">|</label>
+                                <label>POR: </label>
+                                <span class="ms-2 prop-value">'. $product->por . '%</span>
+                            </span>
+                        </div>
+                        <div class="prod-por">
+                            <label>POR: </label>
+                            <span class="ms-2 prop-value">'. $product->por . '%</span>
+                        </div>';
+                        if(!empty($product->shelf_life)) { 
+                            $data_row.='<div>
+                                <label>Shelf Life:</label>
+                                <span class="ms-2 prop-value">'. $product->shelf_life .'</span>
+                            </div>';
+                        } else { 
+                            $data_row.='<div>&nbsp;</div>';
+                        } 
+                    $data_row.='</div>';
+                    
+                $data_row.='</div>';
+                $data_row.='<div class="d-flex">
+                    <div class="d-flex align-items-end">
+                        <div class="pt-1 ps-1 pe-1">';
+                            if(isset($product->pfp) && $product->pfp == "1") { 
+                                $data_row.='<div class="profit mt-1 d-none">
+                                    <img src="'.$img_host.'/images/icons/top-selling-line.png" title="top-selling-line" />
+                                </div>
+                                <div class="profit mt-1">
+                                    <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
+                                </div>';
+                            } 
+                            if($product->available['icon_name']) { 
+                                if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { 
+                                    $data_row.='<div class="stock-avail" style="">
+                                        <img src="/images/icons/ribbon/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } else { 
+                                    $data_row.='<div class="stock-avail mt-1">
+                                        <img src="'.$img_host.'/images/icons/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } 
+                            } 
+                        $data_row.='</div>';
+                        $data_row.='<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px;">';
+                            if($Employee->is_logged_in()) { 
+                                if($product->price >= 0) {
+                            
+                                $data_row.='<div class="d-flex justify-content-center align-items-end mt-2">
+                                    <div class="prod-price d-flex flex-column align-items-center justify-content-center">';
+                                        if($product->price == 0) { 
+                                            $data_row.='<div class="current-price call-for-price">Call for Price</div>';
+                                        } else { 
+                                            $data_row.='<div class="d-flex align-items-center">
+                                                <span class="current-price">£'. $product->price .'</span>';
+                                                if(!empty($product->is_show_non_promo_price)) { 
+                                                	$data_row.='<span class="deprecated ms-2">£'. $product->non_promo_price .'</span>';
+                                                } 
+                                            $data_row.='</div>';
+                                        } 
+                                            
+                                        if(!empty($product->promo_end_text) && $product->promo_end_text) { 
+                                            $data_row.='<div class="promo-end-text" style="font-size: 80% !important;">'. $product->promo_end_text .'</div>';
+                                        } 
+                                    $data_row.='</div>';
+                                    
+                                $data_row.='</div>';
+                            
+                                } 
+                            } else { 
+                            
+                                $data_row.='<div class="d-sm-flex justify-content-center align-items-end p-1 p-sm-3">
+                                    <a class="text-red login-to-see-price" href="/login">Log in to see price</a>
+                                </div>';
+                            }  
+
+                            $data_row.='<div class="purchase-action d-flex align-items-center px-1 mt-2">
+                                <i class="bi bi-dash minus-cart"></i>
+                                <input class="form-control cart-quantity" value="'. ($product->cart_quantity ?? 0) .'" />
+                                <i class="bi bi-plus-lg add-cart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+    $data_row.='<div class="one-product card border bg-transparent list-view p-2 p-sm-3 h-100 show-in-mobile" 
+         style="padding: 20px 20px 20px 10px !important;"
+         data-prod-id="'. $product->prod_id .'"
+         data-prod-code="'. $product->prod_code .'"
+         data-prod-desc="'. $product->prod_desc .'"
+    >';
+        if(!empty($product->p_label) && $product->p_label != 'CC' && $product->p_label != '') { 
+            $data_row.="<div class='prod-label'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
+        }
+
+        if($Employee->is_logged_in()) { 
+            $data_row.='<i class="favorite bi bi-heart '. (!empty($product->favorite) ? $product->favorite : '') .'"></i>';
+        } 
+
+        $data_row.='<div class="card-body p-0 d-flex">
+            <div class="d-flex justify-content-center align-items-center" style="width: 80px !important;">';
+                if(!empty($product->image_url)) { 
+                    $data_row.='<img class="prod-image prod-image2" src="'. $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  .'" alt="" loading="lazy">';
+                } else { 
+                    $data_row.='<img class="prod-image prod-image2" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">';
+                } 
+            $data_row.='</div>';
+
+            $data_row.='<div class="ms-2 ms-md-4 flex-fill d-flex" style="width: calc(100% - 80px) !important;">
+                <div class="flex-fill position-relative" style="">
+                    <h6 class="card-title prod-desc">'. $product->prod_desc .'</h6>
+
+                    <div class="flex-fill d-flex flex-column prod-other-props justify-content-end">';
+                        if(!empty($product->brand)) { 
+                            $data_row.='<div class="prod-brand">
+                                <label>Brand: </label>
+                                <span class="ms-2 prop-value">'. ($product->brand ?? '') .'</span>
+                            </div>';
+                        } else { 
+                            $data_row.='<div class="prod-brand">&nbsp;</div>';
+                        } 
+                        
+                        $data_row.='<div class="prod-spec">
+                            <label>Pack: </label>
+                            <span class="ms-2" style="color:black;">
+                                <span class="prop-value">'. $product->prod_pack_desc .'</span>
+                                <label class="mx-1 text-gray">x</label>
+                                <span class="prop-value">'. $product->prod_uos.'</span>
+                                <span class="ms-1 fw-bold prop-value">'. ($product->case ?? '') .'</span>
+                            </span>
+                        </div>
+
+                        <div class="prod-spec">
+                            <label>Code: </label>
+                            <span class="ms-2 prop-value prod_code_2do" 
+                                  data-trolley-type="'. (!empty($product->type) ? $product->type : 'not-sure') .'"
+                                  data-can-reorder="yes">'. $product->prod_code .'</span>
+                        </div>
+
+                        <div>
+                            <span class="prod-rrp">
+                                <label>RRP: </label>
+                                <span class="ms-2 prop-value">£'. number_format($product->prod_rrp,2,'.','') .'</span>
+                            </span>
+                            <span class="prod-por">
+                                <label class="mx-1">|</label>
+                                <label>POR: </label>
+                                <span class="ms-2 prop-value">'. $product->por .'%</span>
+                            </span>
+                        </div>';
+                        if(!empty($product->shelf_life)) { 
+                            $data_row.='<div>
+                                <label>Shelf Life:</label>
+                                <span class="ms-2 prop-value">'. $product->shelf_life .'</span>
+                            </div>';
+                        } else { 
+                            $data_row.='<div>&nbsp;</div>';
+                        } 
+                    $data_row.='</div>';
+
+                    $data_row.='<div class="profit-avail" style="right: -14px">';
+                        if(isset($product->pfp) && $product->pfp == "1") { 
+                            $data_row.='<div class="profit mt-1 d-none">
+                                <img src="'.$img_host.'/images/icons/top-selling-line.png" title="top-selling-line" />
+                            </div>
+                            <div class="profit" style="margin-top: 1.5rem">
+                                <img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
+                            </div>';
+
+                            if($product->available['icon_name']) { 
+                                if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { 
+                                    $data_row.='<div class="stock-avail" style="margin-top: 0.2rem">
+                                        <img src="/images/icons/ribbon/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } else { 
+                                    $data_row.='<div class="stock-avail mt-1">
+                                        <img src="'.$img_host.'/images/icons/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } 
+                            } 
+                        } else { 
+                            if($product->available['icon_name']) { 
+                                if ($product->available['icon_name'] == 'out-of-stock' || 
+                                        $product->available['icon_name'] == 'new-item' || 
+                                        $product->available['icon_name'] == 'low-stock' || 
+                                        $product->available['icon_name'] == 'coming-soon') { 
+                                    $data_row.='<div class="stock-avail" style="margin-top: 1.5rem">
+                                        <img src="/images/icons/ribbon/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } else { 
+                                    $data_row.='<div class="stock-avail mt-1">
+                                        <img src="'.$img_host.'/images/icons/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+                                    </div>';
+                                } 
+                            } 
+                        } 
+                        
+                    $data_row.='</div>';
+
+                    if($Employee->is_logged_in()) { 
+                        if($product->price >= 0) {
+                    
+                        $data_row.='<div class="d-flex align-items-center mt-1 ms-0 ms-md-2" style="justify-content: space-between;">
+                            <div class="prod-price d-flex flex-column align-items-start justify-content-center">';
+                                if($product->price == 0) { 
+                                    $data_row.='<div class="current-price call-for-price">Call for Price</div>';
+                                } else { 
+                                    $data_row.='<div class="d-flex align-items-center">
+                                        <span class="current-price">£'. $product->price .'</span>';
+                                        if(!empty($product->is_show_non_promo_price)) { 
+											$data_row.='<span class="deprecated ms-2">£'. $product->non_promo_price .'</span>';
+                                        } 
+                                    $data_row.='</div>';
+                                } 
+                                    
+                                if(!empty($product->promo_end_text) && $product->promo_end_text) { 
+                                    $data_row.='<div class="promo-end-text">'. $product->promo_end_text .'</div>';
+                                } 
+							$data_row.='</div>
+                            <div class="purchase-action d-flex align-items-center px-1">
+                                <i class="bi bi-dash minus-cart"></i>
+                                <input class="form-control cart-quantity" value="'. ($product->cart_quantity ?? 0) .'" />
+                                <i class="bi bi-plus-lg add-cart"></i>
+                            </div>
+                        </div>';
+                    
+                        } 
+                    } else { 
+                    
+                        $data_row.='<div class="d-sm-flex justify-content-center align-items-end p-1 p-sm-3">
+                            <a class="text-red login-to-see-price" href="/login">Log in to see price</a>
+                        </div>';
+                    }  
+
+
+
+                $data_row.='</div>
+            </div>
+        </div>
+    </div>';
 	}
 
 	return $data_row;
@@ -453,6 +762,7 @@ function get_product_data_row($product, $priceList, $controller, $img_host, $spr
 	}
 	
 	if($hide != true){
+		/*
 		// case of product
 		$case = "&nbsp;<b>" . Product::getCase($product) . "</b>";
 
@@ -519,6 +829,180 @@ function get_product_data_row($product, $priceList, $controller, $img_host, $spr
 		}
 		
 		$data_row .= '</div>';
+		*/
+		// 1
+		$data_row.='<div class="one-product card border bg-transparent grid-view p-2"
+						data-prod-id="'.$product->prod_id.'"
+						data-prod-code="'.$product->prod_code.'"
+						data-prod-desc="'.$product->prod_desc.'"
+					>';
+        if(isset($product->pfp) && $product->pfp == "1") { 
+			// 2
+            $data_row.='<div class="profit d-none">
+							<img src="'.$img_host.'/images/icons/top-selling-line.png" title="top-selling-line" />
+						</div>';
+			// 2
+			$data_row.='<div class="profit">
+							<img src="/images/icons/ribbon/top-selling-line.png" title="top-selling-line" />
+						</div>';
+        } 
+
+        if(!empty($product->p_label) && $product->p_label != 'CC' && $product->p_label != '') { 
+			// 2
+            $data_row.='<div class="prod-label">
+							<span style="background-color:'.$product->ribbon_background.'">'.$product->p_label.'</span>
+						</div>';
+        }
+
+        if($product->available['icon_name']) { 
+            if ($product->available['icon_name'] == 'out-of-stock' || 
+				$product->available['icon_name'] == 'new-item' || 
+				$product->available['icon_name'] == 'low-stock' || 
+				$product->available['icon_name'] == 'coming-soon') { 
+				$data_row.='<div class="stock-avail" style="right: 6px; top:45px">
+								<img src="/images/icons/ribbon/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+							</div>';
+            } else { 
+                $data_row.='<div class="stock-avail">
+								<img src="<?=$img_host?>/images/icons/'.$product->available['icon_name'].'.png" title="'.$product->available['icon_title'].'" />
+							</div>';
+            } 
+        } 
+       
+
+        if($Employee->is_logged_in()) { 
+            $data_row.='<i class="favorite bi bi-heart '.(!empty($product->favorite) ? 'text-red' : '').' "></i>';
+        }
+
+        $data_row.='<div class="card-header bg-light rounded d-flex justify-content-center p-2">';
+            if(!empty($product->image_url)) {
+                $data_row.='<img class="prod-image" src="'.$img_host.'/product_images/'.$product->image_url.'?v='.$product->image_version.'" alt="" loading="lazy">';
+            } else {
+                $data_row.='<img class="prod-image" src="/images/icons/ribbon/no-product.png" alt="" loading="lazy">';
+            }
+        $data_row.='</div>';
+
+        // Card body
+        $data_row.='<div class="card-body p-2">';
+            // Title
+            $data_row.='<h6 class="card-title prod-desc prod-desc-hover">'.$product->prod_desc.'</h6>';
+
+            
+///////////////////
+$data_row.='<div class="prod-other-props">';
+                if(!empty($product->brand)) {
+                    $data_row.='<div>
+                        <label>Brand: </label>
+                        <span class="ms-2 prop-value">'.($product->brand ?? '').'</span>
+                    </div>';
+                } else {
+                    $data_row.='<div>&nbsp;</div>';
+                }
+                
+                $data_row.='<div>
+                    <label>Pack: </label>
+                    <span class="ms-2" style="color:black;">
+                        <span class="prop-value">'.$product->prod_pack_desc.'</span>
+                        <label class="mx-1">x</label>
+                        <span class="prop-value">'.$product->prod_uos.'</span>
+                        <span class="ms-1 fw-bold prop-value">'.($product->case ?? '').'</span>
+                    </span>
+                </div>
+
+                <div>
+                    <label>Code: </label>
+                    <span class="ms-2 prop-value prod_code_2do" 
+                          data-trolley-type="'.(!empty($product->type) ? $product->type : 'not-sure').'"
+                          data-can-reorder="yes">'.$product->prod_code.'</span>
+                </div>
+
+                <div>
+                    <label>RRP: </label>
+                    <span class="ms-2 prop-value">£'.number_format($product->prod_rrp,2,'.','').'</span>
+                    <label class="mx-1">|</label>
+
+                    <label>POR: </label>
+                    <span class="ms-2 prop-value">'.$product->por.'%</span>
+                </div>';
+
+                if(!empty($product->shelf_life)) {
+                    $data_row.='<div>
+                        <label>Shelf Life:</label>
+                        <span class="ms-2 prop-value">'.($product->shelf_life ?? '&nbsp;').'</span>
+                    </div>';
+                } else {
+                    $data_row.='<div>&nbsp;</div>';
+                }
+            $data_row.='</div>';
+
+
+
+//////////////////
+if($Employee->is_logged_in()) { 
+	if($product->price >= 0) {
+
+	$data_row.='<div class="d-flex align-items-center mt-1" style="min-height: 40px;">
+		<div class="prod-price flex-fill">';
+			if($product->price == 0) {
+				$data_row.='<div class="current-price call-for-price">Call for Price</div>';
+			} else { 
+				$data_row.='<div class="d-flex align-items-center">
+					<span class="current-price">£'.$product->price.'</span>';
+					if(!empty($product->is_show_non_promo_price)) {
+						$data_row.='<span class="deprecated ms-2">£'.$product->non_promo_price.'</span>';
+					}
+				$data_row.='</div>';
+			}
+
+			if(!empty($product->promo_end_text)) {
+				$data_row.='<div class="promo-end-text" style="font-size: 70%">'.$product->promo_end_text.'</div>';
+			}
+		$data_row.='</div>';
+
+		if($product->available['avail']) { 
+		
+		} 
+		if($product->available['avail']) { 
+			$data_row.='<div class="purchase-action d-flex align-items-center px-1">
+			  <i class="bi bi-dash minus-cart"></i>
+			  <input class="form-control cart-quantity" value="'.($product->cart_quantity ?? 0).'" />
+			  <i class="bi bi-plus-lg add-cart"></i>
+		  </div>';
+		} else { 
+			$data_row.='<div class="purchase-action d-flex align-items-center px-1 must-hide">
+			  <i class="bi bi-dash minus-cart"></i>
+			  <input class="form-control cart-quantity" value="'.($product->cart_quantity ?? 0).'" />
+			  <i class="bi bi-plus-lg add-cart"></i>
+		  </div>';
+		} 
+	   
+	$data_row.='</div>';
+
+	} 
+} else { 
+
+	$data_row.='<div class="d-flex justify-content-center p-1">
+		<a class="text-red login-to-see-price" href="/login">Log in to see price</a>
+	</div>';
+} 
+
+
+
+
+//////////////////
+
+
+
+
+
+
+
+
+
+
+        $data_row.='</div>';
+		$data_row.='</div>';
+
 	}
 
 	return $data_row;

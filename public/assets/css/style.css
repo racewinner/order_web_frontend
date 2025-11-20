@@ -19175,3 +19175,10 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
     min-width: 30px;
   }
 }
+
+.grid-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}

@@ -251,7 +251,6 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
 }
 
 function update_cart() {
-    debugger
     $.ajax({
         'url' : '/orders/cartinfo',
         'type': 'GET', //the way you want to send data to your URL
