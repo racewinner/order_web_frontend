@@ -1070,6 +1070,27 @@ class Order extends Model
 			return true;
 	}
 
+	function empty_cart_by_type($person_id, $group_type, $presell = 0)
+	{
+		$db = \Config\Database::connect();
+		$branch = session()->get('branch');
+		$organization_id = session()->get('organization_id');
+		
+		$query = "DELETE FROM epos_cart WHERE person_id='".$person_id."' AND presell=".$presell." AND group_type='".$group_type."' AND branch=".$branch;
+		if (!empty($organization_id)) {
+			$query .= " AND organization_id=".$organization_id;
+		}
+		
+		$db->transStart();
+		$db->query($query);
+		$db->transComplete();
+
+		if ($db->transStatus() === FALSE)
+			return -1;
+		else
+			return true;
+	}
+
 	public static function populateProduct(&$order, $priceList, $user_info, $spresell=0) {
 		$product = Product::getLowestPriceProductByCode($user_info, $order->prod_code, true, $order->group_type == 'spresell');
 		if (!$product) $product = Product::getLowestPriceProductByCode($user_info, $order->prod_code, false, $order->group_type == 'spresell');

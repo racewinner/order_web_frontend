@@ -59,6 +59,7 @@ $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->post('/presells_import/load_ref',              'Presells_import::load_ref');
 
     $routes->get ('/orders/cartinfo',                       'Orders::cartinfo');
+    $routes->post('/orders/empty_trolley',                  'Orders::empty_trolley');
     $routes->get ('/orders/orders/(:segment)',              'Orders::index/$1');
     $routes->post('/orders/to_cart_quantity',               'Orders::to_cart_quantity');
     $routes->post('/orders/send_order/(:segment)',          'Orders::send_order/$1');

@@ -501,7 +501,12 @@ class Orders extends Secure_area implements iData_controller
 
 	public function checkout()
 	{
-		return $this->index('checkout');
+		$cart_typename = $this->request->getGet('cart_typename') ?? '';
+		$params = [];
+		if (!empty($cart_typename)) {
+			$params['cart_typename'] = $cart_typename;
+		}
+		return $this->index('checkout', $params);
 	}
 
 	public function recent()
@@ -636,6 +641,28 @@ class Orders extends Secure_area implements iData_controller
 		$user_info = $Employee->get_logged_in_employee_info();
 		$cart = Order::get_cart_info($user_info->person_id);
 		return response()->setJSON($cart);
+	}
+
+	function empty_trolley()
+	{
+		$Employee = new Employee();
+		$Order = new Order();
+		
+		if(!$Employee->is_logged_in()) {
+			return response()->setJSON(['success' => false, 'message' => 'Not logged in']);
+		}
+		
+		$user_info = $Employee->get_logged_in_employee_info();
+		$cart_type = request()->getPost('cart_type') ?? 'general';
+		$presell = 0; // Regular cart, not presell
+		
+		$result = $Order->empty_cart_by_type($user_info->person_id, $cart_type, $presell);
+		
+		if ($result !== false) {
+			return response()->setJSON(['success' => true, 'message' => 'Trolley emptied successfully']);
+		} else {
+			return response()->setJSON(['success' => false, 'message' => 'Failed to empty trolley']);
+		}
 	}
 	
 	function get_total_items_cart($type='general')

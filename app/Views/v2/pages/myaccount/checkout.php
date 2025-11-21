@@ -89,23 +89,43 @@
         </div>
         <div class="my-cart-body">
             <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
-                <?php foreach($types as $index => $type) { ?>
-                    <?php if ($type['item_total'] != 0) { ?>
-                        <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $index == 0 ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
+                <?php 
+                $firstVisibleIndex = null;
+                $activeCartType = isset($cart_typename) ? $cart_typename : null;
+                foreach($types as $index => $type) { 
+                    if ($type['item_total'] != 0) {
+                        if ($firstVisibleIndex === null) {
+                            $firstVisibleIndex = $index;
+                        }
+                        $isActive = ($activeCartType && $type['id'] == $activeCartType) || 
+                                   (!$activeCartType && $index == $firstVisibleIndex);
+                ?>
+                        <li class="nav-link one-cart-type <?= $type['id'] ?> <?= $isActive ? 'active' : '' ?> px-2 px-md-3 px-lg-4 py-2" 
                             id="tab-<?= $type['id'] ?>" 
                             data-bs-toggle="pill" 
                             data-bs-target="#pane-<?= $type['id'] ?>" 
                             role="tab" 
                             aria-controls="pane-<?= $type['id'] ?>" 
-                            aria-selected="true"
+                            aria-selected="<?= $isActive ? 'true' : 'false' ?>"
                         ><?= $type['label'] ?></li>
-                    <?php } ?>
-                <?php } ?>
+                <?php 
+                    }
+                } 
+                ?>
             </ul>
 
             <div class="tab-content mt-3">
-                <?php foreach($types as $index => $type) { ?>
-                    <div class="tab-pane fade <?= $index == 0 ? 'show active' : '' ?> <?= $type['id'] ?>" 
+                <?php 
+                $firstVisibleIndex = null;
+                foreach($types as $index => $type) { 
+                    if ($type['item_total'] != 0) {
+                        if ($firstVisibleIndex === null) {
+                            $firstVisibleIndex = $index;
+                        }
+                        $isActive = ($activeCartType && $type['id'] == $activeCartType) || 
+                                   (!$activeCartType && $index == $firstVisibleIndex);
+                ?>
+                    <div class="tab-pane fade <?= $isActive ? 'show active' : '' ?> <?= $type['id'] ?>" 
                         id="pane-<?= $type['id'] ?>" 
                         role="tabpanel" 
                         aria-labelledby="tab-<?= $type['id'] ?>"
@@ -125,8 +145,15 @@
                                 echo view("v2/components/CartItem", ['order' => $order]);
                             } ?>
                         </div>
+
+                        <div class="mt-3 mb-3 text-start">
+                            <button type="button" class="btn btn-danger empty-trolley-btn">EMPTY/DELETE This Trolley</button>
+                        </div>
                     </div>
-                <?php } ?>
+                <?php 
+                    }
+                } 
+                ?>
             </div>
         </div>
     </div>
@@ -203,6 +230,97 @@
 
     $(document).on('click', '.checkout-button', function(e) {
         add_loadingSpinner_to_button(this);
+    })
+
+    $(document).on('click', '.empty-trolley-btn', function(e) {
+        e.preventDefault();
+        
+        // Get the active tab's trolley name and type
+        const $activeTab = $('.one-cart-type.active');
+        if ($activeTab.length === 0) {
+            return;
+        }
+        
+        const trolleyName = $activeTab.text().trim();
+        const cartType = $activeTab.attr('id').replace('tab-', '');
+        
+        const $btn = $(this);
+        const $allTabs = $('.one-cart-type');
+        const currentIndex = $allTabs.index($activeTab);
+        
+        // Determine which trolley to select next BEFORE emptying
+        let nextTrolleyType = null;
+        
+        // First, check next trolley
+        for (let i = currentIndex + 1; i < $allTabs.length; i++) {
+            const $tab = $($allTabs[i]);
+            if ($tab.length > 0) {
+                nextTrolleyType = $tab.attr('id').replace('tab-', '');
+                break;
+            }
+        }
+        
+        // If no next trolley, check previous trolley
+        if (!nextTrolleyType) {
+            for (let i = currentIndex - 1; i >= 0; i--) {
+                const $tab = $($allTabs[i]);
+                if ($tab.length > 0) {
+                    nextTrolleyType = $tab.attr('id').replace('tab-', '');
+                    break;
+                }
+            }
+        }
+        
+        // Show question message modal
+        question_message(
+            `Are you sure that you want to clear/delete the ${trolleyName} trolley?`,
+            'Warning',
+            'empty-trolley-confirm-modal',
+            function() {
+                // This callback runs when user clicks OK
+                add_loadingSpinner_to_button($btn[0]);
+                $btn.prop('disabled', true);
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/orders/empty_trolley',
+                    data: {
+                        cart_type: cartType
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Reload the checkout page with selected trolley or redirect to products
+                            if (nextTrolleyType) {
+                                window.location.href = `/orders/checkout?cart_typename=${encodeURIComponent(nextTrolleyType)}`;
+                            } else {
+                                // No trolleys available, redirect to products page
+                                window.location.href = '/products';
+                            }
+                        } else {
+                            alert('Failed to empty trolley: ' + (response.message || 'Unknown error'));
+                            remove_loadingSpinner_from_button($btn[0]);
+                            $btn.prop('disabled', false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred while emptying the trolley. Please try again.');
+                        remove_loadingSpinner_from_button($btn[0]);
+                        $btn.prop('disabled', false);
+                    }
+                });
+            }
+        );
+    })
+    
+    // Hide empty trolley button and redirect to products if no trolleys are available
+    $(document).ready(function() {
+        const $availableTabs = $('.one-cart-type');
+        if ($availableTabs.length === 0) {
+            $('.empty-trolley-btn').hide();
+            // Redirect to products page if no trolleys available
+            window.location.href = '/products';
+        }
     })
 </script>
 
