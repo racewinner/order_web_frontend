@@ -12,7 +12,7 @@
         echo "<div class='prod-label'><span style='background-color:" . $product->ribbon_background."' >" . $product->p_label . "</span></div>";
     } ?>
 
-    <div class="card-body p-2 d-flex">
+    <div class="card-body p-2 d-flex" style="border: 1px solid #fafafa; border-radius: 5px;">
         <div>
             <?php if(!empty($product->image_url)) { ?>
                 <img class="prod-image" src="<?= $img_host . '/product_images/' . $product->image_url . '?v=' . $product->image_version  ?>" alt="" loading="lazy">

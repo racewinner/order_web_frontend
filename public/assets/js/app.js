@@ -215,11 +215,13 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
                 return;
             }
             // update lines & items in cart
+            let lines = 0;
+            let items = 0;
             if(type) {
                 $tab_pane = $(`.my-cart .tab-pane.${type}`);
                 
-                let lines = parseInt($tab_pane.data('lines') ?? 0);
-                let items = parseInt($tab_pane.data('items') ?? 0);
+                lines = parseInt($tab_pane.data('lines') ?? 0);
+                items = parseInt($tab_pane.data('items') ?? 0);
                 const prod_old_qty = parseInt($(`.one-product[data-prod-id=${prod_id}] input.cart-quantity`).val() ?? 0);
 
                 if(mode == 4) {
@@ -243,9 +245,13 @@ function cart_action(mode, prod_id, prod_code, prod_desc, quantity, type, sprese
                 message: (response == 0) ? `You have removed '${prod_desc}'` : `You now have ${response} of '${prod_desc}'`
             })
 
-            update_cart();
-
             if(onSuccess) onSuccess(response);
+
+            if (mode == 4 && lines >= 10) {
+                $('#my-cart-sidebar').trigger("sidebar.open");
+            } else {
+                update_cart();
+            }
         }
     });
 }
@@ -633,6 +639,15 @@ $(document).ready(function () {
 
         cart_action(4, prod_id, prod_code, prod_desc, 0, order_type, 0, function() {
             $(productEl).remove();
+            // if there is only 10 items showing in the sidebar, (20 = 10 * 2 items in total)
+            // trigger the sidebar.open event to load the new sidebar content
+            // if ($('.sidebar-content .one-cart-item.one-product').length == 20) { 
+            //     $('#my-cart-sidebar').trigger("sidebar.open");
+            // } 
+            // remove the product item from the sidebar
+            // else {
+            //     $(productEl).remove();
+            // }
         });
     });
 

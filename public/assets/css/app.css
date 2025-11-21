@@ -661,7 +661,56 @@ footer {
             height: 200px;
         }
     }
-    &.list-view, &.one-cart-item {
+    &.list-view {
+        margin-bottom: 20px !important;
+        i.favorite {
+            right: 5px;
+        }
+        .profit-avail {
+            position: absolute;
+            right: 5px;
+            top: 0;
+            bottom: 0px;
+        }
+        .prod-image {
+            cursor: pointer !important;
+            width: 200px;
+            height: 200px;
+            @media (max-width: 768px) {
+                width: 100px !important;
+                height: 100px !important;
+            }
+            @media (max-width: 576px) {
+                width: 60px !important;
+                height: 60px !important;
+            }
+        }
+        .prod-image2 {
+            cursor: pointer !important;
+            width: 200px;
+            height: 200px;
+            @media (max-width: 768px) {
+                width: 100px !important;
+                height: 100px !important;
+            }
+            @media (max-width: 576px) {
+                width: 80px !important;
+                height: 80px !important;
+            }
+        }
+        @media (max-width:992px) {
+            .prod-por.inline, .prod-pack.inline {
+                display: none !important;
+            }
+            
+        }
+        @media (min-width: 992px) {
+            .prod-por:not(.inline), .prod-pack:not(.inline) {
+                display: none !important;
+            }
+        }
+    }
+    &.one-cart-item {
         margin-bottom: 20px !important;
         i.favorite {
             right: 5px;
@@ -725,6 +774,7 @@ footer {
     &.one-cart-item {
         border: none !important;
         border-bottom: 1px solid #ddd !important;
+        padding: 0px !important;
         img.prod-image {
             width: 100px !important;
             height: 100px !important;
@@ -740,8 +790,8 @@ footer {
             display: none !important;
         }
         .prod-label {
-            top: -11px;
-            left: -11px;
+            top: -10px;
+            left: -10px;
             width: 80px;
             height: 80px;
             overflow: hidden;
