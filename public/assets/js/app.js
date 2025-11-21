@@ -850,7 +850,10 @@ $(document).ready(function () {
                 if (xhr.status == 401) {
                     window.location.href = '/login'; return;
                 } else {
-                    console.log("An error occured: " + xhr.status + " " + xhr.statusText);
+                    console.error(`An error occured in $(document).on('sidebar.open', '#my-cart-sidebar', function(e) {...}`);
+                    console.error(`Error information is in detail below:`);
+                    console.error(xhr);
+                    window.location.href = '/login'; return;
                 }},
             success: function (response, status, request) {
                 $my_cart_sidebar_content.removeClass('loading');
