@@ -27,6 +27,10 @@ $routes->get ('/myaccount/sel_branch',            'MyAccount::getSelectBranch');
 $routes->post('/myaccount/sel_branch',            'MyAccount::postSelectBranch');
 $routes->post('/myaccount/my_branches',           'MyAccount::postMyBranches');
 
+$routes->group("api", function ($routes) {
+    $routes->post("app_activation", "RestfulApiController::app_activation", ['filter' => 'apiAuthFilter']);
+});
+
 $routes->group('', ['filter' => 'branchFilter'], function($routes) {
     $routes->get ('/home',                                  'Home::index');
     $routes->get ('/home/guest',                            'Home::index');

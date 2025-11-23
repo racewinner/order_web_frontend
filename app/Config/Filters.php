@@ -11,6 +11,7 @@ use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\LoginCheck;
 use App\Filters\Guest;
 use App\Filters\BranchFilter;
+use App\Filters\ApiAuthFilter;
 
 class Filters extends BaseConfig
 {
@@ -28,6 +29,7 @@ class Filters extends BaseConfig
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'branchFilter'  => BranchFilter::class,
+        'apiAuthFilter' => ApiAuthFilter::class,
     ];
 
     /**
