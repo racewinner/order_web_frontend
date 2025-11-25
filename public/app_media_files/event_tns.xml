@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<deals>
+    <deal>
+        <id>11</id>
+        <banner_label>Buy 4 Biscuit Get 1 Free EV</banner_label>
+        <trigger_qty>4</trigger_qty>
+        <trigger_item>1284741,1402749,1404556,1406881</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1284741,1402749,1404556,1406881</incentive_item>
+        <startdate>2024-07-31</startdate>
+        <enddate>2024-12-31</enddate>
+        <image>https://e-2-e.co.uk/splash1.jpg</image>
+    </deal>
+    <deal>
+        <id>12</id>
+        <banner_label>Buy 1 Get 1tibuy Free EV</banner_label>
+        <trigger_qty>1</trigger_qty>
+        <trigger_item>1399876,1399874,1399875</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1406825,1000169</incentive_item>
+        <startdate>2024-07-31</startdate>
+        <enddate>2024-12-31</enddate>
+        <image></image>
+    </deal>
+</deals>

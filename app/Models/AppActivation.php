@@ -12,25 +12,25 @@ class AppActivation extends Model
     protected $allowedFields = [
         'user_serial',
         'user_activation',
-        'client_ref',
+        'client_client_ref',
         'status',
         'created_at',
         'updated_at'
     ];
 
     /**
-     * Find activation record by user_serial, user_activation, and client_ref
+     * Find activation record by user_serial, user_activation, and client_client_ref
      * 
      * @param string $user_serial
      * @param string $user_activation
-     * @param string $client_ref
+     * @param string $client_client_ref
      * @return array|null
      */
-    public function findByCredentials($user_serial, $user_activation, $client_ref)
+    public function findByCredentials($user_serial, $user_activation, $client_client_ref)
     {
         return $this->where('user_serial', $user_serial)
                     ->where('user_activation', $user_activation)
-                    ->where('client_ref', $client_ref)
+                    ->where('client_client_ref', $client_client_ref)
                     ->first();
     }
 
@@ -39,12 +39,12 @@ class AppActivation extends Model
      * 
      * @param string $user_serial
      * @param string $user_activation
-     * @param string $client_ref
+     * @param string $client_client_ref
      * @return bool
      */
-    public function isValid($user_serial, $user_activation, $client_ref)
+    public function isValid($user_serial, $user_activation, $client_client_ref)
     {
-        $activation = $this->findByCredentials($user_serial, $user_activation, $client_ref);
+        $activation = $this->findByCredentials($user_serial, $user_activation, $client_client_ref);
         return $activation !== null;
     }
 }

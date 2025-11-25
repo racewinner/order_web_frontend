@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<deals>
+    <deal>
+        <id>001</id>
+        <banner_label>IVG 2400 BUY 10 GET 1 FREE</banner_label>
+        <trigger_qty>10</trigger_qty>
+        <trigger_item>1402615,1402616,1402617,1402618,1402620,1402621,1402622,1403646,1404111,1404126,1404127,1404131,1404182,1404183,1404184,1404185,1404187,1404188,1404189,1404190,1404192,1404204,1404205,1404206,1404207,1404209,1404210,1404211,1404212,1405048,1405049,1405050,1405051,1405054,1405055,1405056,1405058,1405059,1405060,1406448,1406449,1406451,1406452,1406453,1406454,1406455,1406456,1406457,1406458,1408855,1409034,1409035,1409347,1409428,1409989</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1402615,1402616,1402617,1402618,1402620,1402621,1402622,1403646,1404111,1404126,1404127,1404131,1404182,1404183,1404184,1404185,1404187,1404188,1404189,1404190,1404192,1404204,1404205,1404206,1404207,1404209,1404210,1404211,1404212,1405048,1405049,1405050,1405051,1405054,1405055,1405056,1405058,1405059,1405060,1406448,1406449,1406451,1406452,1406453,1406454,1406455,1406456,1406457,1406458,1408855,1409034,1409035,1409347,1409428,1409989</incentive_item>
+        <startdate>2025-03-31</startdate>
+        <enddate>2025-07-20</enddate>
+        <image></image>
+    </deal> 
+    <deal>
+        <id>002</id>
+        <banner_label>IVG SMART5500 BUY 10 GET 1 FREE</banner_label>
+        <trigger_qty>10</trigger_qty>
+        <trigger_item>1407820,1409045,1407823,1407819,1407822,1407824,1407818,1409047,1407821,1407825</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1407820,1409045,1407823,1407819,1407822,1407824,1407818,1409047,1407821,1407825</incentive_item>
+        <startdate>2025-03-31</startdate>
+        <enddate>2025-07-20</enddate>
+        <image></image>
+    </deal> 
+    <deal>
+        <id>004</id>
+        <banner_label>SIMPLY FRUITY BUY 3 GET 1 FREE</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1909978,1909979,109976,109977</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1909978,1909979,109976,109977</incentive_item>
+        <startdate>2025-03-31</startdate>
+        <enddate>2025-07-20</enddate>
+        <image></image>
+    </deal>     
+    <deal>
+        <id>005</id>
+        <banner_label>UBBS BUY 1 GET 1 FREE</banner_label>
+        <trigger_qty>1</trigger_qty>
+        <trigger_item>1409819,1409822,1409825,1409826,1409713,1409828,1409829,1409748</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1409819,1409822,1409825,1409826,1409713,1409828,1409829,1409748</incentive_item>
+        <startdate>2025-03-31</startdate>
+        <enddate>2025-07-31</enddate>
+        <image>https://timews.co.uk/media/wysiwyg/xClearance_P20banner_P202.jpg.pagespeed.ic.FcmDjULxOR.jpeg</image>
+    </deal>
+    <deal>
+        <id>006</id>
+        <banner_label>XQS BUY 2 GET 1 FREE</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1410883,1406755,1408671,1406757,1406754,1407897,1409209,1406758</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1410883,1406755,1408671,1406757,1406754,1407897,1409209,1406758</incentive_item>
+        <startdate>2025-03-31</startdate>
+        <enddate>2025-07-11</enddate>
+        <image>https://timews.co.uk/media/wysiwyg/xClearance_P20banner_P202.jpg.pagespeed.ic.FcmDjULxOR.jpeg</image>
+    </deal>
+    <deal>
+        <id>007</id>
+        <banner_label>BUY CHEETOS GET DINAMITE FREE</banner_label>
+        <trigger_qty>1</trigger_qty>
+        <trigger_item>1409592</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1408944</incentive_item>
+        <startdate>2025-04-14</startdate>
+        <enddate>2025-04-20</enddate>
+        <image></image> 
+    </deal>
+    <deal>
+        <id>008</id>
+        <banner_label>BUY ANY 2 POWERADE BLUE GET MANGO FREE</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1907612</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1406149</incentive_item>
+        <startdate>2025-04-14</startdate>
+        <enddate>2025-04-20</enddate>
+        <image></image>
+    </deal>
+    <deal>
+        <id>009</id>
+        <banner_label>BUY 4 OUTERS GET EMERGE FREE</banner_label>
+        <trigger_qty>4</trigger_qty>
+        <trigger_item>1917893,1917726,1917776,1406826,1917757</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1400030,1400032</incentive_item>
+        <startdate>2025-04-14</startdate>
+        <enddate>2025-04-20</enddate>
+        <image></image>
+    </deal>
+    <deal>
+        <id>010</id>
+        <banner_label>BUY 3 CASES GET CDU FREE</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1409126,1409112,1408865,1409119,1409120,1409109,1408851,1409125,1409115,1409123,1409111,1408850,1409118,1409124,1409117</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1409341</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>   
+    <deal>
+        <id>011</id>
+        <banner_label>BUY 2 GET CDU FREE</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1408520,1408511,1408513,1408516,1408512,1408515,1408514,1408057,1408063,1408056,1408061,1408064</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1411149</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>     
+    <deal>
+        <id>012</id>
+        <banner_label>BUY 3 OUTERS GET FREE COUNTER TOP</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1408913,1408914,1408918,1408919,1408920,1408921,1408915,1408916,1409166</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1409166</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>      
+    <deal>
+        <id>013</id>
+        <banner_label>BUY 2 GET PREMIUM LIGHT FOC</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1397367,1914180,1404710,1402530</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1406522</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>      
+     <deal>
+        <id>014</id>
+        <banner_label>BUY 2 CASES GET 1 FREE</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1409821,1409824,1409835,1409837,1409838,1409841,1409850</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1409821,1409824,1409835,1409837,1409838,1409841,1409850</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>    
+    <deal>
+        <id>015</id>
+        <banner_label>BUY 3 500ml GET XTRA FREE</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1408471,1408470,1408469</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1408469</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>    
+    <deal>
+        <id>016</id>
+        <banner_label>BUY 3 SPARK' GET MANGO FREE</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1408440,1408439,1408438</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1408440</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-07-31</enddate>
+        <image></image>
+    </deal>      
+    <deal>
+        <id>017</id>
+        <banner_label>BUY 3 GET ORANGE/MANGO FOC</banner_label>
+        <trigger_qty>3</trigger_qty>
+        <trigger_item>1408421,1408422,1408423,1408424,1408490</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1408422</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-07-31</enddate>
+        <image></image>
+    </deal>      
+    <deal>
+        <id>018</id>
+        <banner_label>BUY 1 EACH GET ORANGE OR APPLE FOC</banner_label>
+        <trigger_qty>2</trigger_qty>
+        <trigger_item>1405707,1405706</trigger_item>
+        <incentive_qty>1</incentive_qty>
+        <incentive_item>1403666,1403742</incentive_item>
+        <startdate>2025-04-21</startdate>
+        <enddate>2025-05-31</enddate>
+        <image></image>
+    </deal>      
+</deals>

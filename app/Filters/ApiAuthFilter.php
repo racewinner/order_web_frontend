@@ -29,15 +29,7 @@ class ApiAuthFilter implements FilterInterface
         // Get POST data (can be JSON or form data)
         // RequestInterface in CodeIgniter 4 filters receives IncomingRequest which has these methods
         $postData = [];
-        $jsonData = [];
-        
-        if (method_exists($request, 'getPost')) {
-            $postData = $request->getPost() ?? [];
-        }
-        
-        if (method_exists($request, 'getJSON')) {
-            $jsonData = $request->getJSON(true) ?? [];
-        }
+        $postData = $request->getPost() ?? [];
         
         // Try to get from POST first, then JSON
         $user_serial = !empty($postData['user_serial']) ? $postData['user_serial'] : ($jsonData['user_serial'] ?? null);

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> <brochure_list>
+    <brochure>
+
+         <button_name>Brochure test document 1</button_name>
+
+         <details>Some sample of text will go here1</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b1test.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample1.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+    <brochure>
+
+         <button_name>Brochure offer document 2</button_name>
+
+         <details>Some sample of text will go here2</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b2.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample2.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>Brochure limited document 3</button_name>
+
+         <details>http://www.e-2-e.co.uk/brochure/test.pdf</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/test.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample3.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>Brochure one 4 time document</button_name>
+
+         <details>google drive link</details>
+
+         <file>https://drive.google.com/file/d/17QLzef-RS4uji1sAwP6MTOijvbg7u8ND/view?usp=sharing</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample4.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>Brochure 5 document</button_name>
+
+         <details>Some sample of text will go here5</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b5.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample5.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>6 Brochure document </button_name>
+
+         <details>Some sample of text will go here6</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b6.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample6.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>Brochure 07 document</button_name>
+
+         <details>Some sample of text will go here7</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b7.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample7.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>08 Brochure document</button_name>
+
+         <details>Some sample of text will go here8</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b8.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample8.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+    <brochure>
+
+         <button_name>90 Brochure document</button_name>
+
+         <details>Some sample of text will go here9</details>
+
+         <file>http://www.e-2-e.co.uk/brochure/b9.pdf</file>
+
+         <thumb>http://www.e-2-e.co.uk/brochure/sample9.jpg</thumb>
+
+         <modified>2015-07-14 20:00:00</modified>
+
+    </brochure>
+
+
+ </brochure_list>
+

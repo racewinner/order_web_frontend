@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<sites>
+
+    <site>
+      <id>1</id>
+      <site_name>Alpha Site 1</site_name>
+      <trading_name>Trading Name Alpha</trading_name>
+
+      <address_1>10 Downing Street</address_1>
+      <address_2></address_2>
+      <address_3>London</address_3>
+      <post_code>SW1A 2AA</post_code>
+
+      <tel_no>0201 123 4567</tel_no>
+      <fax_no>0201 123 4568</fax_no>
+      <e_mail>depot1@outlook.com</e_mail>
+
+      <monday_open>09:01</monday_open>
+      <monday_close>17:00</monday_close>
+
+      <tuesday_open>09:15</tuesday_open>
+      <tuesday_close>17:15</tuesday_close>
+
+      <wednesday_open>09:15</wednesday_open>
+      <wednesday_close>17:15</wednesday_close>
+
+      <thursday_open>09:15</thursday_open>
+      <thursday_close>17:15</thursday_close>
+
+      <friday_open>09:15</friday_open>
+      <friday_close>15:00</friday_close>
+
+      <saturday_open>10:00</saturday_open>
+      <saturday_close>15:00</saturday_close>
+
+      <sunday_open>Closed</sunday_open>
+      <sunday_close>Closed</sunday_close>
+
+      <gps_decimal_degrees>51.503449, -0.127579</gps_decimal_degrees>
+      <image>http://www.e-2-e.co.uk/imagebank/sites/site1.jpg</image>
+      <depot_plan>https://e-2-e.co.uk/storeplan1.jpg</depot_plan>
+      <depot_locations>https://e-2-e.co.uk/locations1.xml</depot_locations>
+
+    </site>
+
+    <site>
+
+      <id>2</id>
+      <site_name>Beta Site 2</site_name>
+      <trading_name>Trading Name Beta</trading_name>
+
+      <address_1>11 Downing Street</address_1>
+      <address_2></address_2>
+      <address_3>London</address_3>
+      <post_code>SW1A 2AA</post_code>
+
+      <tel_no>0201 123 4569</tel_no>
+      <fax_no>0201 123 4570</fax_no>
+      <e_mail>depot2@outlook.com</e_mail>
+
+      <monday_open>09:01</monday_open>
+      <monday_close>17:01</monday_close>
+
+      <tuesday_open>09:16</tuesday_open>
+      <tuesday_close>17:16</tuesday_close>
+
+      <wednesday_open>09:16</wednesday_open>
+      <wednesday_close>17:16</wednesday_close>
+
+      <thursday_open>09:16</thursday_open>
+      <thursday_close>17:16</thursday_close>
+
+      <friday_open>09:16</friday_open>
+      <friday_close>15:06</friday_close>
+
+      <saturday_open>10:06</saturday_open>
+      <saturday_close>15:06</saturday_close>
+
+      <sunday_open>Closed</sunday_open>
+      <sunday_close>Closed</sunday_close>
+
+      <gps_decimal_degrees>51.503449, -0.127579</gps_decimal_degrees>
+      <image>http://www.e-2-e.co.uk/imagebank/sites/site2.jpg</image>
+      <depot_plan></depot_plan>
+      <depot_locations></depot_locations>
+
+    </site>
+
+    <site>
+
+      <id>1</id>
+      <site_name>Ed Theta Site 3</site_name>
+      <trading_name>Trading Name Theta</trading_name>
+
+      <address_1>222 Princess Street</address_1>
+      <address_2>Lothian</address_2>
+      <address_3>Edinbugh</address_3>
+      <post_code></post_code>
+
+      <tel_no>0131 234 5678</tel_no>
+      <fax_no>0131 234 5679</fax_no>
+      <e_mail>depot3@outlook.com</e_mail>
+
+      <monday_open>09:03</monday_open>
+      <monday_close>17:03</monday_close>
+
+      <tuesday_open>09:17</tuesday_open>
+      <tuesday_close>17:17</tuesday_close>
+
+      <wednesday_open>09:17</wednesday_open>
+      <wednesday_close>17:17</wednesday_close>
+
+      <thursday_open>09:17</thursday_open>
+      <thursday_close>17:17</thursday_close>
+
+      <friday_open>09:17</friday_open>
+      <friday_close>15:07</friday_close>
+
+      <saturday_open>10:07</saturday_open>
+      <saturday_close>15:07</saturday_close>
+
+      <sunday_open>12:00</sunday_open>
+      <sunday_close>14:00</sunday_close>
+
+      <gps_decimal_degrees>55.948814, -3.201150</gps_decimal_degrees>
+      <image>http://www.e-2-e.co.uk/imagebank/sites/site3.jpg</image>
+      <depot_plan></depot_plan>
+      <depot_locations></depot_locations>
+
+    </site>
+
+
+ </sites>
+
