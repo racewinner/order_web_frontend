@@ -1,7 +1,7 @@
 <?php
 
 use function PHPUnit\Framework\isEmpty;
-$uri = service('request')->uri;
+$uri = service('request')->getUri();
 $uri_segments = $uri->getSegments();
 
 if(empty($user_info)) {

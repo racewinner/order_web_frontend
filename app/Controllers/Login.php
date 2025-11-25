@@ -199,112 +199,112 @@ class Login extends BaseController
 	
 	// Cron Job - Promos ///////////////////////////////////
 	function cron_promos(){
-		$this->load->model('admin');
+		$admin = new \App\Models\Admin();
 		$t = date("M d, Y");
 		$p = realpath(APPPATH . '../images/promotion');
 		$s = realpath(APPPATH . '../images/banner');
-		$d["link1"]      = $this->admin->get_plink('link newsletter');
-		$d["link1_1"]    = $this->admin->get_plink('link newsletter2');
-		$d["period1"]    = $this->admin->get_plink('link newsletter period');
-		$d["period1_1"]  = $this->admin->get_plink('link newsletter2 period');
-		$d["p1_date"]    = $this->admin->get_plink('link newsletter date');	
-		$d["link2"]      = $this->admin->get_plink('link cash & carry');
-		$d["link2_1"]    = $this->admin->get_plink('link cash & carry2');
-		$d["period2"]    = $this->admin->get_plink('link cash & carry period');
-		$d["period2_1"]  = $this->admin->get_plink('link cash & carry2 period');
-		$d["p2_date"]    = $this->admin->get_plink('link cash & carry date');	
-		$d["link3"]      = $this->admin->get_plink('link day-today');
-		$d["link3_1"]    = $this->admin->get_plink('link day-today2');
-		$d["period3"]    = $this->admin->get_plink('link day-today period');
-		$d["period3_1"]  = $this->admin->get_plink('link day-today2 period');
-		$d["p3_date"]    = $this->admin->get_plink('link day-today date');	
-		$d["link3a"]     = $this->admin->get_plink('link day-today upcoming');
-		$d["link3a_1"]   = $this->admin->get_plink('link day-today upcoming2');
-		$d["period3a"]   = $this->admin->get_plink('link day-today upcoming period');
-		$d["period3a_1"] = $this->admin->get_plink('link day-today upcoming2 period');
-		$d["p3a_date"]   = $this->admin->get_plink('link day-today upcoming date');	
-		$d["link4"]      = $this->admin->get_plink('link usave');
-		$d["link4_1"]    = $this->admin->get_plink('link usave2');
-		$d["period4"]    = $this->admin->get_plink('link usave period');
-		$d["period4_1"]  = $this->admin->get_plink('link usave2 period');
-		$d["p4_date"]    = $this->admin->get_plink('link usave date');	
-		$d["link4a"]     = $this->admin->get_plink('link usave upcoming');
-		$d["link4a_1"]   = $this->admin->get_plink('link usave upcoming2');
-		$d["period4a"]   = $this->admin->get_plink('link usave upcoming period');
-		$d["period4a_1"] = $this->admin->get_plink('link usave upcoming2 period');
-		$d["p4a_date"]   = $this->admin->get_plink('link usave upcoming date');	
-		$d["link5"]      = $this->admin->get_plink('link special event');
-		$d["link5_1"]    = $this->admin->get_plink('link special event2');
-		$d["period5"]    = $this->admin->get_plink('link special event period');
-		$d["period5_1"]  = $this->admin->get_plink('link special event2 period');
-		$d["p5_date"]    = $this->admin->get_plink('link special event date');
-		$d["s1_date"]    = $this->admin->get_plink('s1_date');
-		$d["s1_ids"]     = $this->admin->get_plink('s1_ids');
-		$d["s2_date"]    = $this->admin->get_plink('s2_date');
-		$d["s2_ids"]     = $this->admin->get_plink('s2_ids');
-		$d["s3_date"]    = $this->admin->get_plink('s3_date');
-		$d["s3_ids"]     = $this->admin->get_plink('s3_ids');
-		$d["s4_date"]    = $this->admin->get_plink('s4_date');
-		$d["s4_ids"]     = $this->admin->get_plink('s4_ids');
-		$d["s5_date"]    = $this->admin->get_plink('s5_date');
-		$d["s5_ids"]     = $this->admin->get_plink('s5_ids');
-		$d["s6_date"]    = $this->admin->get_plink('s6_date');
-		$d["s6_ids"]     = $this->admin->get_plink('s6_ids');
-		$d["s7_date"]    = $this->admin->get_plink('s7_date');
-		$d["s7_ids"]     = $this->admin->get_plink('s7_ids');
-		$d["s8_date"]    = $this->admin->get_plink('s8_date');
-		$d["s8_ids"]     = $this->admin->get_plink('s8_ids');
-		$d["s9_date"]    = $this->admin->get_plink('s9_date');
-		$d["s9_ids"]     = $this->admin->get_plink('s9_ids');
-		$d["s10_date"]    = $this->admin->get_plink('s10_date');
-		$d["s10_ids"]     = $this->admin->get_plink('s10_ids');
+		$d["link1"]      = $admin->get_plink('link newsletter');
+		$d["link1_1"]    = $admin->get_plink('link newsletter2');
+		$d["period1"]    = $admin->get_plink('link newsletter period');
+		$d["period1_1"]  = $admin->get_plink('link newsletter2 period');
+		$d["p1_date"]    = $admin->get_plink('link newsletter date');	
+		$d["link2"]      = $admin->get_plink('link cash & carry');
+		$d["link2_1"]    = $admin->get_plink('link cash & carry2');
+		$d["period2"]    = $admin->get_plink('link cash & carry period');
+		$d["period2_1"]  = $admin->get_plink('link cash & carry2 period');
+		$d["p2_date"]    = $admin->get_plink('link cash & carry date');	
+		$d["link3"]      = $admin->get_plink('link day-today');
+		$d["link3_1"]    = $admin->get_plink('link day-today2');
+		$d["period3"]    = $admin->get_plink('link day-today period');
+		$d["period3_1"]  = $admin->get_plink('link day-today2 period');
+		$d["p3_date"]    = $admin->get_plink('link day-today date');	
+		$d["link3a"]     = $admin->get_plink('link day-today upcoming');
+		$d["link3a_1"]   = $admin->get_plink('link day-today upcoming2');
+		$d["period3a"]   = $admin->get_plink('link day-today upcoming period');
+		$d["period3a_1"] = $admin->get_plink('link day-today upcoming2 period');
+		$d["p3a_date"]   = $admin->get_plink('link day-today upcoming date');	
+		$d["link4"]      = $admin->get_plink('link usave');
+		$d["link4_1"]    = $admin->get_plink('link usave2');
+		$d["period4"]    = $admin->get_plink('link usave period');
+		$d["period4_1"]  = $admin->get_plink('link usave2 period');
+		$d["p4_date"]    = $admin->get_plink('link usave date');	
+		$d["link4a"]     = $admin->get_plink('link usave upcoming');
+		$d["link4a_1"]   = $admin->get_plink('link usave upcoming2');
+		$d["period4a"]   = $admin->get_plink('link usave upcoming period');
+		$d["period4a_1"] = $admin->get_plink('link usave upcoming2 period');
+		$d["p4a_date"]   = $admin->get_plink('link usave upcoming date');	
+		$d["link5"]      = $admin->get_plink('link special event');
+		$d["link5_1"]    = $admin->get_plink('link special event2');
+		$d["period5"]    = $admin->get_plink('link special event period');
+		$d["period5_1"]  = $admin->get_plink('link special event2 period');
+		$d["p5_date"]    = $admin->get_plink('link special event date');
+		$d["s1_date"]    = $admin->get_plink('s1_date');
+		$d["s1_ids"]     = $admin->get_plink('s1_ids');
+		$d["s2_date"]    = $admin->get_plink('s2_date');
+		$d["s2_ids"]     = $admin->get_plink('s2_ids');
+		$d["s3_date"]    = $admin->get_plink('s3_date');
+		$d["s3_ids"]     = $admin->get_plink('s3_ids');
+		$d["s4_date"]    = $admin->get_plink('s4_date');
+		$d["s4_ids"]     = $admin->get_plink('s4_ids');
+		$d["s5_date"]    = $admin->get_plink('s5_date');
+		$d["s5_ids"]     = $admin->get_plink('s5_ids');
+		$d["s6_date"]    = $admin->get_plink('s6_date');
+		$d["s6_ids"]     = $admin->get_plink('s6_ids');
+		$d["s7_date"]    = $admin->get_plink('s7_date');
+		$d["s7_ids"]     = $admin->get_plink('s7_ids');
+		$d["s8_date"]    = $admin->get_plink('s8_date');
+		$d["s8_ids"]     = $admin->get_plink('s8_ids');
+		$d["s9_date"]    = $admin->get_plink('s9_date');
+		$d["s9_ids"]     = $admin->get_plink('s9_ids');
+		$d["s10_date"]    = $admin->get_plink('s10_date');
+		$d["s10_ids"]     = $admin->get_plink('s10_ids');
 		
 		
 		// Promotions switch to new data 
 		if($t == $d["p1_date"] && ( file_exists($p.'/1.jpg') || file_exists($p.'/1.gif') )){
 			if(file_exists($p.'/1.jpg')){ unlink($p.'/1.jpg'); rename($p.'/1_1.jpg',$p.'/1.jpg'); } else{ unlink($p.'/1.gif'); rename($p.'/1_1.gif',$p.'/1.gif'); }
-			$this->admin->push_plink("link newsletter",$d["link1_1"]); $this->admin->push_plink("link newsletter period",$d["period1_1"]); 
-			$this->admin->push_plink("link newsletter2","");$this->admin->push_plink("link newsletter2 period",""); $this->admin->push_plink("link newsletter date","");
+			$admin->push_plink("link newsletter",$d["link1_1"]); $this->admin->push_plink("link newsletter period",$d["period1_1"]); 
+			$admin->push_plink("link newsletter2","");$this->admin->push_plink("link newsletter2 period",""); $this->admin->push_plink("link newsletter date","");
 		}
 		if($t == $d["p2_date"] && ( file_exists($p.'/2.jpg') || file_exists($p.'/2.gif') )){
 			if(file_exists($p.'/2.jpg')){ unlink($p.'/2.jpg'); rename($p.'/2_1.jpg',$p.'/2.jpg'); } else{ unlink($p.'/2.gif'); rename($p.'/2_1.gif',$p.'/2.gif'); }
-			$this->admin->push_plink("link cash & carry",$d["link2_1"]);  $this->admin->push_plink("link cash & carry period",$d["period2_1"]); 
-			$this->admin->push_plink("link cash & carry2",""); $this->admin->push_plink("link cash & carry2 period",""); $this->admin->push_plink("link cash & carry date","");
+			$admin->push_plink("link cash & carry",$d["link2_1"]);  $this->admin->push_plink("link cash & carry period",$d["period2_1"]); 
+			$admin->push_plink("link cash & carry2",""); $this->admin->push_plink("link cash & carry2 period",""); $this->admin->push_plink("link cash & carry date","");
 		}
 		if($t == $d["p3_date"] && ( file_exists($p.'/3.jpg') || file_exists($p.'/3.gif') )){
 			if(file_exists($p.'/3.jpg')){ unlink($p.'/3.jpg'); rename($p.'/3_1.jpg',$p.'/3.jpg'); } else{ unlink($p.'/3.gif'); rename($p.'/3_1.gif',$p.'/3.gif'); }
-			$this->admin->push_plink("link day-today",$d["link3_1"]); $this->admin->push_plink("link day-today period",$d["period3_1"]); 
-			$this->admin->push_plink("link day-today2",""); $this->admin->push_plink("link day-today2 period",""); $this->admin->push_plink("link day-today date","");
+			$admin->push_plink("link day-today",$d["link3_1"]); $this->admin->push_plink("link day-today period",$d["period3_1"]); 
+			$admin->push_plink("link day-today2",""); $this->admin->push_plink("link day-today2 period",""); $this->admin->push_plink("link day-today date","");
 		}
 		if($t == $d["p3a_date"] && ( file_exists($p.'/3a.jpg') || file_exists($p.'/3a.gif') )){
 			if(file_exists($p.'/3a.jpg')){ unlink($p.'/3a.jpg'); rename($p.'/3a_1.jpg',$p.'/3a.jpg'); }else{ unlink($p.'/3a.gif'); rename($p.'/3a_1.gif',$p.'/3a.gif'); }
-			$this->admin->push_plink("link day-today upcoming",$d["link3a_1"]); $this->admin->push_plink("link day-today upcoming period",$d["period3a_1"]); 
-			$this->admin->push_plink("link day-today upcoming2",""); $this->admin->push_plink("link day-today upcoming2 period",""); $this->admin->push_plink("link day-today upcoming date","");
+			$admin->push_plink("link day-today upcoming",$d["link3a_1"]); $this->admin->push_plink("link day-today upcoming period",$d["period3a_1"]); 
+			$admin->push_plink("link day-today upcoming2",""); $this->admin->push_plink("link day-today upcoming2 period",""); $this->admin->push_plink("link day-today upcoming date","");
 		}
 		if($t == $d["p4_date"] && ( file_exists($p.'/4.jpg') || file_exists($p.'/4.gif') )){
 			if(file_exists($p.'/4.jpg')){ unlink($p.'/4.jpg'); rename($p.'/4_1.jpg',$p.'/4.jpg'); } else{ unlink($p.'/4.gif'); rename($p.'/4_1.gif',$p.'/4.gif'); }
-			$this->admin->push_plink("link usave",$d["link4_1"]); $this->admin->push_plink("link usave period",$d["period4_1"]); 
-			$this->admin->push_plink("link usave2",""); $this->admin->push_plink("link usave2 period",""); $this->admin->push_plink("link usave date","");
+			$admin->push_plink("link usave",$d["link4_1"]); $this->admin->push_plink("link usave period",$d["period4_1"]); 
+			$admin->push_plink("link usave2",""); $this->admin->push_plink("link usave2 period",""); $this->admin->push_plink("link usave date","");
 		}
 		if($t == $d["p4a_date"] && ( file_exists($p.'/4a.jpg') || file_exists($p.'/4a.gif') )){
 			if(file_exists($p.'/4a.jpg')){ unlink($p.'/4a.jpg'); rename($p.'/4a_1.jpg',$p.'/4a.jpg'); }else{ unlink($p.'/4a.gif'); rename($p.'/4a_1.gif',$p.'/4a.gif'); }
-			$this->admin->push_plink("link usave upcoming",$d["link4a_1"]); $this->admin->push_plink("link usave upcoming period",$d["period4a_1"]); 
-			$this->admin->push_plink("link usave upcoming2",""); $this->admin->push_plink("link usave upcoming2 period",""); $this->admin->push_plink("link usave upcoming date","");
+			$admin->push_plink("link usave upcoming",$d["link4a_1"]); $this->admin->push_plink("link usave upcoming period",$d["period4a_1"]); 
+			$admin->push_plink("link usave upcoming2",""); $this->admin->push_plink("link usave upcoming2 period",""); $this->admin->push_plink("link usave upcoming date","");
 		}
 		if($t == $d["p5_date"] && ( file_exists($p.'/5.jpg') || file_exists($p.'/5.gif') )){
 			if(file_exists($p.'/5.jpg')){ unlink($p.'/5.jpg'); rename($p.'/5_1.jpg',$p.'/5.jpg'); } else{ unlink($p.'/5.gif'); rename($p.'/5_1.gif',$p.'/5.gif'); }
-			$this->admin->push_plink("link special event",$d["link5_1"]); $this->admin->push_plink("link special event period",$d["period5_1"]); 
-			$this->admin->push_plink("link special event2",""); $this->admin->push_plink("link special event2 period",""); $this->admin->push_plink("link special event date","");
+			$admin->push_plink("link special event",$d["link5_1"]); $this->admin->push_plink("link special event period",$d["period5_1"]); 
+			$admin->push_plink("link special event2",""); $this->admin->push_plink("link special event2 period",""); $this->admin->push_plink("link special event date","");
 		}
 		
 		// Slider banners expiry check; delete image & reset data -- SHORTER VERSION
 		for($i=1; $i<=10; $i++){
 			if($t == $d["s".$i."_date"]){
 				if(file_exists($s.'/'.$i.'.jpg')){ unlink($s.'/'.$i.'.jpg'); }else{ unlink($s.'/'.$i.'.gif'); }
-				$this->admin->push_plink("s".$i."_date",""); 
-				$this->admin->push_plink("s".$i."_ids","");
-				$this->admin->push_plink("s".$i."_name","");
-				$this->admin->push_plink("s".$i."_period","");
+				$admin->push_plink("s".$i."_date",""); 
+				$admin->push_plink("s".$i."_ids","");
+				$admin->push_plink("s".$i."_name","");
+				$admin->push_plink("s".$i."_period","");
 			}
 		}
 		
@@ -312,33 +312,33 @@ class Login extends BaseController
 		// Slider banners expiry check; delete image & reset data
 		/*if($t == $d["s1_date"]){
 			if(file_exists($s.'/1.jpg')){ unlink($s.'/1.jpg'); }else{ unlink($s.'/1.gif'); }
-			$this->admin->push_plink("s1_date",""); 
-			$this->admin->push_plink("s1_ids","");
+			$admin->push_plink("s1_date",""); 
+			$admin->push_plink("s1_ids","");
 		}
 		if($t == $d["s2_date"]){
 			if(file_exists($s.'/2.jpg')){ unlink($s.'/2.jpg'); }else{ unlink($s.'/2.gif'); }
-			$this->admin->push_plink("s2_date",""); 
-			$this->admin->push_plink("s2_ids","");
+			$admin->push_plink("s2_date",""); 
+			$admin->push_plink("s2_ids","");
 		}
 		if($t == $d["s3_date"]){
 			if(file_exists($s.'/3.jpg')){ unlink($s.'/3.jpg'); }else{ unlink($s.'/3.gif'); }
-			$this->admin->push_plink("s3_date",""); 
-			$this->admin->push_plink("s3_ids","");
+			$admin->push_plink("s3_date",""); 
+			$admin->push_plink("s3_ids","");
 		}
 		if($t == $d["s4_date"]){
 			if(file_exists($s.'/4.jpg')){ unlink($s.'/4.jpg'); }else{ unlink($s.'/4.gif'); }
-			$this->admin->push_plink("s4_date",""); 
-			$this->admin->push_plink("s4_ids","");
+			$admin->push_plink("s4_date",""); 
+			$admin->push_plink("s4_ids","");
 		}
 		if($t == $d["s5_date"]){
 			if(file_exists($s.'/5.jpg')){ unlink($s.'/5.jpg'); }else{ unlink($s.'/5.gif'); }
-			$this->admin->push_plink("s5_date",""); 
-			$this->admin->push_plink("s5_ids","");
+			$admin->push_plink("s5_date",""); 
+			$admin->push_plink("s5_ids","");
 		}
 		if($t == $d["s6_date"]){
 			if(file_exists($s.'/6.jpg')){ unlink($s.'/6.jpg'); }else{ unlink($s.'/6.gif'); }
-			$this->admin->push_plink("s6_date",""); 
-			$this->admin->push_plink("s6_ids","");
+			$admin->push_plink("s6_date",""); 
+			$admin->push_plink("s6_ids","");
 		}*/
 		
 		echo "running cron task";
@@ -349,8 +349,8 @@ class Login extends BaseController
 	// Users Stats - Order count ///////////////////////////////////
 	function users_stats(){
 		
-		$this->load->model('admin');
-		$users = $this->admin->get_all_users();
+		$admin = new \App\Models\Admin();
+		$users = $admin->get_all_users();
 		
 		$DT = 0;
 		$US = 0;
@@ -365,7 +365,7 @@ class Login extends BaseController
 		
 		foreach ($users as $user){
 			
-			$orders = $this->admin->get_total_orders($user->person_id);			
+			$orders = $admin->get_total_orders($user->person_id);			
 			$username = $user->username;
 			$email = $user->email;
 			

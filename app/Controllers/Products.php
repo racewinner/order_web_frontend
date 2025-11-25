@@ -110,7 +110,7 @@ class Products extends BaseController implements iData_controller
 		$config['per_page'] = $per_page;
 		$config['offset'] = 0;
 
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 		$this->data['form_width'] = $this->get_form_width();
 		
 		// Fetch Image Host
@@ -156,7 +156,7 @@ class Products extends BaseController implements iData_controller
 		$this->data['non_pmp'] = $non_pmp;
 		$this->data['own_label'] = $own_label;
 		$this->data['view_mode'] = $view_mode;
-		$this->data['rn'] = count(request()->uri->getSegments());
+		$this->data['rn'] = count(request()->getUri()->getSegments());
 		$this->data['filter_brands'] = $filter_brand_arr;
 		$this->data['per_page'] = $per_page;
 		$this->data['offset'] = $offset;
@@ -229,7 +229,7 @@ class Products extends BaseController implements iData_controller
 		$this->data['categories'] = $Product->get_all_categories(0);
 		$this->data['total_rows'] = $total_rows;
 		$this->data['total_page'] = floor($total_rows / $per_page) + 1;
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 		$this->data['form_width'] = $this->get_form_width();
 		
 		// Fetch Image Host
@@ -247,7 +247,7 @@ class Products extends BaseController implements iData_controller
 		$this->data['sort_key'] = $sort_key;
 		$this->data['curd_page'] = intval($offset / $per_page) + 1;
 		$this->data['view_mode'] = $view_mode;
-		$this->data['rn'] = count(request()->uri->getSegments());
+		$this->data['rn'] = count(request()->getUri()->getSegments());
 		$this->data['per_page'] = $per_page;
 		$this->data['offset'] = $offset;
 		$this->data['category_banners'] = Cms::getBrandBanners($brand);
@@ -265,7 +265,7 @@ class Products extends BaseController implements iData_controller
 		$this->data['low_inventory']=request()->getPost('low_inventory');
 		$this->data['is_serialized']=request()->getPost('is_serialized');
 		$this->data['no_description']=request()->getPost('no_description');
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 		$this->data['form_width']=$this->get_form_width();
 		$this->data['manage_table']=get_items_manage_table($this->Item->get_all_filtered($low_inventory,$is_serialized,$no_description),$this);
 		echo view('items/manage',$this->data);

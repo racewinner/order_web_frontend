@@ -174,7 +174,7 @@ class Cpanel extends Admin_area /* implements iData_controller*/
 		$codes = $Admin->get_featured_codes($type);
 		$data["prod_id"]=$Admin->get_featured($codes, $type);
         
-		$this->load->view('cpanel/cpanel_products', $data);
+		return view('cpanel/cpanel_products', $data);
     }
 		
     function refresh_all_products(){  // show products based on type clicked
@@ -432,10 +432,9 @@ class Cpanel extends Admin_area /* implements iData_controller*/
 	}
 	
 	function push_plink(){
-		$Admin = new Admin();
-		$l = $this->input->post('l');	
-		$v = $this->input->post('v');		
-		$this->load->model('admin');	
+		$Admin = new \App\Models\Admin();
+		$l = $this->request->getPost('l');	
+		$v = $this->request->getPost('v');		
 	    $s = $Admin->push_plink($l,$v);	
 	    echo $s;
 	}

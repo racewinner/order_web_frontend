@@ -212,7 +212,7 @@ class Pastorders extends Secure_area implements iData_controller
 					$sort_key) ,
 					$user_info ,
 					$this ,
-					$this->uri->segment($uri_segment),
+					$this->request->getUri()->getSegment($uri_segment),
 					$img_host);
 		echo $data_rows;
 	}

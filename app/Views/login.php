@@ -137,7 +137,7 @@
                         </li>
 
 						<li>
-							<a href="<?php echo base_url('home');?>" class="first-link <?= request()->uri->getSegment(1) == 'home' ? 'active' : '' ?>" target="_parent">
+							<a href="<?php echo base_url('home');?>" class="first-link <?= request()->getUri()->getSegment(1) == 'home' ? 'active' : '' ?>" target="_parent">
 							<i class="material-icons">home</i>
 							Home
 							</a>

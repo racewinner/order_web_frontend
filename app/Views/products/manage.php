@@ -14,7 +14,7 @@ $sort_options = [
 ]
 	?>
 
-<?php if (request()->uri->getSegment(1) == 'products' && !empty($category_banners)) {
+<?php if (request()->getUri()->getSegment(1) == 'products' && !empty($category_banners)) {
 	echo view("partial/banners_carousel", ['banners' => $category_banners, 'carousel_id' => 'category_banners_carousel']);
 } ?>
 
@@ -650,7 +650,7 @@ $sort_options = [
 			<div class="indeterminate"></div>
 		</div>
 
-		<?php if (request()->uri->getSegment(2) == 'index') { ?>
+		<?php if (request()->getUri()->getSegment(2) == 'index') { ?>
 			<div class="d-flex products-section" style="margin-top: 20px;">
 				<div class="filter-section p-4 side-filter sidenav" id="product_side_filter">
 					<div class="d-flex align-items-center" style="font-size:14px; margin-bottom: 10px;">
@@ -870,7 +870,7 @@ $sort_options = [
 		<script src="<?php echo base_url(); ?>js/manage_tables.js?v=<?= env('app.asset.version') ?>"
 			type="text/javascript" language="javascript" charset="UTF-8"></script>
 
-		<?php if (request()->uri->getSegment(2) == 'index') { ?>
+		<?php if (request()->getUri()->getSegment(2) == 'index') { ?>
 			<div id="actions">
 				<ul class="pagination">
 					<li class="go_page">

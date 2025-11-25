@@ -37,7 +37,7 @@ class Employees extends Secure_area
 		$this->data['total_page'] = intval($this->data['total_rows'] / $per_page) + 1;
 		$this->data['per_page'] = $per_page;
 		$this->data['offset'] = $offset;
-		$this->data['controller_name'] = $this->request->uri->getSegment(1);
+		$this->data['controller_name'] = $this->request->getUri()->getSegment(1);
 		$this->data['form_width'] = $this->get_form_width();
 		$this->data['sort_key'] = $sort_key;
 
@@ -144,7 +144,7 @@ class Employees extends Secure_area
 			$this->Employee->search(
 				$search,
 				$per_page,
-				$this->request->uri->getSegment($uri_segment),
+				$this->request->getUri()->getSegment($uri_segment),
 				$sort_key
 			),
 			$this,
@@ -248,7 +248,7 @@ class Employees extends Secure_area
 			$this->Employee->search(
 				$search,
 				$per_page,
-				$this->request->uri->getSegment($uri_segment),
+				$this->request->getUri()->getSegment($uri_segment),
 				$sort_key
 			),
 			$this,

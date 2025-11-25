@@ -38,7 +38,7 @@ class Orders extends Secure_area implements iData_controller
 
 		$user_info = $Employee->get_logged_in_employee_info();
 		$pid = $user_info->person_id;
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 
 		$img_host = $Admin->get_plink('img_host');
 		$this->data['img_host'] = $img_host;
@@ -427,7 +427,7 @@ class Orders extends Secure_area implements iData_controller
 
 		$user_info = $Employee->get_logged_in_employee_info();
 		$pid = $user_info->person_id;
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 
 		$img_host = $Admin->get_plink('img_host');
 		$this->data['img_host'] = $img_host;
@@ -522,7 +522,7 @@ class Orders extends Secure_area implements iData_controller
 
 		$user_info = $Employee->get_logged_in_employee_info();
 		$pid = $user_info->person_id;
-		$this->data['controller_name'] = request()->uri->getSegment(1);
+		$this->data['controller_name'] = request()->getUri()->getSegment(1);
 
 		$img_host = $Admin->get_plink('img_host');
 		$this->data['img_host'] = $img_host;
@@ -632,7 +632,7 @@ class Orders extends Secure_area implements iData_controller
 
 	function add_another_item()
 	{
-		return redirect(base_url("products"));
+		return redirect()->to(base_url("products"));
 	}
 
 	function cartinfo()
@@ -1000,15 +1000,21 @@ class Orders extends Secure_area implements iData_controller
 	// Manually Generate Duplicate Order Emails 31853 - 32067 (27th Jan til date)
 	function resend_orders($start,$end){		
 		// first check user is admin
-		$this->load->model('Employee');
-		$logged_in_employee_info = $this->Employee->get_logged_in_employee_info();
+		$Employee = new \App\Models\Employee();
+		$logged_in_employee_info = $Employee->get_logged_in_employee_info();
 		if($logged_in_employee_info->username == "admin"){
 			for($i=$start; $i<=$end; $i++){
 				//$q = "SELECT * FROM epos_orders WHERE order_id=".$i." AND completed='1' ORDER BY order_id DESC";
-				$q = "SELECT * FROM epos_orders, epos_employees WHERE epos_orders.order_id=".$i." AND epos_orders.completed='1' AND epos_orders.person_id = epos_employees.person_id ORDER BY order_id DESC";			
-				$r = $this->db->query($q);
-				if($r->num_rows() > 0){
-					foreach($r->result() as $res){
+				$db = \Config\Database::connect();
+				$builder = $db->table('epos_orders');
+				$builder->select('*');
+				$builder->join('epos_employees', 'epos_orders.person_id = epos_employees.person_id');
+				$builder->where('epos_orders.order_id', $i);
+				$builder->where('epos_orders.completed', '1');
+				$builder->orderBy('order_id', 'DESC');
+				$r = $builder->get();
+				if($r->getNumRows() > 0){
+					foreach($r->getResult() as $res){
 						$person_id = $res->person_id;
 						$username = $res->username;
 						$order_id = $res->order_id;
@@ -1078,8 +1084,7 @@ class Orders extends Secure_area implements iData_controller
 				{
                     if (strlen($data[0])>39) {
 				                               echo array('success'=>false,'message'=>'The barcode data is invalid.');
-                                       		   redirect(base_url("orders"));
-                                               return;
+                                       		   return redirect()->to(base_url("orders"));
                                              }
                     
                     $barcode = $db->escapeLikeString(iconv("Windows-1252" , "UTF-8//IGNORE" , preg_replace("/[^0-9]/", "",substr($data[0],0,16))));
@@ -1119,7 +1124,7 @@ class Orders extends Secure_area implements iData_controller
 			$msg = "Import products successful";
 		}
 
-		return redirect(base_url("orders"));
+		return redirect()->to(base_url("orders"));
 
 	}
 

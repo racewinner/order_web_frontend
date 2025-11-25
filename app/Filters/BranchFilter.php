@@ -49,7 +49,7 @@ class BranchFilter implements FilterInterface {
                 } else {
                     session()->destroy();
 
-                    \Config\Services::response()
+                    return \Config\Services::response()
                         ->setStatusCode(401)
                         ->setContentType('application/json')
                         ->setJSON([

@@ -18,7 +18,7 @@ class Contactus extends Secure_area /* implements iData_controller*/
 		$Employee = new Employee();
 		$Admin = new Admin();
 		// $data['controller_name']=strtolower(get_class());
-		$this->data['controller_name'] = $this->request->uri->getSegment(1);
+		$this->data['controller_name'] = $this->request->getUri()->getSegment(1);
 		
 		$user_info = $Employee->get_logged_in_employee_info();
 		$this->data['user_info'] = $user_info;

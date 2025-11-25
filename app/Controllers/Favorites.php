@@ -48,7 +48,7 @@ class Favorites extends Secure_area /* implements iData_controller*/
 		} 
 		
 		$this->data['total_rows'] = $productCount;
-		$this->data['segment'] = request()->uri->getSegment(2);
+		$this->data['segment'] = request()->getUri()->getSegment(2);
 		$this->data['controller_name'] = strtolower(get_class());	
 		$this->data['category'] = $Product->fetch_category(0);
 		// $data['subcategory'] = $this->Product->fetch_category($cat);
@@ -155,12 +155,12 @@ class Favorites extends Secure_area /* implements iData_controller*/
 	}
 		
     function refresh_products(){  // show products based on type clicked
-        $this->load->model('admin');
-		$type = $this->input->post('type');
+        $admin = new \App\Models\Admin();
+		$type = $this->request->getPost('type');
 		
-		$codes = $this->admin->get_featured_codes($type);
-		$data["products"]=$this->admin->get_featured($codes, $type);
-        $this->load->view('home_products', $data);
+		$codes = $admin->get_featured_codes($type);
+		$data["products"]=$admin->get_featured($codes, $type);
+        return view('home_products', $data);
     }
 	
 	function to_cart(){  // add or remove quantity 

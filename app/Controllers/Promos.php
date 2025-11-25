@@ -27,7 +27,7 @@ class Promos extends Secure_area /* implements iData_controller*/
 			return redirect()->to('/');			
 		}
 
-		$type = request()->uri->getSegment(3);
+		$type = request()->getUri()->getSegment(3);
 		$sort_key = $this->request->getGet('sort_key') ?? 9;
 		$category_id = $this->request->getGet('category_id') ?? 0;
 		$per_page = $this->request->getGet('per_page') ?? 50;

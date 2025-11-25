@@ -114,7 +114,7 @@ class Manager extends Model
 	function logout()
 	{
 		session()->destroy();
-		redirect('cpanel');
+		return redirect()->to(base_url('cpanel'));
 	}
 
 	/*

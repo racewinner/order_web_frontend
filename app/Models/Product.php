@@ -489,7 +489,7 @@ class Product extends Model
 							   THEN ROUND((1-((prod_sell * (1.00 + (CASE WHEN vat_code='A' THEN 0.2 WHEN vat_code='C' THEN 0.05 ELSE 0 END))) / (prod_rrp * prod_uos)))*100, 1)
 							   ELSE 0 END)
 						 AS por ";
-		if (request()->uri->getSegment(1) == 'presells') {
+		if (request()->getUri()->getSegment(1) == 'presells') {
 			$tablename = "presell";
 			$addcols = "period_ref, g_qty, g_min, g_max, s_qty, s_min, s_max, m_qty, m_min, m_max, l_qty, l_min, l_max, e_qty, e_min, e_max, ordered, ";
 		} else {

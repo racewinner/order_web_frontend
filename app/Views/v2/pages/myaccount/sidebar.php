@@ -11,7 +11,7 @@
 		unset($logon_user_menues['add_employee']); //2
 	}
 
-    $current_url = request()->uri->getPath();    
+    $current_url = request()->getUri()->getPath();    
 ?>
 
 <div class="my-account-side-menu d-none d-md-block">

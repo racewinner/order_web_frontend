@@ -185,7 +185,7 @@ function sort_product(link){
     $.ajax({
         type : "POST"
         , async : true
-        , url : "<?php echo site_url("$controller_name/sort_product/".request()->uri->getSegment(2)."/");?>"
+        , url : "<?php echo site_url("$controller_name/sort_product/".request()->getUri()->getSegment(2)."/");?>"
         , dataType : "html"
         , timeout : 30000
         , cache : false
@@ -353,7 +353,7 @@ function search_query(){
 	var category_id = 0;
 	var uri_segment = 0;
 	var per_page = 30;
-	var promo = '<?php echo request()->uri->getSegment(2); ?>';
+	var promo = '<?php echo request()->getUri()->getSegment(2); ?>';
 	
 	location_site = location_site + "/" + search_mode;
 	location_site = location_site + nCurrentSortKey + "/" + category_id + "/" + uri_segment + "/" + per_page + "/" + promo;
@@ -384,9 +384,9 @@ main{background:url('images/diagonal_tile_bg3_light.png');}
         <input type="hidden" id="refresh" value="no">
         <input type="button" value="Search" style="background:#000; padding:7px; width:80px; height:35px; border:#000 2px solid; color:#fff !important; text-transform:uppercase;" onclick="search_query();">
         <!--
-		<?php if(request()->uri->getSegment(2)=='index'){ 
+		<?php if(request()->getUri()->getSegment(2)=='index'){ 
 		         $checked = '';
-		         if($this->uri->segment(3)=='search' && $this->uri->segment(8)!=0){ $checked = 'checked';}
+		         if(request()->getUri()->getSegment(3)=='search' && request()->getUri()->getSegment(8)!=0){ $checked = 'checked';}
 		?>
         <div style="margin-left:-100px; margin-top:-5px;">
         <label>

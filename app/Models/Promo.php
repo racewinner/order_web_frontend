@@ -1,36 +1,63 @@
 <?php
-class Promo extends CI_Model { 
 
-  // we will use the function get_featured
-  function get_featured($where_arr){
-		  
-		// all the queries relating to the data we want to retrieve will go in here
-		$this->db->select('prod_id,prod_code,prod_desc,price_list,prod_sell');        // the select statement
-		//$this->db->group_by('prod_code');                                           
-		$this->db->where('price_list', '999');    
-		$this->db->where_in('prod_code', $where_arr);                                 // the 'where' clause
-		$this->db->order_by("prod_code", "asc");
-		$q = $this->db->get('epos_product');                                          // the table
-	 
-		// after we've made the queries from the database, we will store them inside a variable called $data, and return the variable to the controller 
-		if($q->num_rows() > 0){
-		  // we will store the results in the form of class methods by using $q->result(), if  store as an array use $q->result_array()
-		  foreach ($q->result() as $row){
-			$data[] = $row;
-		  }
-		  return $data;
-		}
-  }
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class Promo extends Model
+{
+    protected $table = 'epos_product';
+    protected $primaryKey = 'prod_id';
+    protected $useTimestamps = false;
+    protected $allowedFields = [];
+
+    /**
+     * Get featured products
+     * 
+     * @param array $where_arr Array of product codes
+     * @return array|null
+     */
+    public function get_featured($where_arr)
+    {
+        $db = \Config\Database::connect();
+        
+        $builder = $db->table('epos_product');
+        $builder->select('prod_id,prod_code,prod_desc,price_list,prod_sell');
+        $builder->where('price_list', '999');
+        $builder->whereIn('prod_code', $where_arr);
+        $builder->orderBy('prod_code', 'ASC');
+        $query = $builder->get();
+        
+        if ($query->getNumRows() > 0) {
+            $data = [];
+            foreach ($query->getResult() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        
+        return null;
+    }
   
-  	function get_total_items_cart($person_id){
-		$query = "SELECT * FROM epos_cart WHERE person_id='".$person_id."'";
-		$results = $this->db->query($query);
-		$total_quantity = 0;
-		$total_amount = 0;
-		foreach($results->result() as $res){
-		   $total_quantity += $res->quantity;
-		   }
-		return $total_quantity;
-	}
-  
+    /**
+     * Get total items in cart for a person
+     * 
+     * @param int $person_id
+     * @return int
+     */
+    public function get_total_items_cart($person_id)
+    {
+        $db = \Config\Database::connect();
+        
+        $builder = $db->table('epos_cart');
+        $builder->where('person_id', $person_id);
+        $query = $builder->get();
+        
+        $total_quantity = 0;
+        foreach ($query->getResult() as $res) {
+            $total_quantity += $res->quantity;
+        }
+        
+        return $total_quantity;
+    }
 }

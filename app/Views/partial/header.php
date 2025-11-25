@@ -52,7 +52,7 @@
 	</script>
 
 	<script type="text/javascript">
-		<?php if (request()->uri->getSegment(1) == 'cpanel') {
+		<?php if (request()->getUri()->getSegment(1) == 'cpanel') {
 			$root = 'cpanel';
 			$logout = 'home/logout';
 			$login = '/login';
@@ -71,7 +71,7 @@
 			update_cart();
 		<?php } ?>
 
-		<?php if (request()->uri->getSegment(1) == 'products') { ?>
+		<?php if (request()->getUri()->getSegment(1) == 'products') { ?>
 			$(document).ready(function () {
 				window.history.pushState(null, "", window.location.href);
 				window.onpopstate = function () {
@@ -152,7 +152,7 @@
 		}
 
 
-		<?php if (request()->uri->getSegment(1) == 'home' || request()->uri->getSegment(1) == 'promos' || request()->uri->getSegment(1) == 'pastorders' || request()->uri->getSegment(1) == 'contactus' || request()->uri->getSegment(1) == 'presells' || request()->uri->getSegment(1) == 'orders') { ?>
+		<?php if (request()->getUri()->getSegment(1) == 'home' || request()->getUri()->getSegment(1) == 'promos' || request()->getUri()->getSegment(1) == 'pastorders' || request()->getUri()->getSegment(1) == 'contactus' || request()->getUri()->getSegment(1) == 'presells' || request()->getUri()->getSegment(1) == 'orders') { ?>
 			function go_search(e) {
 				e.preventDefault();
 				var result = e.keyCode || e.which;
@@ -191,8 +191,8 @@
 			});
 		<?php } ?>
 
-		<?php if (request()->uri->getSegment(1) == 'home' || request()->uri->getSegment(1) == 'cpanel' || request()->uri->getSegment(1) == 'promos') { ?>
-			<?php if (request()->uri->getSegment(1) == 'promos') { ?>
+		<?php if (request()->getUri()->getSegment(1) == 'home' || request()->getUri()->getSegment(1) == 'cpanel' || request()->getUri()->getSegment(1) == 'promos') { ?>
+			<?php if (request()->getUri()->getSegment(1) == 'promos') { ?>
 
 			<?php } else { ?>
 
@@ -217,7 +217,7 @@
 				}
 			<?php } ?>
 
-			<?php if (request()->uri->getSegment(1) == 'cpanel') { ?>
+			<?php if (request()->getUri()->getSegment(1) == 'cpanel') { ?>
 				load_all_products();
 				function load_all_products() {
 					$.ajax({
@@ -421,12 +421,12 @@
 			<?php } ?>
 
 			$("document").ready(function () {
-				<?php if (request()->uri->getSegment(1) == 'promos') { ?>
+				<?php if (request()->getUri()->getSegment(1) == 'promos') { ?>
 				<?php } else { ?>
 					setTimeout(function () {
-						<?php if (request()->uri->getSegment(1) == 'home') { ?>
+						<?php if (request()->getUri()->getSegment(1) == 'home') { ?>
 							$("#f_links ul li:nth-child(1) a").trigger('click');
-						<?php } else if (request()->uri->getSegment(1) == 'cpanel') { ?>
+						<?php } else if (request()->getUri()->getSegment(1) == 'cpanel') { ?>
 								$("#f_links ul li:nth-child(1) a").trigger('click');
 						<?php } ?>
 					}, 10);
@@ -554,7 +554,7 @@
 	$category0[] = ['value' => 32, 'label' => 'WINES'];
 
 	$curr_category0 = 0;
-	$uriSegments = request()->uri->getSegments();
+	$uriSegments = request()->getUri()->getSegments();
 	if ($uriSegments[0] == 'products') {
 		$curr_category0 = request()->getGet('category_id');
 	}
@@ -683,8 +683,8 @@
 							?>
 							<li>
 								<a id="<?= lang('Main.module_' . $module['module_id']) ?>" href="<?= $href ?>"
-									class="first-link <?php if (request()->uri->getSegment(1) == $module['module_id']) { ?> active <?php } else ?>
-							   <?php if (request()->uri->getSegment(1) == "employees" && lang("Main.module_" . $module['module_id'] . "_slug") == "users") { ?> active <?php } ?>" target="_parent">
+									class="first-link <?php if (request()->getUri()->getSegment(1) == $module['module_id']) { ?> active <?php } else ?>
+							   <?php if (request()->getUri()->getSegment(1) == "employees" && lang("Main.module_" . $module['module_id'] . "_slug") == "users") { ?> active <?php } ?>" target="_parent">
 									<i class="material-icons"><?php echo $icon; ?></i>
 									<?php echo lang("Main.module_" . $module['module_id']) ?>
 								</a>
@@ -720,7 +720,7 @@
 						</ul>
 					</li>
 
-					<?php if (request()->uri->getSegment(1) != 'cpanel') { ?>
+					<?php if (request()->getUri()->getSegment(1) != 'cpanel') { ?>
 						<li><a id="combined" href="<?php echo $cartlink; ?>/orders/general" target="_parent" class=""><i
 									class="material-icons">shopping_cart</i>£<span
 									class="cart-amount"><?php echo isset($carttotal); ?></span></a></li>
@@ -830,7 +830,7 @@
 					</li>
 
 
-					<?php if (request()->uri->getSegment(1) != 'cpanel') { ?>
+					<?php if (request()->getUri()->getSegment(1) != 'cpanel') { ?>
 						<li><a class="waves-effect" href="<?php echo $cartlink; ?>/general" target="_parent"><i
 									class="material-icons">shopping_cart</i>Trolley</a>
 						</li>
@@ -846,7 +846,7 @@
 				<ul class="right hide-on-med-and-down" id="mainnav">
 					<li>
 						<a href="<?php echo base_url('home'); ?>"
-							class="first-link <?= request()->uri->getSegment(1) == 'home' ? 'active' : '' ?>"
+							class="first-link <?= request()->getUri()->getSegment(1) == 'home' ? 'active' : '' ?>"
 							target="_parent">
 							<i class="material-icons">home</i>
 							Home
@@ -870,7 +870,7 @@
 					</li>
 					<li>
 						<a href="<?php echo base_url('home'); ?>"
-							class="first-link <?= request()->uri->getSegment(1) == 'home' ? 'active' : '' ?>"
+							class="first-link <?= request()->getUri()->getSegment(1) == 'home' ? 'active' : '' ?>"
 							target="_parent">
 							<i class="material-icons">home</i>
 							Home
@@ -963,8 +963,8 @@
 							?>
 							<li class="menu-item">
 								<a id="<?= lang('Main.module_' . $module['module_id']) ?>" href="<?= $href ?>"
-									class="first-link <?php if (request()->uri->getSegment(1) == lang("Main.module_" . $module['module_id'] . "_slug")) { ?> active <?php } else ?>
-						<?php if (request()->uri->getSegment(1) == "employees" && lang("Main.module_" . $module['module_id'] . "_slug") == "users") { ?> active <?php } ?>" target="_parent">
+									class="first-link <?php if (request()->getUri()->getSegment(1) == lang("Main.module_" . $module['module_id'] . "_slug")) { ?> active <?php } else ?>
+						<?php if (request()->getUri()->getSegment(1) == "employees" && lang("Main.module_" . $module['module_id'] . "_slug") == "users") { ?> active <?php } ?>" target="_parent">
 									<?php echo lang("Main.module_" . $module['module_id']); ?>
 								</a>
 							</li>
@@ -974,7 +974,7 @@
 							$cartname = lang("Main.module_" . $module['module_id']);
 						}
 					} // For Each Loop end 
-					if (request()->uri->getSegment(1) == 'cpanel') { ?>
+					if (request()->getUri()->getSegment(1) == 'cpanel') { ?>
 						<li class="menu-item">
 							<b>Manager Control Panel</b> - Welcome <?php echo session()->get('manager_username'); ?>!
 						</li>
@@ -988,7 +988,7 @@
 					<li class="device-behavior"><a href="<?php echo base_url($logout); ?>" title="Logout"
 							target="_parent"><?php echo lang("Main.common_logout"); ?></a></li>
 					<!--<li class="device-behavior"><a href="<?php echo base_url("main"); ?>" title="Hub" target="_parent">Hub</a></li>-->
-					<?php if (request()->uri->getSegment(1) != 'cpanel' && $cartname != "") { ?>
+					<?php if (request()->getUri()->getSegment(1) != 'cpanel' && $cartname != "") { ?>
 						<li style="margin-right:23px !important; line-height:initial;"><a class="mini-cart__link"
 								href="<?php echo $cartlink; ?>" data-layoutaction-link="shop-cart"
 								title="View your shopping cart" target="_parent"><span><?php echo $cartname; ?></span><span
