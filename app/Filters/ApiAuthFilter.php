@@ -42,7 +42,7 @@ class ApiAuthFilter implements FilterInterface
         // Try to get from POST first, then JSON
         $user_serial = !empty($postData['user_serial']) ? $postData['user_serial'] : ($jsonData['user_serial'] ?? null);
         $user_activation = !empty($postData['user_activation']) ? $postData['user_activation'] : ($jsonData['user_activation'] ?? null);
-        $client_ref = !empty($postData['client_ref']) ? $postData['client_ref'] : ($jsonData['client_ref'] ?? null);
+        $client_client_ref = !empty($postData['client_client_ref']) ? $postData['client_client_ref'] : ($jsonData['client_client_ref'] ?? null);
 
         $response = service('response');
         $response->setContentType('application/json');
@@ -71,27 +71,27 @@ class ApiAuthFilter implements FilterInterface
             return $response;
         }
 
-        // Check client_ref separately
-        if (empty($client_ref)) {
+        // Check client_client_ref separately
+        if (empty($client_client_ref)) {
             $response->setStatusCode(400);
             $response->setJSON([
                 'success' => false,
-                'message' => 'Missing required parameter: client_ref is required',
-                'error' => 'missing_client_ref',
-                'parameter' => 'client_ref'
+                'message' => 'Missing required parameter: client_client_ref is required',
+                'error' => 'missing_client_client_ref',
+                'parameter' => 'client_client_ref'
             ]);
             return $response;
         }
 
         // Validate against app_activation table - check all three parameters together
         $appActivation = new AppActivation();
-        $isValid = $appActivation->isValid($user_serial, $user_activation, $client_ref);
+        $isValid = $appActivation->isValid($user_serial, $user_activation, $client_client_ref);
         
         if (!$isValid) {
             $response->setStatusCode(401);
             $response->setJSON([
                 'success' => false,
-                'message' => 'Invalid activation credentials. The provided user_serial, user_activation, and client_ref do not match any valid activation record.',
+                'message' => 'Invalid activation credentials. The provided user_serial, user_activation, and client_client_ref do not match any valid activation record.',
                 'error' => 'invalid_activation'
             ]);
             return $response;
