@@ -1,7 +1,7 @@
 <?php
 use App\Models\Employee;
 use App\Models\Product;
-function get_customer_manage_table($people , $controller , $sort_key = 1 , $user_info)
+function get_customer_manage_table($people , $controller , $user_info, $sort_key = 1)
 {
 	$CI = \Config\Services::codeigniter();
 	$table='<table class="tablesorter" id="sortable_table">';
