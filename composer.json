@@ -3,7 +3,7 @@
     "description": "order2.uniteduk.co.uk",
    
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "codeigniter4/framework": "^4.6"
     }
 }
