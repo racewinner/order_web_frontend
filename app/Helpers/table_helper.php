@@ -1004,7 +1004,7 @@ if($Employee->is_logged_in()) {
 	return $data_row;
 }
 
-function get_cart_order_manage_table_mobile($cart_orders, $priceList, $type='general', $controller, $img_host)
+function get_cart_order_manage_table_mobile($cart_orders, $priceList, $controller, $img_host, $type='general')
 {
 	$CI = \Config\Services::codeigniter();
 	$controller_name=strtolower(get_class($CI));
@@ -1178,7 +1178,7 @@ function get_cart_order_data_row_mobile($cart_order, $priceList, $controller , $
 	return $data_row;
 }
 
-function get_cart_order_manage_table($cart_orders, $type='general', $controller, $img_host)
+function get_cart_order_manage_table($cart_orders, $controller, $img_host, $type='general')
 {
 	$CI = \Config\Services::codeigniter();
 	$controller_name=strtolower(get_class($CI));
@@ -1324,7 +1324,7 @@ function get_cart_order_data_row($cart_order , $controller , $nCount , &$prod_co
 }
 
 
-function get_orders_manage_table($orders , $controller , $sort_key = 4 , $user_info, $segment = 0, $img_host)
+function get_orders_manage_table($orders , $controller , $user_info, $img_host, $sort_key = 4, $segment = 0)
 {
 	$CI = \Config\Services::codeigniter();
 	$table = '<table class="tablesorter" id="sortable_table" >';

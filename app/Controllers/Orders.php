@@ -624,8 +624,8 @@ class Orders extends Secure_area implements iData_controller
 		// Fetch Image Host
 		$img_host = $Admin->get_plink('img_host');
 		$table_data = session()->get('is_mobile') == "1" ?
-			get_cart_order_manage_table_mobile($Order->get_all_cart($user_info->person_id, $type), $this->priceList, $type , $this, $img_host) : 
-			get_cart_order_manage_table($Order->get_all_cart($user_info->person_id, $type), $type , $this, $img_host);
+			get_cart_order_manage_table_mobile($Order->get_all_cart($user_info->person_id, $type), $this->priceList, $this, $img_host, $type) : 
+			get_cart_order_manage_table($Order->get_all_cart($user_info->person_id, $type), $this, $img_host, $type);
 		echo $table_data;
 	}
 
