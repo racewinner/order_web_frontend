@@ -27,7 +27,7 @@ if(empty($user_info)) {
 	if(in_array('seasonal_presell', haystack: $allowed_module_ids)) 
 		$top_menus[] = ['id'=>'presell', 'icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1', 'active'=>$uri_segments[0]=='seasonal_presell'];
 	if(in_array('promos', $allowed_module_ids)) 
-		$top_menus[] = ['id'=>'promos', 'icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/du', 'active'=>$uri_segments[0] == 'promos'];
+		$top_menus[] = ['id'=>'promos', 'icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/cc', 'active'=>$uri_segments[0] == 'promos'];
 	if(in_array('favorites', $allowed_module_ids)) 
 		$top_menus[] = ['id'=>'my_favorite', 'icon' => 'bi-heart', 'label' => 'Favourite', 'url' => '/favorites', 'active'=>$uri_segments[0] == 'favorites'];
 	if(in_array('orders', $allowed_module_ids)) 

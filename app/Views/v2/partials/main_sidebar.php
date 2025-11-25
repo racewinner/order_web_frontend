@@ -40,7 +40,7 @@
             'home' => ['icon' => 'bi-house', 'label' => 'Home', 'url' => '/home'],
             'products' => ['icon' => 'bi-list-ul', 'label' => 'Products', 'url' => '/products'],
             'spresell' => ['icon' => 'bi-tag-fill', 'label' => 'Seasonal Presell', 'url' => '/seasonal_presell/index?category_id=0&spresell=1'],
-            'promos' => ['icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/du'],
+            'promos' => ['icon' => 'bi-tag-fill', 'label' => 'Promos', 'url' => '/promos/index/cc'],
             'orders' => ['icon' => 'bi-clock', 'label' => 'Orders', 'url' => '/pastorders'],
             'contact_us' => ['icon' => 'bi-envelope', 'label' => 'Contact Us', 'url' => '/contactus'],
             'separator1' => ['label' => 'separator'],
