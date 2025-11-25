@@ -150,6 +150,9 @@ class Promos extends Secure_area /* implements iData_controller*/
 			$this->data['products'][] = $row;
 		}
 
+		// Pass pricelists from database to view
+		$this->data['pricelists'] = $this->priceList;
+
 		// echo view('promos', $this->data); // after you stored the query results inside the $data array, send the array to the view 
 		echo view('v2/pages/promos', $this->data);
 	}

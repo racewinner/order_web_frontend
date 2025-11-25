@@ -12,16 +12,14 @@ class PriceList extends Model
     {
         $db = \Config\Database::connect();
         
-        $query = $db->table($this->table);
+        $query = $db->table($this->table)
+            ->orderBy('priority', 'ASC');
         $result = $query->get();
 
         $data = [];
         foreach($result->getResult() as $pl) {
-            $data[$pl->id] = [
-                'ribbon_label' => $pl->ribbon_label,
-                'promo_page' => intval($pl->promo_page),
-                'ribbon_colour' => $pl->ribbon_colour
-            ];
+            // Return all fields as an array
+            $data[$pl->id] = (array) $pl;
         }
 
         return $data;

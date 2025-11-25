@@ -30,19 +30,38 @@
         <div class="filter-section <?= $is_mobile ? 'sidebar collapsed' : '' ?>" id="product-side-filter">
             <div class="sidebar-content pt-4 p-1">
                 <ul class="promo-type-filter">
-                    <?php if($user_info->price_list010 == "1") { ?>
-                        <li class="<?= $type=='du' ? 'active' : '' ?>">
-                            <a href="#" class="promo-type hover-no-underline" data-promo-type="du">DAY-TODAY</a>
-                        </li>
-                    <?php } if ($user_info->price_list012 == "1") { ?>
-                        <li class="<?= $type=='us' ? 'active' : '' ?>">
-                            <a href="#" class="promo-type hover-no-underline"  data-promo-type="us">USAVE</a>
-                        </li>
-                    <?php } if($user_info->price_list999 == "1") { ?>
-                        <li class="<?= $type=='cc' ? 'active' : '' ?>">
-                            <a href="#" class="promo-type hover-no-underline"  data-promo-type="cc">CASH & CARRY</a>
-                        </li>
-                    <?php } ?>
+                    <?php 
+                    // Map pricelist IDs to promo types
+                    $promo_type_map = [
+                        '10' => ['type' => 'du', 'user_field' => 'price_list010'],
+                        '12' => ['type' => 'us', 'user_field' => 'price_list012'],
+                        '999' => ['type' => 'cc', 'user_field' => 'price_list999'],
+                    ];
+                    
+                    // Loop through pricelists sorted by priority
+                    foreach($pricelists as $id => $pricelist) {
+                        $pricelist_id = (string)$id;
+                        
+                        // Check if this pricelist has a promo type mapping
+                        if (isset($promo_type_map[$pricelist_id])) {
+                            $promo_type = $promo_type_map[$pricelist_id]['type'];
+                            $user_field = $promo_type_map[$pricelist_id]['user_field'];
+                            
+                            // Check if user has access to this pricelist and if promo_page is enabled
+                            if (isset($user_info->$user_field) && $user_info->$user_field == "1" && 
+                                isset($pricelist['promo_page']) && $pricelist['promo_page'] == 1) {
+                                $label = $pricelist['ribbon_label'] ?? strtoupper($promo_type);
+                                ?>
+                                <li class="<?= $type == $promo_type ? 'active' : '' ?>">
+                                    <a href="#" class="promo-type hover-no-underline" data-promo-type="<?= $promo_type ?>">
+                                        <?= htmlspecialchars($label) ?>
+                                    </a>
+                                </li>
+                                <?php
+                            }
+                        }
+                    }
+                    ?>
                 </ul>
 
                 <div class="card">
