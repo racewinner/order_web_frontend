@@ -311,8 +311,24 @@ class Products extends BaseController implements iData_controller
 
 			// To get product detail
 			$prod_detail_url = "https://img.uniteduk.co.uk/brandbank/api_ecomm_product_data.php?product={$product->prod_code}&key=ghygogggfos345UYGYIGFUID675nbjkblesr98435j899";
-			$response = file_get_contents($prod_detail_url);
-			if($response != "null") {
+			
+			// Use cURL instead of file_get_contents for HTTPS support
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $prod_detail_url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Set to true in production with proper SSL cert
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Set to 2 in production with proper SSL cert
+			$response = curl_exec($ch);
+			$curl_error = curl_error($ch);
+			curl_close($ch);
+			
+			// Check for cURL errors
+			if($curl_error) {
+				log_message('error', 'cURL error fetching product detail: ' . $curl_error);
+				$response = false;
+			}
+			
+			if($response !== false && $response != "null") {
 				$json_decoded = json_decode($response, true);
 				$this->data['detail'] = $json_decoded;
 				foreach($json_decoded['languages'][0]['groupingSets'] as $set) {
