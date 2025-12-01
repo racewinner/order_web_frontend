@@ -1092,7 +1092,6 @@
      })
  
     $(document).on('click', '.one-collection-container, .one-delivery-container', function(e) {
-        debugger
         const $target = $(e.target);
          if ($target.is('input, label, button, a')) {
              return;
@@ -1249,19 +1248,13 @@
         }
         if (payment_method) {
             $(`#${payment_method}`).click();
-        }
-        
-
-        const charge = $('#charge').text();
-
-        if (order_type) {
-            let bsTgtStr = order_type == 'collection' ? '#pane-pickup-depot' : '#pane-via-delivery';
-            let el = $(`[data-bs-target="${bsTgtStr}"]`);
-            if (!el.hasClass('active') || charge == undefined || charge == '' ) {
-                el.click();
-                return;
+        } else {
+            // If there is only one payment method, automatically click it
+            const $paymentMethods = $('input[name="payment_method"]');
+            if ($paymentMethods.length === 1) {
+                $paymentMethods.first().click();
             }
-        } 
+        }
 
         let pay_total_amount    = $('#pay_total_amount').text();
         let pay_total_vats      = $('#pay_total_vats').text();
@@ -1276,6 +1269,59 @@
         $('#cart_subtotal2').text('£'+cart_subtotal2.toFixed(2));
 
         updatePaymentMethodSelection($('[name="payment_method"]:checked').val() || null);
+
+        // Check if there is only one order type and auto-click it
+        // Check if there is only one order method and auto-click it
+        const charge = $('#charge').text();
+
+        const $orderMethods = $('.one-order-method');
+        if ($orderMethods.length === 1 && !order_type) {
+            const $orderMethod = $orderMethods.first();
+            $orderMethod.click();
+            
+            // Wait a bit for the tab to activate, then check for container types
+            setTimeout(function() {
+                // Check if it's collection or delivery
+                const isCollection = $orderMethod.hasClass('pickup-depot');
+                const containerName = isCollection ? 'collection_container' : 'delivery_container';
+                
+                // Check if there is only one container type under this order method
+                const $containers = $(`input[name="${containerName}"]`);
+                if ($containers.length === 1) {
+                    $containers.first().click();
+                }
+            }, 100);
+        }
+
+        if (order_type) {
+            let bsTgtStr = order_type == 'collection' ? '#pane-pickup-depot' : '#pane-via-delivery';
+            let el = $(`[data-bs-target="${bsTgtStr}"]`);
+            if (!el.hasClass('active') || charge == undefined || charge == '' ) {
+                el.click();
+                
+                // After clicking order type, check if there is only one container type
+                setTimeout(function() {
+                    const containerName = order_type == 'collection' ? 'collection_container' : 'delivery_container';
+                    const $containers = $(`input[name="${containerName}"]`);
+                    const hasContainerParam = order_type == 'collection' ? collection_container : delivery_container;
+                    if ($containers.length === 1 && !hasContainerParam) {
+                        $containers.first().click();
+                    }
+                }, 100);
+                
+                return;
+            } else {
+                // Order type tab is already active, check if there is only one container type
+                const containerName = order_type == 'collection' ? 'collection_container' : 'delivery_container';
+                const hasContainerParam = order_type == 'collection' ? collection_container : delivery_container;
+                if (!hasContainerParam) {
+                    const $containers = $(`input[name="${containerName}"]`);
+                    if ($containers.length === 1) {
+                        $containers.first().click();
+                    }
+                }
+            }
+        } 
     })
 
     $(document).on('click', '#confirm_order_trolley_dialog .order-complete', function(e) {
