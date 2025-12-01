@@ -5810,7 +5810,7 @@ textarea.form-control-lg {
 @media (min-width: 992px) {
   .modal-lg,
   .modal-xl {
-    --bs-modal-width: 970px;
+    --bs-modal-width: 1100px;
   }
 }
 @media (min-width: 1200px) {
@@ -19189,5 +19189,11 @@ a.text-primary-hover:hover, button.text-primary-hover:hover {
 @media (max-width: 992px) {
   .card-body-padding-bottom {
     padding-bottom: 0rem !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .user-branches {
+    min-width: 220px;
   }
 }

@@ -221,7 +221,6 @@ $(document).ready(function(e) {
     })
 
     $(document).on('click', 'table tbody tr i.employee-edit', function(e) {
-        debugger
         e.preventDefault();
         e.stopPropagation();
 
@@ -313,12 +312,212 @@ $(document).ready(function(e) {
         }
     })
 
+    // Real-time validation on email input change
+    $(document).on('input blur', '.employee-edit form #email', function(e) {
+        const $form = $(e.target).closest('form');
+        // Always validate on blur, or validate on input if form has been submitted at least once
+        if (e.type === 'blur' || $form.data('submitted')) {
+            validateEmail($form);
+        }
+    })
+
+    // Real-time validation on branch checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form input.branch', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validateBranches($form);
+        }
+    })
+
+    // Real-time validation on payment method checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form input.payment-methods', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validatePaymentMethods($form);
+        }
+    })
+
+    // Real-time validation on delivery checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form [name="delivery"]', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validateDeliveryContainers($form);
+        }
+    })
+
+    // Real-time validation on delivery container checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form input.delivery-container-types', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validateDeliveryContainers($form);
+        }
+    })
+
+    // Real-time validation on collect checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form [name="collect"]', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validateCollectContainers($form);
+        }
+    })
+
+    // Real-time validation on collect container checkbox change (only after first submission)
+    $(document).on('change', '.employee-edit form input.collect-container-types', function(e) {
+        const $form = $(e.target).closest('form');
+        // Only validate if form has been submitted at least once
+        if ($form.data('submitted')) {
+            validateCollectContainers($form);
+        }
+    })
+
+    // Function to validate email format
+    function validateEmail($form) {
+        const emailRegex = /^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
+        const email = $form.find("#email").val().trim();
+        const $validationMsg = $form.find('.email-validation-message');
+        
+        // Check if email is empty or invalid format
+        let isValid = true;
+        if (email === '') {
+            isValid = false;
+        } else if (!emailRegex.test(email)) {
+            isValid = false;
+        }
+        
+        if (isValid) {
+            $validationMsg.hide();
+        } else {
+            $validationMsg.show();
+        }
+        
+        return isValid;
+    }
+
+    // Function to validate branches and show/hide validation message
+    function validateBranches($form) {
+        const $branch_chkboxes = $form.find("input.branch:checked");
+        const branches = [];
+        for(let i=0; i<$branch_chkboxes.length; i++) {
+            branches.push($branch_chkboxes[i].value);
+        }
+        
+        const $validationMsg = $form.find('.branch-validation-message');
+        const isValid = branches.length > 0;
+        
+        if (isValid) {
+            $validationMsg.hide();
+        } else {
+            $validationMsg.show();
+        }
+        
+        return isValid;
+    }
+
+    // Function to validate payment methods and show/hide validation message
+    function validatePaymentMethods($form) {
+        const $payment_method_chkboxes = $form.find("input.payment-methods:checked");
+        const payment_methods = [];
+        for(let i=0; i<$payment_method_chkboxes.length; i++) {
+            payment_methods.push($payment_method_chkboxes[i].value);
+        }
+        
+        const $validationMsg = $form.find('.payment-method-validation-message');
+        const isValid = payment_methods.length > 0;
+        
+        if (isValid) {
+            $validationMsg.hide();
+        } else {
+            $validationMsg.show();
+        }
+        
+        return isValid;
+    }
+
+    // Function to validate delivery containers when delivery is checked
+    function validateDeliveryContainers($form) {
+        const isDeliveryChecked = $form.find('[name="delivery"]').is(':checked');
+        const $delivery_container_chkboxes = $form.find("input.delivery-container-types:checked");
+        const delivery_containers = [];
+        for(let i=0; i<$delivery_container_chkboxes.length; i++) {
+            delivery_containers.push($delivery_container_chkboxes[i].value);
+        }
+        
+        const $validationMsg = $form.find('.delivery-container-validation-message');
+        let isValid = true;
+        
+        // Only validate if delivery is checked
+        if (isDeliveryChecked) {
+            isValid = delivery_containers.length > 0;
+            if (isValid) {
+                $validationMsg.hide();
+            } else {
+                $validationMsg.show();
+            }
+        } else {
+            // If delivery is not checked, hide validation message
+            $validationMsg.hide();
+        }
+        
+        return isValid;
+    }
+
+    // Function to validate collect containers when collect is checked
+    function validateCollectContainers($form) {
+        const isCollectChecked = $form.find('[name="collect"]').is(':checked');
+        const $collect_container_chkboxes = $form.find("input.collect-container-types:checked");
+        const collect_containers = [];
+        for(let i=0; i<$collect_container_chkboxes.length; i++) {
+            collect_containers.push($collect_container_chkboxes[i].value);
+        }
+        
+        const $validationMsg = $form.find('.collect-container-validation-message');
+        let isValid = true;
+        
+        // Only validate if collect is checked
+        if (isCollectChecked) {
+            isValid = collect_containers.length > 0;
+            if (isValid) {
+                $validationMsg.hide();
+            } else {
+                $validationMsg.show();
+            }
+        } else {
+            // If collect is not checked, hide validation message
+            $validationMsg.hide();
+        }
+        
+        return isValid;
+    }
+
     $(document).on('submit', '.employee-edit form', function(e) {
         const $form = $(e.target);
         const person_id = $form.find("#person_id").val();
         const password = $form.find("#password").val();
         const repeat_password = $form.find("#repeat_password").val();
         const $btnSave = $form.find('button#btn_save');
+
+        // Mark form as submitted for real-time validation
+        $form.data('submitted', true);
+
+        // Validate email format (custom validation - checks for empty and invalid format)
+        if (!validateEmail($form)) {
+            e.preventDefault(); // Prevent form submission
+            
+            // Remove loading spinner if any
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+            
+            // Show error message using alert_message
+            alert_message('Please enter a valid email address', 'Validation Error', 'employee-edit-validation-error');
+            
+            return false;
+        }
 
         // branches
         let branches = [];
@@ -328,6 +527,21 @@ $(document).ready(function(e) {
         }
         $form.find("input#branches").val(branches);
 
+        // Validate that at least one branch is checked
+        if (!validateBranches($form)) {
+            e.preventDefault();
+            
+            // Remove loading spinner if any
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+            
+            // Show error message using alert_message
+            alert_message('Please select at least one branch', 'Validation Error', 'employee-edit-validation-error');
+            
+            return false;
+        }
+
         // payment_methods
         let payment_methods = [];
         $payment_method_chkboxes = $form.find("input.payment-methods:checked");
@@ -335,6 +549,21 @@ $(document).ready(function(e) {
             payment_methods.push($payment_method_chkboxes[i].value);
         }
         $form.find("input#payment_methods").val(payment_methods);
+
+        // Validate that at least one payment method is checked
+        if (!validatePaymentMethods($form)) {
+            e.preventDefault();
+            
+            // Remove loading spinner if any
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+            
+            // Show error message using alert_message
+            alert_message('Please select at least one payment method', 'Validation Error', 'employee-edit-validation-error');
+            
+            return false;
+        }
 
         debugger
         // container_types
@@ -353,6 +582,21 @@ $(document).ready(function(e) {
         }
         $form.find("input#delivery_container_types").val(delivery_container_types);
 
+        // Validate delivery containers if delivery is checked
+        if (!validateDeliveryContainers($form)) {
+            e.preventDefault();
+            
+            // Remove loading spinner if any
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+            
+            // Show error message using alert_message
+            alert_message('Please select at least one delivery container type', 'Validation Error', 'employee-edit-validation-error');
+            
+            return false;
+        }
+
         //  collect-container_types
         let collect_container_types = [];
         $collect_container_type_chkboxes = $form.find("input.collect-container-types:checked");
@@ -360,6 +604,21 @@ $(document).ready(function(e) {
             collect_container_types.push($collect_container_type_chkboxes[i].value);
         }
         $form.find("input#collect_container_types").val(collect_container_types);
+
+        // Validate collect containers if collect is checked
+        if (!validateCollectContainers($form)) {
+            e.preventDefault();
+            
+            // Remove loading spinner if any
+            $btnSave.find("i").remove();
+            $btnSave.removeClass('disabled');
+            $btnSave.removeClass('has-loading-spinner');
+            
+            // Show error message using alert_message
+            alert_message('Please select at least one collect container type', 'Validation Error', 'employee-edit-validation-error');
+            
+            return false;
+        }
 
         /**
          * payment_charges

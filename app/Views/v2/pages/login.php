@@ -7,6 +7,9 @@
     max-width: 450px;
     padding-left: 40px;
     padding-right: 40px;
+    padding-bottom: 40px;
+    background-color: #ffffffa3;
+    border-radius: 20px;
     button#btn-login {
         margin-top: 20px !important;
         width: 100%;

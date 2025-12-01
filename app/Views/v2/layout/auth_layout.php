@@ -10,64 +10,7 @@
 	<meta name="description" content="Technology and Corporate Bootstrap Theme">
 
 	<!-- Dark mode -->
-	<script>
-		const storedTheme = localStorage.getItem('theme')
- 
-		const getPreferredTheme = () => {
-			if (storedTheme) {
-				return storedTheme
-			}
-			return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
-		}
-
-		const setTheme = function (theme) {
-			if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.setAttribute('data-bs-theme', 'dark')
-			} else {
-				document.documentElement.setAttribute('data-bs-theme', theme)
-			}
-		}
-
-		setTheme(getPreferredTheme())
-
-		window.addEventListener('DOMContentLoaded', () => {
-		    var el = document.querySelector('.theme-icon-active');
-			if(el != 'undefined' && el != null) {
-				const showActiveTheme = theme => {
-				const activeThemeIcon = document.querySelector('.theme-icon-active use')
-				const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-				const svgOfActiveBtn = btnToActive.querySelector('.mode-switch use').getAttribute('href')
-
-				document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-					element.classList.remove('active')
-				})
-
-				btnToActive.classList.add('active')
-				activeThemeIcon.setAttribute('href', svgOfActiveBtn)
-			}
-
-			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-				if (storedTheme !== 'light' || storedTheme !== 'dark') {
-					setTheme(getPreferredTheme())
-				}
-			})
-
-			showActiveTheme(getPreferredTheme())
-
-			document.querySelectorAll('[data-bs-theme-value]')
-				.forEach(toggle => {
-					toggle.addEventListener('click', () => {
-						const theme = toggle.getAttribute('data-bs-theme-value')
-						localStorage.setItem('theme', theme)
-						setTheme(theme)
-						showActiveTheme(theme)
-					})
-				})
-
-			}
-		})
-		
-	</script>
+	<script src="/assets/js/dark_mode.js"></script>
 
 	<!-- Favicon -->
 	<link rel="shortcut icon" href="/assets/images/favicon.ico">
@@ -86,15 +29,18 @@
 	<!-- Theme CSS -->
 	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=<?= env('app.asset.version') ?>">
 	<link rel="stylesheet" type="text/css" href="/assets/css/app.css?v=<?= env('app.asset.version') ?>">
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/festive.css?v=<= env('app.asset.version') ?>"> -->
 
 	<?= $this->renderSection('css') ?>
 </head>
 
 <body class="auth-layout">
+	<!-- <= view('v2/partials/snow_falling') ?> -->
+    <!-- <= view('v2/partials/santas_sleigh') ?> -->
     <?= view('v2/partials/auth_header') ?>
 
     <!-- **************** MAIN CONTENT START **************** -->
-    <main>
+    <main style="position: relative;">
         <?= $this->renderSection('content') ?>
     </main>
     <!-- **************** MAIN CONTENT END **************** -->
@@ -116,7 +62,6 @@
 	<!-- alert message container start -->
 	<div id="alert-msg-container"></div>
 	<div id="question-msg-container"></div>
-
 	<!-- alert message container end -->
 
     <?= view('v2/partials/main_footer') ?>
@@ -135,81 +80,12 @@
     <script src="/assets/js/functions.js"></script>
 	<script src="/assets/js/app.js?v=<?= env('app.asset.version') ?>"></script>
     <script src="/assets/js/pagination.js?v=<?= env('app.asset.version') ?>"></script>
+	<script src="/assets/js/pg_nav_spinner.js"></script>
+	<!-- <script src="/assets/js/snow_falling.js"></script>
+	<script src="/assets/js/santas_sleigh.js"></script> -->
 
 	<script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
-	<!-- Page Navigation Spinner Script -->
-	<script>
-		(function() {
-			const spinner = $('#ajax-call-indicator');
-			if (!spinner.length) return;
-			
-			// Show spinner on initial page load
-			if (document.readyState === 'loading') {
-				spinner.removeClass('d-none');
-			}
-			
-			// Hide spinner when page is fully loaded
-			$(window).on('load', function() {
-				setTimeout(function() {
-					spinner.addClass('d-none');
-				}, 100);
-			});
-			
-			// If page is already loaded (e.g., cached), hide spinner immediately
-			if (document.readyState === 'complete') {
-				setTimeout(function() {
-					spinner.addClass('d-none');
-				}, 100);
-			}
-			
-			// Show spinner when navigating away (beforeunload)
-			$(window).on('beforeunload', function() {
-				spinner.removeClass('d-none');
-			});
-			
-			// Show spinner on link clicks (for page navigation)
-			$(document).on('click', 'a', function(e) {
-				const link = $(this);
-				const href = link.attr('href');
-				const target = link.attr('target');
-				
-				// Skip if:
-				// - No href or href is empty
-				// - Anchor link (#)
-				// - JavaScript link
-				// - Opens in new tab/window
-				// - Has data-no-spinner attribute
-				if (!href || 
-				    href.startsWith('#') || 
-				    href.startsWith('javascript:') || 
-				    target === '_blank' ||
-				    link.data('no-spinner')) {
-					return;
-				}
-				
-				// Check if it's a same-origin link
-				try {
-					const url = new URL(href, window.location.origin);
-					if (url.origin === window.location.origin) {
-						spinner.removeClass('d-none');
-					}
-				} catch (e) {
-					// If URL parsing fails, assume it's a relative URL
-					spinner.removeClass('d-none');
-				}
-			});
-			
-			// Show spinner on form submissions (GET requests that cause page navigation)
-			$(document).on('submit', 'form', function(e) {
-				const form = $(this);
-				if (form.attr('method') && form.attr('method').toLowerCase() === 'get') {
-					spinner.removeClass('d-none');
-				}
-			});
-		})();
-	</script>
 
 	<?= $this->renderSection('javascript') ?>
 </body>

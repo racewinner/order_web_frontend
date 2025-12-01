@@ -146,9 +146,11 @@
 									</select>
 									<div class="invalid-feedback">Please select a branch.</div>
 								</div>
-                                <div class="form-check form-switch form-check mb-3 d-flex">
+                                <div class="form-check form-switch form-check mb-3">
                                     <input class="form-check-input confirm_legal_owner_director" type="checkbox" id="confirm_legal_owner_director" value="confirm_legal_owner_director" required/>
-                                    <label class="form-check-label ps-2 break-over-word" for="confirm_legal_owner_director">I confirm I am the Legal Owner or Director</label>
+                                    <label class="form-check-label ps-2 break-over-word" 
+                                           for="confirm_legal_owner_director"
+                                           style="display: inline">I confirm I am the Legal Owner or Director</label>
                                     <div class="invalid-feedback">You must agree to this option setting.</div>
                                 </div>
                             </div>

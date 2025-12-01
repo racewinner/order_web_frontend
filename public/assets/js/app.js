@@ -51,8 +51,16 @@ function alert_message(msg='Hello!', title='Alert', cls='', hiddenCallback=f=>f)
 
     const alert_message_modal = $("#alert_message_dialog");
     const modal = new bootstrap.Modal(alert_message_modal[0]);
-    debugger
     modal.show();
+
+    alert_message_modal.off('shown.bs.modal');
+    alert_message_modal.on ('shown.bs.modal', function (e) {
+        // Apply z-index: 9998 to the last element with modal-backdrop class
+        // $('.modal-backdrop').last().css('z-index', '9998');
+        // $('#alert_message_dialog').last().css('background-color', '#00000000');
+        // Set focus to OK button
+        $(this).find('.modal-footer button[data-bs-dismiss="modal"]').focus();
+    })
 
     $(`.${cls}`).off('hidden.bs.modal');
     $(`.${cls}`).on ('hidden.bs.modal', function (e) {
