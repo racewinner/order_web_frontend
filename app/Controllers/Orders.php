@@ -881,7 +881,7 @@ class Orders extends Secure_area implements iData_controller
 		$res = $this->do_send_email($from, 
 									  $customer_mail_addr, 
 									  $cc, 
-									  $mail_addr_development_cc,
+				$mail_addr_development_cc,
 						   $addr_mail['company_name'], 
 						   		 $mail_subject, 
 								 $send_message);
@@ -1128,7 +1128,7 @@ class Orders extends Secure_area implements iData_controller
 
 	}
 
-	function do_send_email($from, $to, $mail_addr_development_cc, $senderCompany, $subject, $message)
+	function do_send_email($from, $to, $cc, $mail_addr_development_cc, $senderCompany, $subject, $message)
 	{
 		$email = \Config\Services::email();
         $email->setFrom($from, $senderCompany);
