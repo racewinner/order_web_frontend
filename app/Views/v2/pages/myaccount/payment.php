@@ -726,7 +726,9 @@
             if (cb_error) {
                 cb_error(error)
             } else {
-                showToast({type: "error", message: d.error});
+                console.log(error);
+                const errorMessage = 'Sorry, an error occurred. Code 2001';
+                alert_message(errorMessage, 'Error');
             }
         })
     }
@@ -750,7 +752,9 @@
             if (cb_error) {
                 cb_error(error)
             } else {
-                showToast({type: "error", message: d.error});
+                console.log(error);
+                const errorMessage = 'Sorry, an error occurred. Code 2002';
+                alert_message(errorMessage, 'Error', 'alert-message-dialog');
             }
         })
     }
