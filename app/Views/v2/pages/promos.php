@@ -274,10 +274,10 @@
 
 <?= $this->section('javascript') ?>
 <script>
-    function load_promos() {
+    function load_promos(filter) {
         const type = $("#type").val() ?? 'du';
         const data = {
-            sort_key: $('#sort_key').val(),
+            sort_key: filter && filter.sort_key ? filter.sort_key : $('#sort_key').val(),
             category_id: $('#category_id').val() ?? 0,
             offset: $("#offset").val() ?? 0,
             per_page: $('#per_page').val() ?? 50,
@@ -331,7 +331,13 @@
     $(document).ready(function(e) {
         $(document).on('change', '#per_page, #chk_im_new, #chk_plainprofit, #chk_own_label, #chk_favorite, #chk_rrp, #chk_pmp, #chk_non_pmp, input[name="filter_priceEnd"], #sort_key, #search1', function(e) {
             $("#offset").val(0);
-            load_promos();
+
+            let filter = {};
+
+            if (e.target.id == 'sort_key') {
+                filter = {...filter, sort_key: $(e.target).val()};
+            }
+            load_promos(filter);
         })
 
         $(document).on('click', '#clear-filter', function(e) {
