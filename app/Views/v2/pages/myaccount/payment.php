@@ -955,6 +955,9 @@
 
         let delivery_charge = $('#delivery_charge_v').text();
 
+        // Add spinner to button
+        add_loadingSpinner_to_button(e.target);
+
         if (arr.length == 1) {
             let payload = {
                 delivery_method:        order_method,
@@ -965,8 +968,10 @@
             };
            
             let res = make_order(arr[0], payload, function(res) {
-                debugger
                 const {success, msg, data} = res;
+                // Remove spinner
+                remove_loadingSpinner_from_button(e.target);
+                
                 if (success) {
                     // if (payment_method == 'pay_in_card') {
                     //     const {order_id, customer_email} = data;
@@ -1003,6 +1008,8 @@
                 }
             });
         } else {
+            // Remove spinner when showing modal
+            remove_loadingSpinner_from_button(e.target);
             const confirm_order_trolley_modal = $("#confirm_order_trolley_dialog");
             const modal = new bootstrap.Modal(confirm_order_trolley_modal[0], {backdrop: 'static'});
             modal.show();
@@ -1126,8 +1133,7 @@
     })
 
     $(document).on('click', '[name="collection_container"]', function(e) {
-        debugger
-         const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(window.location.search);
  
         const cart_typename         = sanitizeParamValue(params.get('cart_typename'));
         const order_type            = sanitizeParamValue(params.get('order_type'));
