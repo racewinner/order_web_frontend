@@ -118,23 +118,68 @@
 	<?php if(!empty($user_info)) {
 		echo view("v2/partials/my_branches_modal");
 		echo view("v2/partials/my_cart_sidebar");
+		
 		// WhatsApp Widget - Only show for authenticated users
-		// Replace '1234567890' with your WhatsApp number (include country code, no + or spaces)
-		// Example: 1234567890 for US, 441234567890 for UK
-		$whatsapp_number = '380963573943'; // TODO: Configure your WhatsApp number here
-		$whatsapp_message = urlencode('Hello! I need assistance.'); // Optional: Pre-filled message
+		// Get default WhatsApp number and message from app config
+		$db = \Config\Database::connect();
+		$whatsapp_number = '';
+		$whatsapp_message = '';
+		
+		// Helper function to clean WhatsApp number
+		$cleanWhatsAppNumber = function($number) {
+			if (empty($number)) {
+				return '';
+			}
+			// Remove all non-numeric characters (spaces, dashes, plus signs, etc.)
+			$cleaned = preg_replace('/[^0-9]/', '', $number);
+			// Remove leading '0' if present
+			$cleaned = ltrim($cleaned, '0');
+			return $cleaned;
+		};
+		
+		// Get default WhatsApp number from app config
+		$result = $db->table('epos_app_config')->where('key', 'whatsapp_number')->get()->getRow();
+		if (!empty($result) && !empty($result->value)) {
+			$whatsapp_number = $cleanWhatsAppNumber($result->value);
+		}
+		
+		// Get default WhatsApp message from app config
+		$result = $db->table('epos_app_config')->where('key', 'whatsapp_message')->get()->getRow();
+		if (!empty($result) && !empty($result->value)) {
+			$whatsapp_message = urlencode($result->value);
+		} else {
+			$whatsapp_message = urlencode('Hi, I need assistance.'); // Fallback message
+		}
+		
+		// Try to get telephone number from branch (overrides default if available)
+		$branch = session()->get('branch');
+		if (!empty($branch)) {
+			$Branch = new \App\Models\Branch();
+			$branch_telephone = $Branch->getBranchPhoneNumberById($branch);
+			if (!empty($branch_telephone)) {
+				// Clean the branch telephone number
+				$whatsapp_number = $cleanWhatsAppNumber($branch_telephone);
+			}
+		}
 		?>
 		<!-- WhatsApp Widget -->
-		<!-- <a href="https://wa.me/<= $whatsapp_number ?>?text=<= $whatsapp_message ?>"  -->
-
-		<a href="https://wa.me/<?= $whatsapp_number ?>" 
+		<?php
+		$whatsapp_url = '';
+		if (!empty($whatsapp_number)) {
+			$whatsapp_url = "https://wa.me/{$whatsapp_number}";
+			if (!empty($whatsapp_message)) {
+				$whatsapp_url .= "?text={$whatsapp_message}";
+			}
+		}
+		?>
+		<a href="<?= !empty($whatsapp_url) ? $whatsapp_url : '#' ?>" 
 		   class="whatsapp-widget" 
-		   target="_blank" 
-		   rel="noopener noreferrer"
+		   data-whatsapp-number="<?= htmlspecialchars($whatsapp_number ?? '', ENT_QUOTES, 'UTF-8') ?>"
+		   <?= !empty($whatsapp_url) ? 'target="_blank" rel="noopener noreferrer"' : '' ?>
 		   aria-label="Contact us on WhatsApp">
 			<i class="fab fa-whatsapp"></i>
 		</a>
-	<?php }?>
+	<?php } // End if user_info ?>
 	
     <!-- Bootstrap JS -->
 	<script src="/assets/vendor/jquery/jquery-3.7.1.min.js"></script>
@@ -150,6 +195,29 @@
 	<script src="/assets/js/app.js?v=<?= env('app.asset.version') ?>"></script>
 	<script src="/assets/js/pagination.js?v=<?= env('app.asset.version') ?>"></script>
 	<script src="/assets/js/pg_nav_spinner.js"></script>
+
+	<script>
+		// WhatsApp widget click handler
+		$(document).ready(function() {
+			$('.whatsapp-widget').on('click', function(e) {
+				const whatsappNumber = $(this).data('whatsapp-number');
+				
+				if (!whatsappNumber || whatsappNumber.trim() === '') {
+					e.preventDefault();
+					e.stopPropagation();
+					
+					showToast({
+						type: 'warning',
+						title: 'Warning',
+						message: 'Sorry, There is not linked phone number',
+						delay: 4000
+					});
+					
+					return false;
+				}
+			});
+		});
+	</script>
 
 	<?= $this->renderSection('javascript') ?>
 </body>

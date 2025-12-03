@@ -77,63 +77,63 @@ class Orders extends Secure_area implements iData_controller
 		if(!empty($pid)) {
 			$payment_methods = $Employee->get_payment_methods($pid);
 			$this->data['payment_methods'] = $payment_methods;
-			$this->data['payment_default_method'] = '';
+			// $this->data['payment_default_method'] = '';
 
-			$keys = array();
-			if ($payment_methods->e_order == "1" || $payment_methods->e_order == 1) {
-				$keys[] = "e_order";
-			} 
-			if ($payment_methods->depot == "1" || $payment_methods->depot == 1) {
-				$keys[] = "depot";
-			} 
-			if ($payment_methods->echo_pay == "1" || $payment_methods->echo_pay == 1) {
-				$keys[] = "echo_pay";
-			} 
-			if ($payment_methods->bank_transfer == "1" || $payment_methods->bank_transfer == 1) {
-				$keys[] = "bank_transfer";
-			} 
-			if ($payment_methods->credit_account == "1" || $payment_methods->credit_account == 1) {
-				$keys[] = "credit_account";
-			} 
-			if ($payment_methods->debit_credit_card == "1" || $payment_methods->debit_credit_card == 1) {
-				$keys[] = "debit_credit_card";
-			} 
+			// $keys = array();
+			// if ($payment_methods->e_order == "1" || $payment_methods->e_order == 1) {
+			// 	$keys[] = "e_order";
+			// } 
+			// if ($payment_methods->depot == "1" || $payment_methods->depot == 1) {
+			// 	$keys[] = "depot";
+			// } 
+			// if ($payment_methods->echo_pay == "1" || $payment_methods->echo_pay == 1) {
+			// 	$keys[] = "echo_pay";
+			// } 
+			// if ($payment_methods->bank_transfer == "1" || $payment_methods->bank_transfer == 1) {
+			// 	$keys[] = "bank_transfer";
+			// } 
+			// if ($payment_methods->credit_account == "1" || $payment_methods->credit_account == 1) {
+			// 	$keys[] = "credit_account";
+			// } 
+			// if ($payment_methods->debit_credit_card == "1" || $payment_methods->debit_credit_card == 1) {
+			// 	$keys[] = "debit_credit_card";
+			// } 
 
-			if(!empty($keys)) {
-				$source_payment_methods = ['e_order', 'depot', 'echo_pay', 'bank_transfer', 'credit_account', 'debit_credit_card'];
-				$first_payment_method = $keys[0];
-				$index = array_search($first_payment_method, $source_payment_methods);
-				// $this->data['payment_default_method'] = $source_payment_methods[$index];
-			}
+			// if(!empty($keys)) {
+			// 	$source_payment_methods = ['e_order', 'depot', 'echo_pay', 'bank_transfer', 'credit_account', 'debit_credit_card'];
+			// 	$first_payment_method = $keys[0];
+			// 	$index = array_search($first_payment_method, $source_payment_methods);
+			// 	// $this->data['payment_default_method'] = $source_payment_methods[$index];
+			// }
 		}
 
 		/**
 		 * generate container type list
 		 */
-		if(!empty($pid)) {
-			$container_types = $Employee->get_container_types($pid);
-			$this->data['container_types'] = $container_types;
+		// if(!empty($pid)) {
+		// 	$container_types = $Employee->get_container_types($pid);
+		// 	$this->data['container_types'] = $container_types;
 
-			$keys = array();
-			if (!empty($container_types) && ($container_types->pallet == "1" || $container_types->pallet == 1)) {
-				$keys[] = "pallet";
-			} 
-			if (!empty($container_types) && ($container_types->cage == "1" || $container_types->cage == 1)) {
-				$keys[] = "cage";
-			} 
-			if (!empty($container_types) && ($container_types->trolley == "1" || $container_types->trolley == 1)) {
-				$keys[] = "trolley";
-			} 
-			if (!empty($container_types) && ($container_types->box == "1" || $container_types->box == 1)) {
-				$keys[] = "box";
-			} 
+		// 	$keys = array();
+		// 	if (!empty($container_types) && ($container_types->pallet == "1" || $container_types->pallet == 1)) {
+		// 		$keys[] = "pallet";
+		// 	} 
+		// 	if (!empty($container_types) && ($container_types->cage == "1" || $container_types->cage == 1)) {
+		// 		$keys[] = "cage";
+		// 	} 
+		// 	if (!empty($container_types) && ($container_types->trolley == "1" || $container_types->trolley == 1)) {
+		// 		$keys[] = "trolley";
+		// 	} 
+		// 	if (!empty($container_types) && ($container_types->box == "1" || $container_types->box == 1)) {
+		// 		$keys[] = "box";
+		// 	} 
 
-			if(!empty($keys)) {
-				$source_container_types = ['pallet', 'cage', 'trolley', 'box'];
-				$first_payment_method = $keys[0];
-				$index = array_search($first_payment_method, $source_container_types);
-			}
-		}
+		// 	if(!empty($keys)) {
+		// 		$source_container_types = ['pallet', 'cage', 'trolley', 'box'];
+		// 		$first_payment_method = $keys[0];
+		// 		$index = array_search($first_payment_method, $source_container_types);
+		// 	}
+		// }
 
 		/**
 		 * generate ordery type list
@@ -269,17 +269,17 @@ class Orders extends Secure_area implements iData_controller
 			/**
 			 * get epos_cart_suspense data
 			 */
-			$branch = session()->get('branch');
-			$organization_id = session()->get('organization_id');
-			$suspense_query = $db->table('epos_cart_suspense')
-				->where('person_id', $pid)
-				->where('branch', $branch);
-			if (!empty($organization_id)) {
-				$suspense_query->where('organization_id', $organization_id);
-			}
-			$suspense_query->orderBy('line_position', 'DESC');
-			$epos_cart_suspense = $suspense_query->get()->getResult();
-			$this->data['epos_cart_suspense'] = $epos_cart_suspense;
+			// $branch = session()->get('branch');
+			// $organization_id = session()->get('organization_id');
+			// $suspense_query = $db->table('epos_cart_suspense')
+			// 	->where('person_id', $pid)
+			// 	->where('branch', $branch);
+			// if (!empty($organization_id)) {
+			// 	$suspense_query->where('organization_id', $organization_id);
+			// }
+			// $suspense_query->orderBy('line_position', 'DESC');
+			// $epos_cart_suspense = $suspense_query->get()->getResult();
+			// $this->data['epos_cart_suspense'] = $epos_cart_suspense;
 
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {

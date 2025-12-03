@@ -482,20 +482,20 @@ class Employee extends Model
 
 		return $row;
 	}
-	function get_container_types($employee_id)
-	{
-		$db = \Config\Database::connect();
+	// function get_container_types($employee_id)
+	// {
+	// 	$db = \Config\Database::connect();
 
-		$query = $db->table('epos_emp_container_types')
-			->select('*')
-			->where('emp_id', $employee_id)
-			->get();
+	// 	$query = $db->table('epos_emp_container_types')
+	// 		->select('*')
+	// 		->where('emp_id', $employee_id)
+	// 		->get();
 
-		if ($query->getNumRows() == 0) {
-			return [];
-		}
-		return $query->getResult()[0];
-	}
+	// 	if ($query->getNumRows() == 0) {
+	// 		return [];
+	// 	}
+	// 	return $query->getResult()[0];
+	// }
 	/*
 	Gets information about a particular employee
 	*/
@@ -617,46 +617,46 @@ class Employee extends Model
 		return $success;
 	}
 
-	function save_container_types($container_types, $employee_id, $new_employee_id) 
-	{
-		$db = \Config\Database::connect();
-		$arr = explode(",", $container_types);
+	// function save_container_types($container_types, $employee_id, $new_employee_id) 
+	// {
+	// 	$db = \Config\Database::connect();
+	// 	$arr = explode(",", $container_types);
 
-		$container_types_to_save = array();
-		if($container_types) {
-			foreach ($arr as $value) {
-				$container_types_to_save[$value] = 1;
-			}
-		}
+	// 	$container_types_to_save = array();
+	// 	if($container_types) {
+	// 		foreach ($arr as $value) {
+	// 			$container_types_to_save[$value] = 1;
+	// 		}
+	// 	}
 		
-		foreach (["pallet", "cage", "trolley", "box"] as $value) {
-			if (!in_array($value, $arr)) {
-				$container_types_to_save[$value] = 0;
-			}	
-		}
-		$container_types_to_save['emp_id'] = $new_employee_id;
+	// 	foreach (["pallet", "cage", "trolley", "box"] as $value) {
+	// 		if (!in_array($value, $arr)) {
+	// 			$container_types_to_save[$value] = 0;
+	// 		}	
+	// 	}
+	// 	$container_types_to_save['emp_id'] = $new_employee_id;
 
-		$success = false;
-		if (intval($employee_id) < 1) {
-			$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
-		} else {
-			$db = \Config\Database::connect();
+	// 	$success = false;
+	// 	if (intval($employee_id) < 1) {
+	// 		$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
+	// 	} else {
+	// 		$db = \Config\Database::connect();
 
-			$query = $db->table('epos_emp_container_types')
-			->select('emp_id')
-			->where('emp_id', $employee_id)
-			->get();
+	// 		$query = $db->table('epos_emp_container_types')
+	// 		->select('emp_id')
+	// 		->where('emp_id', $employee_id)
+	// 		->get();
 
-			if ($query->getNumRows() == 0) {
-				$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
-			} else {
-				$success = $db->table('epos_emp_container_types')
-							->where('emp_id', $employee_id)
-							->update($container_types_to_save);
-			}
-		}
-		return $success;
-	}
+	// 		if ($query->getNumRows() == 0) {
+	// 			$success = $db->table('epos_emp_container_types')->insert($container_types_to_save);
+	// 		} else {
+	// 			$success = $db->table('epos_emp_container_types')
+	// 						->where('emp_id', $employee_id)
+	// 						->update($container_types_to_save);
+	// 		}
+	// 	}
+	// 	return $success;
+	// }
 	/*
 	Inserts or updates an employee
 	*/

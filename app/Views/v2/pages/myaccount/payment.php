@@ -567,9 +567,6 @@
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_with_order" value="pay_with_order" 
-                            <?php if ($this->data["payment_default_method"] == "e_order") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </div>
@@ -580,9 +577,6 @@
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_in_depot" value="pay_in_depot" 
-                            <?php if ($this->data["payment_default_method"] == "depot") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </div>
@@ -593,9 +587,6 @@
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_echopay" value="pay_by_echopay" 
-                            <?php if ($this->data["payment_default_method"] == "echo_pay") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </div>
@@ -606,9 +597,6 @@
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_bank_transfer" value="pay_by_bank_transfer" 
-                            <?php if ($this->data["payment_default_method"] == "bank_transfer") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </div>
@@ -619,9 +607,6 @@
                     <div>
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_by_credit_account" value="pay_by_credit_account" 
-                            <?php if ($this->data["payment_default_method"] == "credit_account") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </div>
@@ -640,9 +625,6 @@
                     <div style="padding-top: 10px">
                         <input class="form-check-input" type="radio" name="payment_method" 
                             id="pay_in_card" value="pay_in_card" 
-                             <?php if ($this->data["payment_default_method"] == "debit_credit_card") { ?>
-                                checked
-                            <?php } ?>
                         >
                     </div>
                 </label>
