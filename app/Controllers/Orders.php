@@ -266,6 +266,21 @@ class Orders extends Secure_area implements iData_controller
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
 		if($page == 'checkout') {
+			/**
+			 * get epos_cart_suspense data
+			 */
+			$branch = session()->get('branch');
+			$organization_id = session()->get('organization_id');
+			$suspense_query = $db->table('epos_cart_suspense')
+				->where('person_id', $pid)
+				->where('branch', $branch);
+			if (!empty($organization_id)) {
+				$suspense_query->where('organization_id', $organization_id);
+			}
+			$suspense_query->orderBy('line_position', 'DESC');
+			$epos_cart_suspense = $suspense_query->get()->getResult();
+			$this->data['epos_cart_suspense'] = $epos_cart_suspense;
+
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {
 			return view('v2/pages/myaccount/payment', $this->data);
@@ -485,6 +500,7 @@ class Orders extends Secure_area implements iData_controller
     // ------------------------------------
 
 		if($page == 'checkout') {
+			
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {
 			return view('v2/pages/myaccount/payment', $this->data);

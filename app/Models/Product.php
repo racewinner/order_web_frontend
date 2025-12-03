@@ -683,6 +683,96 @@ class Product extends Model
 		}
 	}
 
+	function to_cart_by_api($prod_code, $mode, $person_id, $quantity = 1, $spresell = 0, $type=null, $branch = null, $organization_id = null)
+	{
+		$Employee = new Employee();
+		$person_info = $Employee->get_info($person_id);
+		$db = \Config\Database::connect();
+
+		if ($mode == 4) {
+			$query =  " DELETE FROM epos_cart WHERE person_id={$person_id}" .
+                " AND branch={$branch}";
+			if (!empty($organization_id)) {
+				$query .= " AND organization_id={$organization_id} ";
+			}
+			$query .= " AND prod_code='{$prod_code}' AND presell=0 AND group_type='{$type}'";
+			$db->transStart();
+			$db->query($query);
+			$db->transComplete();
+
+			if ($db->transStatus() === FALSE)
+				return -1;
+			else
+				return 0;
+		} else {
+			$cond = " prod_code='{$prod_code}' and person_id={$person_id}" . 
+            		" AND branch={$branch}";
+			if (!empty($organization_id)) {
+				$cond.= " AND organization_id={$organization_id} ";
+			}
+			$cond .= " AND presell=0 ";
+			$cond .= ($spresell == 1) ? " AND group_type='spresell'" : " AND group_type!='spresell'";
+			$query = "SELECT * FROM epos_cart WHERE " . $cond;
+			$res = $db->query($query);
+	
+			if ($res->getNumRows() == 0) {
+				if ($mode == 1 || $mode == 3) {
+					$res_prod = $this->getLowestPriceProductByCode($person_info, $prod_code, true, $spresell, $branch, $organization_id);
+					if ($spresell) {
+						$type = "spresell";
+					} else {
+						// Get Category type
+						$category = $db->table('epos_categories')->where('filter_desc', $res_prod->group_desc)->get()->getRow();
+						$type = !empty($category) ? $category->type : 'general';
+					}
+	
+          			$line_position = $this->genCartLinePosition($person_id);
+
+					$cart_data = array(
+						'prod_code' => $prod_code,
+						'quantity' => $quantity,
+						'person_id' => $person_id,
+						'group_type' => $type,
+						'line_position' => $line_position,
+						'branch' => $branch,
+						'organization_id' => $organization_id,
+					);
+					$db->table('epos_cart')->insert($cart_data);
+					return $quantity;
+				} else if ($mode == 2)
+					return 0;
+				else
+					return -1;
+			} else if ($res->getNumRows() == 1) {
+				$res_row = $res->getRow();
+				$quantity1 = $res_row->quantity;
+				if ($mode == 1)
+					$quantity1 = $quantity1 + 1;
+				else if ($mode == 2) {
+					if ($quantity1 > 0)
+						$quantity1 = $quantity1 - 1;
+				} else if ($mode == 3) {
+					$quantity1 = $quantity;
+				}
+	
+				if ($quantity1 == 0) {
+					$db = \Config\Database::connect();
+					$db->query("DELETE FROM epos_cart WHERE " . $cond);
+					return 0;
+				} else {
+					// $line_position = $this->genCartLinePosition($person_id);
+					$cart_data = ['quantity' => $quantity1/*, 'line_position' => $line_position*/];
+					$builder = $db->table('epos_cart');
+					$builder->where($cond);
+					$builder->update($cart_data);
+					return $quantity1;
+				}
+			} else {
+				return -1;
+			}
+		}
+	}
+
 	function presell_to_cart($prod_code, $mode, $person_id, $quantity = 1)
 	{
 		$db = \Config\Database::connect();
@@ -1429,10 +1519,10 @@ class Product extends Model
 		];
 	}
 
-	public static function getLowestPriceProductByCode($user_info, $prod_code, $excludeDisabled = true, $spresell = 0)
+	public static function getLowestPriceProductByCode($user_info, $prod_code, $excludeDisabled = true, $spresell = 0, $branch = null, $organization_id = null)
 	{
-		$branch = session()->get('branch');
-		$organization_id = session()->get('organization_id');
+		$branch = $branch ? $branch : session()->get('branch');
+		$organization_id = $organization_id ? $organization_id : session()->get('organization_id');
 		$db = \Config\Database::connect();
 
 		$query = "SELECT 

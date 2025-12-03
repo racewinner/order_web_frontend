@@ -31,6 +31,47 @@
 	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=<?= env('app.asset.version') ?>">
 	<link rel="stylesheet" type="text/css" href="/assets/css/app.css?v=<?= env('app.asset.version') ?>">
 
+	<!-- WhatsApp Widget CSS -->
+	<style>
+		.whatsapp-widget {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 1000;
+			width: 60px;
+			height: 60px;
+			background-color: #25D366;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-decoration: none;
+		}
+		.whatsapp-widget:hover {
+			background-color: #20BA5A;
+			transform: scale(1.1);
+			box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+		}
+		.whatsapp-widget i {
+			color: #FFFFFF;
+			font-size: 32px;
+		}
+		@media (max-width: 768px) {
+			.whatsapp-widget {
+				bottom: 15px;
+				right: 15px;
+				width: 55px;
+				height: 55px;
+			}
+			.whatsapp-widget i {
+				font-size: 28px;
+			}
+		}
+	</style>
+
 	<?= $this->renderSection('css') ?>
 </head>
 
@@ -77,7 +118,23 @@
 	<?php if(!empty($user_info)) {
 		echo view("v2/partials/my_branches_modal");
 		echo view("v2/partials/my_cart_sidebar");
-	}?>
+		// WhatsApp Widget - Only show for authenticated users
+		// Replace '1234567890' with your WhatsApp number (include country code, no + or spaces)
+		// Example: 1234567890 for US, 441234567890 for UK
+		$whatsapp_number = '380963573943'; // TODO: Configure your WhatsApp number here
+		$whatsapp_message = urlencode('Hello! I need assistance.'); // Optional: Pre-filled message
+		?>
+		<!-- WhatsApp Widget -->
+		<!-- <a href="https://wa.me/<= $whatsapp_number ?>?text=<= $whatsapp_message ?>"  -->
+
+		<a href="https://wa.me/<?= $whatsapp_number ?>" 
+		   class="whatsapp-widget" 
+		   target="_blank" 
+		   rel="noopener noreferrer"
+		   aria-label="Contact us on WhatsApp">
+			<i class="fab fa-whatsapp"></i>
+		</a>
+	<?php }?>
 	
     <!-- Bootstrap JS -->
 	<script src="/assets/vendor/jquery/jquery-3.7.1.min.js"></script>

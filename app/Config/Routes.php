@@ -28,7 +28,7 @@ $routes->post('/myaccount/sel_branch',            'MyAccount::postSelectBranch')
 $routes->post('/myaccount/my_branches',           'MyAccount::postMyBranches');
 
 $routes->group("api", function ($routes) {
-    $routes->post("app_activation", "RestfulApiController::app_activation", ['filter' => 'apiAuthFilter']);
+    $routes->post("add_to_cart", "RestfulApiController::add_to_cart");
 });
 
 $routes->group('', ['filter' => 'branchFilter'], function($routes) {
