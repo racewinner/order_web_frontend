@@ -151,14 +151,14 @@
 			$whatsapp_message = urlencode('Hi, I need assistance.'); // Fallback message
 		}
 		
-		// Try to get telephone number from branch (overrides default if available)
+		// Try to get whatsapp number from branch (overrides default if available)
 		$branch = session()->get('branch');
 		if (!empty($branch)) {
 			$Branch = new \App\Models\Branch();
-			$branch_telephone = $Branch->getBranchPhoneNumberById($branch);
-			if (!empty($branch_telephone)) {
-				// Clean the branch telephone number
-				$whatsapp_number = $cleanWhatsAppNumber($branch_telephone);
+			$branch_whatsapp_number = $Branch->getBranchWhatsappNumberById($branch);
+			if (!empty($branch_whatsapp_number)) {
+				// Clean the branch whatsapp number
+				$whatsapp_number = $cleanWhatsAppNumber($branch_whatsapp_number);
 			}
 		}
 		?>

@@ -29,6 +29,8 @@ $routes->post('/myaccount/my_branches',           'MyAccount::postMyBranches');
 
 $routes->group("api", function ($routes) {
     $routes->post("add_to_cart", "RestfulApiController::add_to_cart");
+    $routes->post("add_to_cart_by_custom_api", "RestfulApiController::add_to_cart_by_custom_api");
+
 });
 
 $routes->group('', ['filter' => 'branchFilter'], function($routes) {

@@ -299,5 +299,397 @@ class RestfulApiController extends BaseController
             ], 500);
         }
     }
+
+    public function add_to_cart_by_custom_api()
+    {
+        $request = request();
+        $db = \Config\Database::connect();
+
+        ///////////////////////////////////////////////////////
+        // Custom API for Trolley Merge; ePOS to Web Ordering - Ver 2.0
+        ///////////////////////////////////////////////////////
+        // Mode: "Merge"; push incoming products data to trolley  
+        ///////////////////////////////////////////////////////
+        // AUTHOR: YASIR
+        ///////////////////////////////////////////////////////
+
+        // RESET GLOBALS
+        $result       = new \stdClass();
+        $info         = "";
+        $code         = "";
+        $data         = "";
+        $redirect     = "";
+        $missing      = [];
+        $abort        = false;
+        $misc         = "";
+        $item         = "";
+        $mode         = "Merge";
+        $method       = $_SERVER['REQUEST_METHOD'];
+        $verification = false;
+
+        // Connect to Ordering database
+        /*
+        $link = mysqli_connect("localhost", "", "", "") or die("Cannot connect to database!");
+        */
+
+        ///////////////////////////////////
+        // JSON DECODE INTO $_POST
+        ///////////////////////////////////
+        // Decode API Incoming Json Data into $_POST
+        /*
+        $raw = file_get_contents('php://input');
+        $_POST = json_decode($raw, true);
+        */
+        $_POST = $request->getJSON();
+        $raw = json_encode($_POST);
+        // Convert $_POST and all nested objects to arrays recursively
+        $_POST = json_decode($raw, true);
+        
+        // Store Incoming Data into Variables
+        $epos_order    = $_POST['epos_order'];
+        $token         = $_POST['token'];
+        $account       = $_POST['account'];
+        $items         = $_POST['items'];
+
+        ///////////////////////////////////
+        // Json Data Validation
+        ///////////////////////////////////
+
+        // Convert Raw data to Lowercase
+        $raw = strtolower($raw);
+
+        // Validate Json Data - Sql Injections
+        if( strpos($raw, 'select *') || strpos($raw, 'insert into') || strpos($raw, 'delete from') ){
+            $abort = true;
+            $misc = " - [-----Json Data-----] = Sql keys found ";
+        }
+
+        // Validate Json Data - Main
+        if($epos_order == "" || $account == "" || !$items || strlen($epos_order) >= 16 || strlen($token) != 80 || strlen($account) >= 31 || count($items) >=501){
+            // Allow up to 500 items
+            $abort = true;
+            $misc = " - [-----Json Main-----] = Invalid character length ";
+        }
+
+        // Validate Json Data - Items Array 
+        foreach($items as $i){
+            if($i["epos_code"]=="" || $i["prod_code"]=="" || $i["prod_desc"]=="" || $i["quantity"]==""
+                || !is_numeric($i["prod_code"]) || !is_numeric($i["prod_uos"]) || !is_numeric($i["quantity"])
+                || strlen($i["epos_code"]) >= 16 || strlen($i["prod_code"]) >= 16 || strlen($i["prod_desc"]) >= 200 || strlen($i["prod_pack_desc"]) >= 16 || strlen($i["prod_uos"]) >= 6
+                || strlen($i["wholesale"]) >= 15 || strlen($i["retail"]) >= 15 || strlen($i["brand"]) >= 26 || strlen($i["group_desc"]) >= 51 || strlen($i["quantity"]) >= 4){
+                    $abort = true; 
+                    $misc = " - [-----Json Items Array-----] = Invalid character length or format";
+            }
+        }
+
+        if($abort == true){
+            // Invalid Json Request
+            $info  = "Failure";
+            $code  = "400";
+            $data  = "Invalid Json Request";
+        }
+        else{
+            // Extract User Credentials from Encoded Token - OLD Logic
+            //$tok   = base64_decode($token);
+            //$md5   = strtok( $tok, '+' );
+            //$email = strtok( '' ); 
+        }
+
+        // REQUEST METHOD VERIFICATION
+        if($method != "POST"){
+            // Invalid Method
+            $info = "Failure";
+            $code = "405";
+            $data = "[".$method."] Method Not Acceptable";
+        }
+        else if(isset($_POST) && $abort == false){
+            
+            ///////////////////////////////////
+            // Logic for User Verification - START
+            //$query = 'SELECT * FROM epos_employees WHERE username = "'.$account.'" && password  = "'.$md5.'" && email  = "'.$email.'" && deleted = "0"';
+            $query = 'SELECT * FROM epos_employees WHERE username = "'.$account.'" && api_key  = "'.$token.'" && deleted = "0"';
+            $r = $db->query($query);
+            if($r->getNumRows() > 0){
+                if ($row = $r->getRow()){ 
+                    $row = (array) $row;
+                    $row = json_decode(json_encode($row), true);
+                    $person_id = $row['person_id'];
+                    $md5 = $row['password'];
+                    $email = $row['email'];
+                    $username = $row['username'];
+                    $last_kiss_branch = $row['last_kiss_branch'];
+                    $organization_id = $row['organization_id'];
+                    if($row['price_list001'] == 1){ $price_list[] = '01'; }
+                    if($row['price_list005'] == 1){ $price_list[] = '05'; }
+                    if($row['price_list007'] == 1){ $price_list[] = '07'; }
+                    if($row['price_list008'] == 1){ $price_list[] = '08'; }
+                    if($row['price_list009'] == 1){ $price_list[] = '09'; }
+                    if($row['price_list010'] == 1){ $price_list[] = '10'; }
+                    if($row['price_list011'] == 1){ $price_list[] = '11'; }
+                    if($row['price_list012'] == 1){ $price_list[] = '12'; }
+                    if($row['price_list999'] == 1){ $price_list[] = '999'; }
+                }
+                $verification = true;
+                //echo implode(',', $price_list)." ========== ";
+            }
+            // Logic for User Verification - END
+            
+            ///////////////////////////////////
+            // Push ePOS Order into epos_api_orders Table and get api_order_id
+            $api_order_id = $this->push_api_order($person_id, $account, $epos_order);
+
+
+            ///////////////////////////////////
+            // Encryption Token Check Success
+            if($verification == true){
+            
+                $info = "Success";	
+                $code = "200";
+                $data = "Verified And Processed";
+            
+                ///////////////////////////////////
+                // MODE : Merge
+                ///////////////////////////////////
+                // Push Products Data to Trolley
+                if($mode == "Merge"){
+                    
+                    // Dump All incoming API Data to epos_api_product and epos_api_orders
+                
+                    //////////////////////////////////////////
+                    // Loop through Items to get values - START
+                    foreach($items as $item){
+                        $c = 0;
+                        $misc .= " [-----".$item["prod_code"]."-----] ";
+                        
+                        //////////////////////////////////////////
+                        // Check Products Table for Matching Codes - START
+                        $query1 = 'SELECT * FROM epos_product WHERE prod_code = "'.$item["prod_code"].'" && is_disabled = "N" && price_list IN ("99999",'. implode(',', $price_list) .') Limit 1';
+                        $r1 = $db->query($query1);
+                        if ($row1 = $r1->getRow()) {  
+                            $c = $c + 1;
+                            
+                            //echo $item['prod_code']." = ";
+                            
+                            //////////////////////////////////////////
+                            // Check Trolley to Update Existing Products - START
+                            $query2 = 'SELECT * FROM epos_cart WHERE prod_id = "'.$row1['prod_id'].'" && person_id = "'.$person_id.'" and presell=0';
+                            $r2 = $db->query($query2);
+                            while ($row2 = $r2->getRow()) { 
+                                $misc .=  "[UPDATE] ".$row2['prod_id']." Found QTY: ".$row2['quantity']." + ".$item['quantity']." | ";
+                                // Update Cart Quantity
+                                $query3 = 'UPDATE epos_cart SET quantity="'.($row2['quantity']+$item['quantity']).'" WHERE prod_id="'.$row2['prod_id'].'" && person_id="'.$person_id.'" && presell=0';
+                                $db->query($query3);
+                                //echo " [UPDATE] - ".$query3;
+                                
+                                // Push Product into epos_api_product Table - Status: Update
+                                $this->push_api_product($api_order_id, $epos_order, $account, $person_id, $row1['prod_id'], $item['epos_code'], $item['prod_code'], $item['prod_desc'], $item['prod_pack_desc'], $item['wholesale'], $item['retail'], $item['prod_uos'], $item['brand'], $item['group_desc'], $item['quantity'], "Updated");
+                                
+                            }
+                            // Check Trolley to Update Existing Products - END
+                            
+                            
+                            //////////////////////////////////////////
+                            // Add Qualified Products To Trolley - START
+                            if($r2->getNumRows() == 0){ 
+                                $misc .=  "[INSERT] ".$row1['prod_id']." Not Found - Added Item to Cart | ";
+                                // Prepare Product Data for Trolley 
+                                $cart_data = array( 'prod_id'       =>$row1['prod_id'],
+                                                    'quantity'      =>$item['quantity'],
+                                                    'person_id'     =>$person_id,
+                                                    'prod_code'     =>$row1['prod_code'],
+                                                    'prod_uos'      =>$row1['prod_uos'],
+                                                    'start_date'    =>$row1['start_date'],
+                                                    'prod_desc'     =>$row1['prod_desc'],
+                                                    'prod_pack_desc'=>$row1['prod_pack_desc'],
+                                                    'vat_code'      =>$row1['vat_code'],
+                                                    'prod_price'    =>$row1['prod_price'],
+                                                    'group_desc'    =>$row1['group_desc'],
+                                                    'prod_code1'    =>$row1['prod_code1'],
+                                                    'price_list'    =>$row1['price_list'],
+                                                    'prod_level1'   =>$row1['prod_level1'],
+                                                    'prod_level2'   =>$row1['prod_level2'],
+                                                    'prod_level3'   =>$row1['prod_level3'],
+                                                    'prod_sell'     =>$row1['prod_sell'],
+                                                    'prod_rrp'      =>$row1['prod_rrp'],
+                                                    'wholesale'     =>$row1['wholesale'],
+                                                    'retail'        =>$row1['retail'],
+                                                    'p_size'        =>$row1['p_size'],
+                                                    'van'           =>$row1['van'],
+                                                    'shelf_life'    =>$row1['shelf_life'],
+                                                    'price_start'   =>$row1['price_start'],
+                                                    'price_end'     =>$row1['price_end'],
+                                                    'brand'         =>$row1['brand'],
+                                                    'epoints'       =>$row1['epoints'],
+                                                    'api_order_id'  =>$api_order_id
+                                            );
+                                // Insert Product to Trolley 
+                                $query4 = "INSERT INTO epos_cart (".implode(", ", array_keys($cart_data)).") VALUES ('".implode("', '", array_values($cart_data))."')";
+                                $db->query($query4);
+                                //echo " [INSERT] - ".$query4;
+                                
+                                // Push Product into epos_api_product Table - Status: Added
+                                $this->push_api_product($api_order_id, $epos_order, $account, $person_id, $row1['prod_id'], $item['epos_code'], $item['prod_code'], $item['prod_desc'], $item['prod_pack_desc'], $item['wholesale'], $item['retail'], $item['prod_uos'], $item['brand'], $item['group_desc'], $item['quantity'], "Added");
+                            }
+                            // Add Qualified Products To Trolley - END
+                        }
+                        // Check Products Table for Matching Codes - END
+                        
+                        //////////////////////////////////////////
+                        // Missing Items Logic - START
+                        if($c == 0){ 
+                            $missing[] = $item["epos_code"]; 
+                            $misc .=  " [MISSING] ".$item["prod_code"];
+                            
+                            // Push Product into epos_api_product Table - Status: Missing
+                            $this->push_api_product($api_order_id, $epos_order, $account, $person_id, "", $item['epos_code'], $item['prod_code'], substr($item['prod_desc'],0,40), $item['prod_pack_desc'], $item['wholesale'], $item['retail'], $item['prod_uos'], $item['brand'], $item['group_desc'], $item['quantity'], "Missing");
+                        
+                        }
+                        // Missing Items Logic - END
+                    }
+                    // Loop through Items to get values - END
+                    
+                    //////////////////////////////////////////
+                    // Update Json Response for Missing Products
+                    if($missing){
+                        $info = "Warning";
+                        $code = "202";
+                        $data = "One Or More Products Are Missing";	
+                    }
+                }
+            }
+            else{	
+                // Encryption Token Check Failed
+                $info  = "Verification Failed";
+                $code  = "401";
+                $data  = "Incorrect Token";
+            }
+        
+        }
+
+        //////////////////////////////////////////
+        // Prepare result for json response
+        
+        $result->info = $info;
+        $result->code = $code;
+        $result->data = $data;
+        if($missing){  $result->missing = implode(',', $missing); }
+        if($info == "Success" || $info == "Warning"){ $result->redirect = "https://order.uniteduk.co.uk/index.php/login/auto/".$account."/".$md5; }
+
+        $response = json_encode([$result]);
+
+        // $decode = json_decode($response, true);
+        // foreach($decode as $d){
+        // 	echo "Redirect: ".$d["redirect"];
+        // }
+
+        // Push Json Data into epos_api_log Table
+        $api_log_id = $this->push_api_log(json_encode($_POST,JSON_HEX_APOS), $response);
+        // echo $response;
+
+        //////////////////////////////////////////
+        // Final Actions
+        //////////////////////////////////////////
+
+        //////////////////////////////////////////
+        // Update Response & log ID in API Orders Table
+        if($api_order_id){
+            $query5 = "UPDATE epos_api_orders SET response='".$response."', api_log_id='".$api_log_id."' WHERE api_order_id=".$api_order_id;
+            $db->query($query5);
+            //echo " [UPDATE] - ".$query5;
+        }
+        //////////////////////////////////////////
+        // Update Misc Data in API Log Table
+        if($api_log_id){
+            $query6 = "UPDATE epos_api_log SET misc='".$misc."' WHERE api_log_id='".$api_log_id."'";
+            $db->query($query6);
+            //echo " [UPDATE] - ".$query6;
+        }
+
+        //////////////////////////////////////////
+        // Prepare JWT payload
+        $payload = [
+            'person_id' => $person_id,
+            'username' => $username,
+            'email' => $email,
+            'branch' => $last_kiss_branch,
+            'organization_id' => $organization_id,
+        ];
+
+        $secret = getenv('JWT_SECRET') ?: 'your-secret-key-change-this-in-production';
+        $auto_access_token = JwtHelper::encode($payload, $secret, 3600); // 1 hour
+        $result->redirect = 'https://orderingtest.uniteduk.co.uk/orders/checkout?auto_access_token='.$auto_access_token;
+        // Return response
+        $result = json_decode(json_encode($result), true);
+        return $this->respond($result, 200);
+    }
+
+    //////////////////////////////////////////
+    // Custom Functions: Push Data to API Tables
+    //////////////////////////////////////////
+
+    // Push Json Data to API Log Table
+    function push_api_log($request, $response){
+        
+        // global $link;
+        $db = \Config\Database::connect();
+        ///////////////////////////////////
+        // Dump Json Request and Response
+        $q = "INSERT into epos_api_log (request, response) VALUES(
+        '".$request."', 
+        '".$response."'
+        )";
+        $db->query($q) or die("Error Dumping Log");
+        return $db->insertID();
+    }
+
+    // Push ePOS Order to API Orders Table
+    function push_api_order($person_id, $account, $epos_order){
+        
+        // global $link;
+        $db = \Config\Database::connect();
+        ///////////////////////////////////
+        // Dump ePOS_order
+        $data = [
+            'person_id' => $person_id,
+            'account' => $account,
+            'epos_order' => $epos_order
+        ];
+        
+        if (!$db->table('epos_api_orders')->insert($data)) {
+            die("Error Inserting API Order");
+        }
+        return $db->insertID();
+    }
+
+    // Push Product Data to API Product Table
+    function push_api_product($api_order_id, $epos_order, $account, $person_id, $prod_id, $epos_code, $prod_code, $prod_desc, $prod_pack_desc, $wholesale, $retail, $prod_uos, $brand, $group_desc, $quantity, $status){
+        
+        // global $link;
+        $db = \Config\Database::connect();
+        ///////////////////////////////////
+        // Dump product data to api_product table
+        $data = [
+            'api_order_id' => $api_order_id,
+            'epos_order' => $epos_order,
+            'account' => $account,
+            'person_id' => $person_id,
+            'prod_id' => $prod_id,
+            'epos_code' => $epos_code,
+            'prod_code' => $prod_code,
+            'prod_desc' => substr($prod_desc, 0, 40),
+            'prod_pack_desc' => $prod_pack_desc,
+            'wholesale' => $wholesale,
+            'retail' => $retail,
+            'prod_uos' => $prod_uos,
+            'brand' => $brand,
+            'group_desc' => $group_desc,
+            'quantity' => $quantity,
+            'status' => $status
+        ];
+        
+        if (!$db->table('epos_api_products')->insert($data)) {
+            die("Error Inserting API Product");
+        }
+    }
 }
 

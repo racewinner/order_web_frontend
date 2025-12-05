@@ -20,15 +20,15 @@ class BranchFilter implements FilterInterface {
 
             $branch = session()->get('branch');
             if (empty($branch)) {
-                // Get api_access_token from URL parameters
-                $api_access_token = $request->getGet('api_access_token');
-                if (empty($api_access_token)) {
+                // Get auto_access_token from URL parameters
+                $auto_access_token = $request->getGet('auto_access_token');
+                if (empty($auto_access_token)) {
                     return redirect()->to(base_url('login'));
                 }
 
                 // Decode JWT token
                 $secret = getenv('JWT_SECRET') ?: 'your-secret-key-change-this-in-production';
-                $payload = JwtHelper::decode($api_access_token, $secret);
+                $payload = JwtHelper::decode($auto_access_token, $secret);
 
                 if ($payload === false) {
                     return redirect()->to(base_url('login'));

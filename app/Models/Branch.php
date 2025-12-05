@@ -45,4 +45,10 @@ class Branch extends Model
         $branch = Branch::find($id);
         return $branch['telephone'];
     }
+
+    function getBranchWhatsappNumberById($id)
+    {
+        $branch = Branch::find($id);
+        return $branch['whatsapp_number'];
+    }
 }
