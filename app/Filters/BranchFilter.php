@@ -1,6 +1,7 @@
 <?php
 namespace App\Filters;
 
+use App\Controllers\MyAccount;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
@@ -20,79 +21,105 @@ class BranchFilter implements FilterInterface {
 
             $branch = session()->get('branch');
             if (empty($branch)) {
-                // Get auto_access_token from URL parameters
-                $auto_access_token = $request->getGet('auto_access_token');
-                if (empty($auto_access_token)) {
-                    return redirect()->to(base_url('login'));
-                }
-
-                // Decode JWT token
-                $secret = getenv('JWT_SECRET') ?: 'your-secret-key-change-this-in-production';
-                $payload = JwtHelper::decode($auto_access_token, $secret);
-
-                if ($payload === false) {
-                    return redirect()->to(base_url('login'));
-                }
-
-                // Check token expiration from payload
-                $now = time();
-                $expired_datetime = null;
+                // Get URL parameters: account, md5, api_order_id
+                $account = $request->getGet('account');
+                $md5 = $request->getGet('md5');
+                $api_order_id = $request->getGet('api_order_id');
                 
-                if (isset($payload['exp'])) {
-                    $expired_datetime = $payload['exp'];
-                }
-
-                // Check if token is expired
-                if ($expired_datetime && $now >= $expired_datetime) {
+                // Check if account or md5 is empty
+                if (empty($account) || empty($md5)) {
                     return redirect()->to(base_url('login'));
                 }
-
-                // Extract person_id and organization_id from token
-                $person_id = $payload['person_id'] ?? null;
-                $organization_id = $payload['organization_id'] ?? null;
-
-                if (empty($person_id)) {
-                    return redirect()->to(base_url('login'));
-                }
-
-                // Get branch from employee info (branch might not be in token, so get from employee record)
-                $Employee = new Employee();
-                $userInfo = $Employee->get_info($person_id);
                 
-                // Get branch - try from token first, then from user info
-                $branch = null;
-                if (isset($payload['branch'])) {
-                    $branch = $payload['branch'];
-                } 
-                // elseif (isset($userInfo->branches) && is_array($userInfo->branches) && !empty($userInfo->branches)) {
-                //     // Use first branch if multiple branches available
-                //     $branch = $userInfo->branches[0];
-                // } 
-                // elseif (isset($userInfo->last_kiss_branch)) {
-                //     $branch = $userInfo->last_kiss_branch;
-                // }
-
-                if (empty($branch)) {
+                // Get user from epos_employee table matching username = account and password = md5
+                $employeeModel = new Employee();
+                $user = $employeeModel->where([
+                    'username' => $account,
+                    'password' => $md5,
+                    'deleted' => 0
+                ])->first();
+                
+                // If user doesn't exist, redirect to login
+                if (!$user) {
                     return redirect()->to(base_url('login'));
                 }
-
-                // Set session values
+                
+                // set session data
+                $person_id = $user['person_id'];
                 session()->set('person_id', $person_id);
-                session()->set('branch', $branch);
-                if (!empty($organization_id)) {
-                    session()->set('organization_id', $organization_id);
-                }
+                $organization_id = $user['organization_id'] ?? null;
+                session()->set('organization_id', $organization_id);
+                
+                $branch = "";
+                $branch_list = $employeeModel->get_info($person_id)->branches;
+                if (count($branch_list) == 0) {
+                    $macc = new MyAccount();
+                    $nearest_branch_id = $macc->getBranch();
+                    if ($nearest_branch_id > 0) {
+                        $branch = $nearest_branch_id;
+                    }
+                } else if (count($branch_list) == 1) {
+                    $my_branch = $branch_list[0];
+                    if ($my_branch > 0) {
+                        $branch = $my_branch;
+                    }
+                } else {
+                    $macc = new MyAccount();
+                    $nearest_branch_id = $macc->getAllocatedBranch();
 
-                // Set expired_datetime (1 hour from now, matching token expiration)
+                    $last_kiss_branch_id = $macc->getLastKissBranch($person_id);
+                    if (!empty($last_kiss_branch_id)) {
+                        $nearest_branch_id = $last_kiss_branch_id;
+                    }
+
+                    if ($nearest_branch_id > 0) {
+                        $branch = $nearest_branch_id;
+                    }
+                }
+                session()->set('branch', $branch);
+                
+                // Set expired_datetime for session management
                 $now = new DateTime();
                 $interval = new DateInterval('PT1H');
                 $now->add($interval);
                 session()->set('expired_datetime', $now);
                 
-                // return redirect()->to(base_url('myaccount/sel_branch'));
-                // return redirect()->to(base_url('login'));
-                // Token validated and session set, continue with request
+                // Set api_order_id to session if not empty
+                if (!empty($api_order_id)) {
+                    session()->set('api_order_id', $api_order_id);
+                }
+                
+                // Continue with the request (don't redirect)
+                // return null;
             } else {
+                // Get URL parameters: account, md5, api_order_id
+                $account = $request->getGet('account');
+                $md5 = $request->getGet('md5');
+                $api_order_id = $request->getGet('api_order_id');
+                
+                // Check if account or md5 is empty
+                if (!empty($account) && !empty($md5)) {
+                    // Get user from epos_employee table matching username = account and password = md5
+                    $employeeModel = new Employee();
+                    $user = $employeeModel->where([
+                        'username' => $account,
+                        'password' => $md5,
+                        'deleted' => 0
+                    ])->first();
+                    
+                    // If user doesn't exist, redirect to login
+                    if ($user) {
+                        // set session data
+                        $person_id = $user['person_id'];
+                        
+                        // Compare $person_id with session's person_id
+                        $session_person_id = session()->get('person_id');
+                        if ($person_id == $session_person_id && !empty($api_order_id)) {
+                            session()->set('api_order_id', $api_order_id);
+                        }
+                    }
+                }
+
                 $now = new DateTime();
                 $expired_datetime = session()->get('expired_datetime');
 

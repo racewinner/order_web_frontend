@@ -75,14 +75,6 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-
-<?php if (!empty($epos_cart_suspense) && count($epos_cart_suspense) > 0): ?>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    There are some suspended products.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<?php endif; ?>
-
 <div class="d-flex flex-column flex-lg-row mx-auto main-content-pad-on-mobile">
     <div class="my-cart">
         <div class="my-cart-header d-flex">
@@ -96,6 +88,13 @@
 
         </div>
         <div class="my-cart-body">
+            <?php if (!empty($api_missing_message)): ?>
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert" style="font-size: 80%;">
+                <strong>Missing Items in API Order:</strong> <?= esc($api_missing_message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php endif; ?>
+            
             <ul class="d-inline-flex cart-type-select" role="tablist" aria-label="Cart sections">
                 <?php 
                 $firstVisibleIndex = null;

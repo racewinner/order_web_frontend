@@ -465,19 +465,20 @@ class RestfulApiController extends BaseController
                         // Check Products Table for Matching Codes - START
                         $query1 = 'SELECT * FROM epos_product WHERE prod_code = "'.$item["prod_code"].'" && is_disabled = "N" && price_list IN ("99999",'. implode(',', $price_list) .') Limit 1';
                         $r1 = $db->query($query1);
-                        if ($row1 = $r1->getRow()) {  
+                        if ($row1 = $r1->getRowArray()) {  
+                            
                             $c = $c + 1;
                             
                             //echo $item['prod_code']." = ";
                             
                             //////////////////////////////////////////
                             // Check Trolley to Update Existing Products - START
-                            $query2 = 'SELECT * FROM epos_cart WHERE prod_id = "'.$row1['prod_id'].'" && person_id = "'.$person_id.'" and presell=0';
+                            $query2 = 'SELECT * FROM epos_cart WHERE prod_code = "'.$row1['prod_code'].'" and person_id = "'.$person_id.'" and presell=0';
                             $r2 = $db->query($query2);
-                            while ($row2 = $r2->getRow()) { 
-                                $misc .=  "[UPDATE] ".$row2['prod_id']." Found QTY: ".$row2['quantity']." + ".$item['quantity']." | ";
+                            if ($row2 = $r2->getRowArray()) { 
+                                $misc .=  "[UPDATE] ".$row2['prod_code']." Found QTY: ".$row2['quantity']." + ".$item['quantity']." | ";
                                 // Update Cart Quantity
-                                $query3 = 'UPDATE epos_cart SET quantity="'.($row2['quantity']+$item['quantity']).'" WHERE prod_id="'.$row2['prod_id'].'" && person_id="'.$person_id.'" && presell=0';
+                                $query3 = 'UPDATE epos_cart SET quantity="'.($row2['quantity']+$item['quantity']).'" WHERE prod_code="'.$row2['prod_code'].'" && person_id="'.$person_id.'" && presell=0';
                                 $db->query($query3);
                                 //echo " [UPDATE] - ".$query3;
                                 
@@ -490,37 +491,55 @@ class RestfulApiController extends BaseController
                             
                             //////////////////////////////////////////
                             // Add Qualified Products To Trolley - START
+                            // - first: get line_position
+                            // - second: get group_type
+                            // - third: add product to trolley
+                            $query_line_pos = 'SELECT MAX(line_position) as max_line_position FROM epos_cart WHERE person_id = "'.$person_id.'" && presell=0';
+                            $r_line_pos = $db->query($query_line_pos);
+                            $row_line_pos = $r_line_pos->getRowArray();
+                            $line_position = ($row_line_pos['max_line_position'] !== null) ? $row_line_pos['max_line_position'] + 1 : 1;
+                            
+                            // Get group_type from epos_categories
+                            $query_group_type = 'SELECT type FROM epos_categories WHERE filter_desc = "'.$row1['group_desc'].'" LIMIT 1';
+                            $r_group_type = $db->query($query_group_type);
+                            $row_group_type = $r_group_type->getRowArray();
+                            $group_type = ($row_group_type && isset($row_group_type['type'])) ? $row_group_type['type'] : '';
+                            
                             if($r2->getNumRows() == 0){ 
                                 $misc .=  "[INSERT] ".$row1['prod_id']." Not Found - Added Item to Cart | ";
                                 // Prepare Product Data for Trolley 
-                                $cart_data = array( 'prod_id'       =>$row1['prod_id'],
+                                $cart_data = array( 
+                                                    // 'prod_id'       =>$row1['prod_id'],
                                                     'quantity'      =>$item['quantity'],
                                                     'person_id'     =>$person_id,
+                                                    'group_type'    =>$group_type,
                                                     'prod_code'     =>$row1['prod_code'],
-                                                    'prod_uos'      =>$row1['prod_uos'],
-                                                    'start_date'    =>$row1['start_date'],
-                                                    'prod_desc'     =>$row1['prod_desc'],
-                                                    'prod_pack_desc'=>$row1['prod_pack_desc'],
-                                                    'vat_code'      =>$row1['vat_code'],
-                                                    'prod_price'    =>$row1['prod_price'],
-                                                    'group_desc'    =>$row1['group_desc'],
-                                                    'prod_code1'    =>$row1['prod_code1'],
-                                                    'price_list'    =>$row1['price_list'],
-                                                    'prod_level1'   =>$row1['prod_level1'],
-                                                    'prod_level2'   =>$row1['prod_level2'],
-                                                    'prod_level3'   =>$row1['prod_level3'],
-                                                    'prod_sell'     =>$row1['prod_sell'],
-                                                    'prod_rrp'      =>$row1['prod_rrp'],
-                                                    'wholesale'     =>$row1['wholesale'],
-                                                    'retail'        =>$row1['retail'],
-                                                    'p_size'        =>$row1['p_size'],
-                                                    'van'           =>$row1['van'],
-                                                    'shelf_life'    =>$row1['shelf_life'],
-                                                    'price_start'   =>$row1['price_start'],
-                                                    'price_end'     =>$row1['price_end'],
-                                                    'brand'         =>$row1['brand'],
-                                                    'epoints'       =>$row1['epoints'],
-                                                    'api_order_id'  =>$api_order_id
+                                                    // 'prod_uos'      =>$row1['prod_uos'],
+                                                    // 'start_date'    =>$row1['start_date'],
+                                                    // 'prod_desc'     =>$row1['prod_desc'],
+                                                    // 'prod_pack_desc'=>$row1['prod_pack_desc'],
+                                                    // 'vat_code'      =>$row1['vat_code'],
+                                                    // 'prod_price'    =>$row1['prod_price'],
+                                                    // 'group_desc'    =>$row1['group_desc'],
+                                                    // 'prod_code1'    =>$row1['prod_code1'],
+                                                    // 'price_list'    =>$row1['price_list'],
+                                                    // 'prod_level1'   =>$row1['prod_level1'],
+                                                    // 'prod_level2'   =>$row1['prod_level2'],
+                                                    // 'prod_level3'   =>$row1['prod_level3'],
+                                                    // 'prod_rrp'      =>$row1['prod_rrp'],
+                                                    // 'wholesale'     =>$row1['wholesale'],
+                                                    // 'retail'        =>$row1['retail'],
+                                                    // 'p_size'        =>$row1['p_size'],
+                                                    // 'van'           =>$row1['van'],
+                                                    // 'shelf_life'    =>$row1['shelf_life'],
+                                                    // 'price_start'   =>$row1['price_start'],
+                                                    // 'price_end'     =>$row1['price_end'],
+                                                    // 'brand'         =>$row1['brand'],
+                                                    // 'epoints'       =>$row1['epoints'],
+                                                    'branch'           =>$row1['branch'],
+                                                    'organization_id'  =>$row1['organization_id'],
+                                                    'line_position'    =>$line_position,
+                                                    'api_order_id'     =>$api_order_id
                                             );
                                 // Insert Product to Trolley 
                                 $query4 = "INSERT INTO epos_cart (".implode(", ", array_keys($cart_data)).") VALUES ('".implode("', '", array_values($cart_data))."')";
@@ -573,7 +592,10 @@ class RestfulApiController extends BaseController
         $result->code = $code;
         $result->data = $data;
         if($missing){  $result->missing = implode(',', $missing); }
-        if($info == "Success" || $info == "Warning"){ $result->redirect = "https://order.uniteduk.co.uk/index.php/login/auto/".$account."/".$md5; }
+        if($info == "Success" || $info == "Warning"){ 
+            $result->redirect = "https://order.uniteduk.co.uk/index.php/login/auto/".$account."/".$md5; 
+            $result->redirect2ordering = 'https://orderingtest.uniteduk.co.uk/orders/checkout?account='.$account.'&md5='.$md5.'&api_order_id='.$api_order_id;
+        }
 
         $response = json_encode([$result]);
 
@@ -607,17 +629,18 @@ class RestfulApiController extends BaseController
 
         //////////////////////////////////////////
         // Prepare JWT payload
-        $payload = [
-            'person_id' => $person_id,
-            'username' => $username,
-            'email' => $email,
-            'branch' => $last_kiss_branch,
-            'organization_id' => $organization_id,
-        ];
+        // $payload = [
+        //     'person_id' => $person_id,
+        //     'username' => $username,
+        //     'email' => $email,
+        //     'branch' => $last_kiss_branch,
+        //     'organization_id' => $organization_id,
+        //     'api_order_id' => $api_order_id,
+        // ];
 
-        $secret = getenv('JWT_SECRET') ?: 'your-secret-key-change-this-in-production';
-        $auto_access_token = JwtHelper::encode($payload, $secret, 3600); // 1 hour
-        $result->redirect = 'https://orderingtest.uniteduk.co.uk/orders/checkout?auto_access_token='.$auto_access_token;
+        // $secret = getenv('JWT_SECRET') ?: 'your-secret-key-change-this-in-production';
+        // $auto_access_token = JwtHelper::encode($payload, $secret, 3600); // 1 hour
+        // $result->redirect = 'https://orderingtest.uniteduk.co.uk/orders/checkout?auto_access_token='.$auto_access_token;
         // Return response
         $result = json_decode(json_encode($result), true);
         return $this->respond($result, 200);

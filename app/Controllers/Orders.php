@@ -266,20 +266,30 @@ class Orders extends Secure_area implements iData_controller
 		$this->data['unknown_products'] = $UnknownProduct->get_all_products($user_info->username);
 
 		if($page == 'checkout') {
-			/**
-			 * get epos_cart_suspense data
-			 */
-			// $branch = session()->get('branch');
-			// $organization_id = session()->get('organization_id');
-			// $suspense_query = $db->table('epos_cart_suspense')
-			// 	->where('person_id', $pid)
-			// 	->where('branch', $branch);
-			// if (!empty($organization_id)) {
-			// 	$suspense_query->where('organization_id', $organization_id);
-			// }
-			// $suspense_query->orderBy('line_position', 'DESC');
-			// $epos_cart_suspense = $suspense_query->get()->getResult();
-			// $this->data['epos_cart_suspense'] = $epos_cart_suspense;
+			$api_order_id = session()->get('api_order_id');
+			$missing_message = '';
+			
+			if (!empty($api_order_id)) {
+				$db = \Config\Database::connect();
+				$query = $db->table('epos_api_orders')
+					->select('response')
+					->where('api_order_id', $api_order_id)
+					->get();
+				
+				if ($query->getNumRows() > 0) {
+					$row = $query->getRowArray();
+					$response = $row['response'];
+					
+					if (!empty($response)) {
+						$responseData = json_decode($response, true);
+						if (is_array($responseData) && !empty($responseData[0]) && isset($responseData[0]['missing']) && !empty($responseData[0]['missing'])) {
+							$missing_message = $responseData[0]['missing'];
+						}
+					}
+				}
+			}
+			
+			$this->data['api_missing_message'] = $missing_message;
 
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {
@@ -500,7 +510,6 @@ class Orders extends Secure_area implements iData_controller
     // ------------------------------------
 
 		if($page == 'checkout') {
-			
 			return view('v2/pages/myaccount/checkout', $this->data);
 		} else if($page == 'payment') {
 			return view('v2/pages/myaccount/payment', $this->data);
